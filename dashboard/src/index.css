@@ -39,7 +39,7 @@ h3 {
 }
 
 .icon-button {
-  @apply w-10 h-10 text-primary rounded-full flex items-center justify-center text-xl transition hover:bg-pdark-hover;
+  @apply w-10 h-10 text-primary dark:text-primary rounded-full flex items-center justify-center text-xl transition hover:bg-pdark-hover;
 }
 
 .primary {
