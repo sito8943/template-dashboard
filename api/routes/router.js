@@ -19,7 +19,6 @@ class Router {
       user,
       date: new Date().getTime(),
     });
-    console.log("saliio");
     return { status: 500, data: { message: err } };
   }
 
