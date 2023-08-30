@@ -9,7 +9,6 @@ import { decrypt, encrypt } from "./crypto";
 
 export const fromLocal = () => {
   const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
-  console.log(data);
   return data;
 };
 
@@ -37,9 +36,5 @@ export const logoutUser = () => {
  * If remember is true, it stores user data to localStorage, otherwise it stores it in sessionStorage
  * @param {object} data - The user object that you want to store in the browser.
  */
-export const logUser = (data) => {
-  console.log(data);
-  console.log(config.user);
-  console.log(encrypt(data));
+export const logUser = (data) =>
   localStorage.setItem(config.user, encrypt(data));
-};
