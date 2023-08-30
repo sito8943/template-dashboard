@@ -4,14 +4,14 @@ const fs = require("fs");
 const Router = require("./router");
 
 // mysql
-const { insert, select, update } = require("sito-node-mysql");
+const { insert, select } = require("sito-node-mysql");
 
 // auth
 const { validator } = require("../utils/secure");
 
 const userRouter = new Router("users", [validator]);
 
-userRouter.addRoute("/save", "POST", [], async (req, res) => {
+userRouter.addRoute("/save", "POST", [validator], async (req, res) => {
   console.info(`saving users`);
   const ip = req.socket?.remoteAddress;
   const { data } = req.body;
@@ -48,29 +48,7 @@ userRouter.addRoute("/save", "POST", [], async (req, res) => {
         { ...data, date: new Date().getTime(), photo: "", banner: "" }
       );
       console.info(`user created successfully`);
-      console.info("creating mipyme");
-      await insert(
-        "mipymes",
-        [
-          "id",
-          "name",
-          "description",
-          "email",
-          "photo",
-          "banner",
-          "owner",
-          "date",
-        ],
-        {
-          name: "Mi mipyme",
-          description: "Sin descripción",
-          photo: "",
-          banner: "",
-          email: data.email,
-          owner: result,
-          date: new Date().getTime(),
-        }
-      );
+
       const expiration = 1;
       const token =
         /* It's encrypting the token */

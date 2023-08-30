@@ -60,8 +60,24 @@ class Controller {
       ...data,
     };
     if (!this.noDate) toInsert.date = new Date().getTime();
+    if (data.photo) {
+      try {
+        const encoded = Buffer.from(
+          data.photo.replace(/^data:image\/\w+;base64,/, ""),
+          "base64"
+        );
+        const extension = data.photo.split(";")[0].split("/")[1];
+        fs.writeFileSync(
+          `./public/images/${this.collection}/${data.name}.${extension}`,
+          encoded
+        );
+        data.photo = `/images/${this.collection}/${data.name}.${extension}`;
+      } catch (err) {
+        console.error(err);
+      }
+    }
     const id = await insert(this.collection, attributes, toInsert);
-    await insert("logs", ["id", "idUser", "date", "operation", "observation"], {
+    await insert("logs", attributes, {
       idUser: rows[0].id,
       date: new Date().getTime(),
       operation: `created ${this.collection}`,
@@ -89,6 +105,35 @@ class Controller {
     const toUpdate = { ...data };
     if (!this.noDate) toUpdate.date = new Date().getTime();
     let result;
+    if (data.photo) {
+      try {
+        // updating photo
+        // checking if it has a photo already
+        const oldData = await select(this.collection, ["photo"], {
+          attribute: "id",
+          value: data.id,
+          operator: "=",
+        });
+        const resultObj = oldData.rows[0];
+        if (resultObj.photo && resultObj.photo.length) {
+          // deleting old photo
+          fs.rmSync(`./public${resultObj.photo}`);
+        }
+        // writing new photo
+        const encoded = Buffer.from(
+          data.photo.replace(/^data:image\/\w+;base64,/, ""),
+          "base64"
+        );
+        const extension = data.photo.split(";")[0].split("/")[1];
+        fs.writeFileSync(
+          `./public/images/${this.collection}/${data.name}.${extension}`,
+          encoded
+        );
+        data.photo = `/images/${this.collection}/${data.name}.${extension}`;
+      } catch (err) {
+        console.error(err);
+      }
+    }
     if (query)
       result = await update(this.collection, attributes, toUpdate, query);
     else
@@ -147,7 +192,6 @@ class Controller {
       const data = response.rows[0];
       try {
         if (data.photo) fs.rmSync(`./public${data.photo}`);
-        if (data.photoDisplay) fs.rmSync(`./public${data.photoDisplay}`);
       } catch (err) {
         console.error(err);
         await insert("errors", ["id", "error", "idUser", "date"], {
