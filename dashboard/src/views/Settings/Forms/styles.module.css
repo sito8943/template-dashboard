@@ -1,0 +1,9 @@
+.photo {
+  @apply rounded-2xl relative w-[250px] h-[250px] z-10 shadow-md;
+}
+
+@media (max-width: 500px) {
+  .photo {
+    @apply w-[150px] h-[150px];
+  }
+}

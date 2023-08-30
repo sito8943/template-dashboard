@@ -174,7 +174,7 @@ class Controller {
         "logs",
         ["id", "idUser", "date", "operation", "observation"],
         {
-          idUser: rows[0].id,
+          idUser: rows[0].user,
           date: new Date().getTime(),
           operation: `updated ${this.collection}`,
           observation: data.id,

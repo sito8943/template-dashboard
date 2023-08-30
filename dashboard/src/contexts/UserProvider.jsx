@@ -14,6 +14,10 @@ const userReducer = (userState, action) => {
       const { socket } = action;
       return { ...userState, socket };
     }
+    case "set-photo": {
+      if (userState.user) userState.user.photo = action.photo;
+      return { ...userState };
+    }
     case "logged-out":
       if (userState.socket) userState.socket.disconnect();
       return {};

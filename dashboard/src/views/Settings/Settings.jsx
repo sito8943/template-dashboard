@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useLanguage } from "../../contexts/LanguageProvider";
 
 // components
+import Photo from "./Forms/Photo";
 import Security from "./Forms/Security";
 import Attribute from "./Forms/Attribute";
 
@@ -13,8 +14,9 @@ function Settings() {
   const settings = useMemo(() => languageState.texts.settings, [languageState]);
 
   return (
-    <div className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto">
+    <div className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto flex flex-col gap-10">
       <h2>{settings.title}</h2>
+      <Photo />
       <Attribute attribute="email" />
       <Security />
     </div>

@@ -100,7 +100,7 @@ function Security() {
   );
 
   return (
-    <form onSubmit={onSubmit} className="relative mt-10">
+    <form onSubmit={onSubmit} className="relative">
       {loading ? (
         <Loading className="w-full h-full absolute top-0 left-0 dark:bg-dark-background bg-light-background z-20" />
       ) : null}
