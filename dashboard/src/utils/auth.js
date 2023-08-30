@@ -12,6 +12,11 @@ export const fromLocal = () => {
   return data;
 };
 
+export const getUserPhoto = () => {
+  const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
+  return data.photo;
+};
+
 export const getUserName = () => {
   const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
   return data.user;

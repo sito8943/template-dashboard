@@ -24,6 +24,9 @@ import { logUser } from "../../utils/auth";
 
 import config from "../../config";
 
+// images
+import noPhoto from "../../assets/images/no-photo.webp";
+
 // styles
 import styles from "./signIn.module.css";
 
@@ -107,10 +110,11 @@ function SignIn() {
         const { data } = response;
         const { expiration, token, state, permissions } = data;
         createCookie(config.basicKey, expiration, token);
+        console.log(config.apiPhoto, data.photo);
         logUser({
           id: data.id,
           user: data.user,
-          photo: data.photo,
+          photo: `${config.apiPhoto}${data.photo}` || noPhoto,
           state: data.state,
           permissions,
         });
@@ -119,7 +123,7 @@ function SignIn() {
           user: {
             id: data.id,
             user: data.user,
-            photo: data.photo,
+            photo: `${config.apiPhoto}${data.photo}` || noPhoto,
             state,
             permissions,
           },

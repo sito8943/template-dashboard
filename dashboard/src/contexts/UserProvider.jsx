@@ -5,6 +5,9 @@ import { createContext, useReducer, useContext } from "react";
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
+// utils
+import { logUser } from "../utils/auth";
+
 const UserContext = createContext();
 
 const userReducer = (userState, action) => {
@@ -15,7 +18,11 @@ const userReducer = (userState, action) => {
       return { ...userState, socket };
     }
     case "set-photo": {
-      if (userState.user) userState.user.photo = action.photo;
+      if (userState.user) {
+        userState.user.photo = action.photo;
+        // update localStorage data
+        logUser(userState.user);
+      }
       return { ...userState };
     }
     case "logged-out":

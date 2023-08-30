@@ -60,7 +60,7 @@ class Controller {
     }
     // security user check
 
-    const { rows } = await select("users", ["user"], {
+    const { rows } = await select("users", ["id", "user"], {
       attribute: "user",
       operator: "=",
       value: user,
@@ -93,7 +93,7 @@ class Controller {
     }
     const id = await insert(this.collection, attributes, toInsert);
     await insert("logs", ["idUser", "date", "operation", "observation"], {
-      idUser: rows[0].user,
+      idUser: rows[0].id,
       date: new Date().getTime(),
       operation: `created ${this.collection}`,
       observation: id,
@@ -109,7 +109,7 @@ class Controller {
   async update(user, data, query) {
     if (!query) assert(data.id !== undefined, "Data must have a string id");
 
-    const { rows } = await select("users", ["user"], {
+    const { rows } = await select("users", ["id", "user"], {
       attribute: "user",
       operator: "=",
       value: user,
@@ -174,7 +174,7 @@ class Controller {
         "logs",
         ["id", "idUser", "date", "operation", "observation"],
         {
-          idUser: rows[0].user,
+          idUser: rows[0].id,
           date: new Date().getTime(),
           operation: `updated ${this.collection}`,
           observation: data.id,
@@ -191,7 +191,7 @@ class Controller {
    */
   async remove(user, ids) {
     assert(ids.length > 0, "at least one element must be deleted");
-    const { rows } = await select("users", ["user"], {
+    const { rows } = await select("users", ["id", "user"], {
       attribute: "user",
       operator: "=",
       value: user,
