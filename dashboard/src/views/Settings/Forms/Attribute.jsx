@@ -113,7 +113,6 @@ function Attribute({ attribute }) {
       ) : null}
       <div className="flex items-center gap-2 mb-5">
         <h3>{settings[attribute]?.title}</h3>
-        <hr className="w-full mt-[8px] h-[1px] border-dashed dark:border-white" />
       </div>
       <SimpleInput
         id={attribute}

@@ -106,7 +106,6 @@ function Security() {
       ) : null}
       <div className="flex items-center gap-2 mb-5">
         <h3>{security.title}</h3>
-        <hr className="w-full h-[6px] border-dashed dark:border-white" />
       </div>
       <SimpleInput
         id="password"

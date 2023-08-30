@@ -22,6 +22,8 @@ import PhotoUpload from "../../../components/PhotoUpload/PhotoUpload";
 // styles
 import styles from "./styles.module.css";
 
+// config
+import config from "../../../config";
 function Photo({ model }) {
   const { setUserState } = useUser();
   const { languageState } = useLanguage();
@@ -63,11 +65,15 @@ function Photo({ model }) {
         });
       const { list } = await response.data;
       const data = list[0];
-      if (!model) setUserState({ type: "set-photo", photo: data.photo });
+      if (!model)
+        setUserState({
+          type: "set-photo",
+          photo: `${config.apiPhoto}${data.photo}`,
+        });
       setPhotos({
         type: "set",
         id: "photo",
-        value: data.photo,
+        value: `${data.photo}`,
       });
     } catch (err) {
       console.error(err);
