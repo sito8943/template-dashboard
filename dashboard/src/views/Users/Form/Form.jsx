@@ -303,7 +303,7 @@ function Form() {
           </label>
         </div>
         <LazyImage
-          className="h-[150px] w-[150px] my-3"
+          className="h-[150px] w-[150px] my-3 rounded-full"
           src={getPhoto()}
           alt="product image"
         />
