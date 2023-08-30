@@ -73,7 +73,7 @@ function Table({
               <Link
                 name="edit-row"
                 to={`/${collection}/?id=${row.id}`}
-                className="flex items-center justify-center"
+                className="icon-button"
                 aria-label={languageState.texts.ariaLabels.editRow}
               >
                 <FontAwesomeIcon icon={faPencil} />
@@ -84,7 +84,7 @@ function Table({
                 name="preview"
                 target="_blank"
                 rel="noreferrer"
-                className="icon-button !text-white"
+                className="icon-button"
                 aria-label={languageState.texts.ariaLabels.preview}
                 href={`${config.webUrl}/${collection}/${toSlug(
                   row.title || row.name
@@ -97,7 +97,7 @@ function Table({
               name="delete-row"
               aria-label={languageState.texts.ariaLabels.deleteRow}
               onClick={() => onDelete(row.id)}
-              className="icon-button !text-white"
+              className="icon-button"
             >
               <FontAwesomeIcon icon={faTrash} />
             </button>
