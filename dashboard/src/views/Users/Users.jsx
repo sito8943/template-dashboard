@@ -24,13 +24,12 @@ function Users() {
     <div className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto">
       <h2>{users.title}</h2>
       <ModelNavigator collection="users" />
-      {location.pathname === "/users/insert" ||
-      location.pathname === "/users/insert/" ? (
-        <Form />
-      ) : null}
-      {location.pathname === "/users/" || location.pathname === "/users" ? (
+      {location.pathname === "/users/list" ||
+      location.pathname === "/users/list/" ? (
         <List collection="users" />
-      ) : null}
+      ) : (
+        <Form />
+      )}
     </div>
   );
 }

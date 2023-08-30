@@ -16,30 +16,26 @@ function ModelNavigator({ collection }) {
   return (
     <nav className="flex gap-2 mt-5">
       <Link
-        to={`/${collection}/`}
+        to={`/${collection}/list/`}
         className={`small-button ${
-          location.pathname === `/${collection}/` ||
-          location.pathname === `/${collection}`
+          location.pathname === `/${collection}/list` ||
+          location.pathname === `/${collection}/list/`
             ? "primary"
             : "secondary"
         }`}
       >
         {buttons.list}
       </Link>
-      {collection !== "events" &&
-      collection !== "projects" &&
-      collection !== "mipymes" ? (
-        <Link
-          to={`/${collection}/insert`}
-          className={`small-button ${
-            location.pathname === `/${collection}/insert`
-              ? "primary"
-              : "secondary"
-          }`}
-        >
-          {buttons.insert}
-        </Link>
-      ) : null}
+      <Link
+        to={`/${collection}/insert`}
+        className={`small-button ${
+          location.pathname === `/${collection}/insert`
+            ? "primary"
+            : "secondary"
+        }`}
+      >
+        {buttons.insert}
+      </Link>
     </nav>
   );
 }

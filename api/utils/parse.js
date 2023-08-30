@@ -4,18 +4,13 @@
 const toSlug = (string) => {
   const accents = ["á", "é", "í", "ó", "ú", "ü", "ñ"];
   const vocals = ["a", "e", "i", "o", "u", "u", "n"];
-  let parsedStrings = string
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w ]+/g, "")
-    .replace(/ +/g, "-");
-
+  let parsedStrings = string.toLowerCase().trim();
   // transform vocals
   accents.forEach((accent, i) => {
     if (parsedStrings.indexOf(accent) > -1)
       parsedStrings = parsedStrings.replaceAll(accent, vocals[i]);
   });
-  return parsedStrings;
+  return parsedStrings.replace(/  +/g, ' ').replace(/ +/g, "-");
 };
 
 /**

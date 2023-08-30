@@ -15,7 +15,7 @@ import { getUserId, getUserName } from "../utils/auth";
 export const saveModel = async (collection, data) => {
   const response = await axios.post(
     `${config.apiUrl}${collection}/${
-      data.id === undefined ? "save" : "update"
+      data.id === undefined ? "insert" : "update"
     }`,
     {
       user: getUserName(),

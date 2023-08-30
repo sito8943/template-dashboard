@@ -3,9 +3,8 @@ const express = require("express");
 const path = require("path");
 
 const authRouter = require("./routes/auth");
-const postRouter = require("./routes/posts");
 const usersRouter = require("./routes/users");
-const mipymeRouter = require("./routes/mipymes");
+const userTypesRouter = require("./routes/userTypes");
 
 const app = express();
 
@@ -48,10 +47,8 @@ app.use("/api/auth", authRouter);
 app.use("/api-client/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api-client/users", usersRouter);
-app.use("/api/mipymes", mipymeRouter);
-app.use("/api-client/mipymes", mipymeRouter);
-app.use("/api/posts", postRouter);
-app.use("/api-client/posts", postRouter);
+app.use("/api/userTypes", userTypesRouter);
+app.use("/api/user-types", userTypesRouter);
 
 // errors logs
 app.post("/error/logs", async (req, res) => {

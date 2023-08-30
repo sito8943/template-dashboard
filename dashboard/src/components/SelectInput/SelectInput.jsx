@@ -1,7 +1,7 @@
 // @ts-check
 
 // eslint-disable-next-line no-unused-vars
-import React, { memo, useState } from "react";
+import React, { Fragment, memo, useState } from "react";
 
 import PropTypes from "prop-types";
 
@@ -30,13 +30,13 @@ function SelectInput({
           }`}
         >
           {options && options.length ? (
-            <>
+            <Fragment>
               {options.map((option, i) => (
                 <option value={i} key={option.id}>
-                  {option.label}
+                  {option.name}
                 </option>
               ))}
-            </>
+            </Fragment>
           ) : null}
         </select>
         {rightIcon ? rightIcon : null}

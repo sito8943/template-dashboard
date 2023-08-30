@@ -18,11 +18,15 @@ import noProduct from "../../../assets/images/no-product.jpg";
 // components
 import Loading from "../../../components/Loading/Loading";
 import LazyImage from "../../../components/LazyImage/LazyImage";
+import SelectInput from "../../../components/SelectInput/SelectInput";
 import SimpleInput from "../../../components/SimpleInput/SimpleInput";
 
 // services
 import { fetchList } from "../../../services/get";
 import { saveModel } from "../../../services/post";
+
+// utils
+import { toSlug } from "../../../utils/parser";
 
 // config
 import config from "../../../config";
@@ -34,13 +38,14 @@ function Form() {
 
   const { languageState } = useLanguage();
 
-  const { users, auth, buttons, errors, messages } = useMemo(
+  const { inputs, users, auth, buttons, errors, messages } = useMemo(
     () => ({
       auth: languageState.texts.auth,
       errors: languageState.texts.errors,
       messages: languageState.texts.messages,
       buttons: languageState.texts.buttons,
       users: languageState.texts.users,
+      inputs: languageState.texts.inputs,
     }),
     [languageState]
   );
@@ -76,7 +81,7 @@ function Form() {
   const [userHelperText, setUserHelperText] = useState("");
 
   const handleUser = useCallback((e) => {
-    setUser(e.target.value);
+    setUser(toSlug(e.target.value));
   }, []);
 
   const [email, setEmail] = useState("");
@@ -89,6 +94,13 @@ function Form() {
   const [photo, setPhoto] = useState("");
   const [file, setFile] = useState("");
   const [fileName, setFileName] = useState("");
+
+  const [userType, setUserType] = useState("");
+  const [userTypes, setUserTypes] = useState([]);
+
+  const onUserTypesSelect = useCallback((e) => {
+    setUserType(e.target.value);
+  }, []);
 
   const { setNotificationState } = useNotification();
 
@@ -161,22 +173,37 @@ function Form() {
       }
 
       try {
-        await saveModel("users", {
+        const result = await saveModel("users", {
           id: id.length ? id : undefined,
           user,
           email,
           name,
           pw: md5(password),
           photo,
+          type: userType,
         });
-        setId("");
-        setUser("");
-        setName("");
-        setEmail("");
-        setPassword("");
-        setRPassword("");
-        setPhoto("");
-        showNotification("success", messages.saved);
+        const data = await result.data;
+        switch (data.message) {
+          case "name taken":
+            showNotification(
+              "error",
+              errors.nameTaken.replace(
+                "[model]",
+                languageState.texts.users.name
+              )
+            );
+            break;
+          default:
+            setId("");
+            setUser("");
+            setName("");
+            setEmail("");
+            setPassword("");
+            setRPassword("");
+            setPhoto("");
+            showNotification("success", messages.saved);
+            break;
+        }
       } catch (err) {
         console.error(err);
         if (String(err) === "AxiosError: Network Error")
@@ -199,6 +226,20 @@ function Form() {
     ]
   );
 
+  const fetchUserTypes = useCallback(async () => {
+    try {
+      const response = await fetchList("userTypes", 0, ["id", "name"]);
+      const data = await response.data;
+      setUserTypes(data.list);
+      if (userType === "") setUserType(data.list[0].id);
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", errors.notConnected);
+      else showNotification("error", errors.couldNotLoadUserTypes);
+    }
+  }, [userType]);
+
   const fetch = useCallback(
     async (id) => {
       try {
@@ -214,6 +255,7 @@ function Form() {
         setName(data.name);
         setEmail(data.email);
         setPhoto(data.photo);
+        setUserType(data.type);
       } catch (err) {
         console.error(err);
         if (String(err) === "AxiosError: Network Error")
@@ -226,6 +268,7 @@ function Form() {
   );
 
   useEffect(() => {
+    fetchUserTypes();
     const { search } = location;
     const params = parseQueries(search);
     if (params.id) {
@@ -298,6 +341,16 @@ function Form() {
           }}
           helperText={emailHelperText}
         />
+        <SelectInput
+          id="type"
+          className="input-control"
+          label={inputs.userType}
+          inputProps={{
+            onChange: onUserTypesSelect,
+            className: "input primary !pr-5 w-full",
+          }}
+          options={userTypes}
+        />
         <SimpleInput
           id="password"
           className="input-control"
@@ -334,7 +387,7 @@ function Form() {
             <button tabIndex={-1} type="button" onClick={toggleShowRPassword}>
               <FontAwesomeIcon
                 name="toggle-see-password"
-                icon={showPassword ? faLockOpen : faLock}
+                icon={showRPassword ? faLockOpen : faLock}
                 aria-label={languageState.texts.ariaLabels.toggleShowPassword}
                 className="absolute text-white top-[50%] -translate-y-[50%] left-3"
               />

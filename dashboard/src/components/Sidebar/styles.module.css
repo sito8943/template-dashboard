@@ -3,7 +3,7 @@
 }
 
 .header {
-  @apply h-[55px] mt-[15px];
+  @apply mt-[15px];
 }
 
 @media (max-width: 650px) {

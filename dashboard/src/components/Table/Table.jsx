@@ -72,7 +72,8 @@ function Table({
             {!notEditable ? (
               <Link
                 name="edit-row"
-                to={`/${collection}/${row.id}`}
+                to={`/${collection}/?id=${row.id}`}
+                className="flex items-center justify-center"
                 aria-label={languageState.texts.ariaLabels.editRow}
               >
                 <FontAwesomeIcon icon={faPencil} />

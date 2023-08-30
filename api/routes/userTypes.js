@@ -4,6 +4,6 @@ const Router = require("./router");
 // auth
 const { validator } = require("../utils/secure");
 
-const userRouter = new Router("users", [validator]);
+const userTypesRouter = new Router("userTypes", [validator]);
 
-module.exports = userRouter.router;
+module.exports = userTypesRouter.router;

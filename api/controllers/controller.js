@@ -3,6 +3,7 @@ const assert = require("assert");
 const fs = require("fs");
 
 const { select, insert, update, deleteDocuments } = require("sito-node-mysql");
+const { toSlug } = require("../utils/parse");
 
 class Controller {
   /**
@@ -48,37 +49,51 @@ class Controller {
    * @param {object} data
    */
   async create(user, data) {
-    const { rows } = await select("users", ["id"], {
-      attribute: "id",
+    // security name check
+    {
+      const { rows } = await select(this.collection, ["name"], {
+        attribute: "name",
+        operator: "=",
+        value: data.name,
+      });
+      if (rows.length > 0) return { message: "name taken" };
+    }
+    // security user check
+
+    const { rows } = await select("users", ["user"], {
+      attribute: "user",
       operator: "=",
       value: user,
     });
     assert(rows.length > 0, "the user shall exist");
-    const attributes = ["id", ...Object.keys(data)];
+
+    const attributes = ["id", ...Object.keys(data), "slugName"];
+    const slugName = toSlug(data.name);
     if (!this.noDate) attributes.push("date");
     const toInsert = {
       ...data,
+      slugName,
     };
     if (!this.noDate) toInsert.date = new Date().getTime();
-    if (data.photo) {
+    if (toInsert.photo) {
       try {
         const encoded = Buffer.from(
-          data.photo.replace(/^data:image\/\w+;base64,/, ""),
+          toInsert.photo.replace(/^data:image\/\w+;base64,/, ""),
           "base64"
         );
-        const extension = data.photo.split(";")[0].split("/")[1];
+        const extension = toInsert.photo.split(";")[0].split("/")[1];
         fs.writeFileSync(
-          `./public/images/${this.collection}/${data.name}.${extension}`,
+          `./public/images/${this.collection}/${slugName}.${extension}`,
           encoded
         );
-        data.photo = `/images/${this.collection}/${data.name}.${extension}`;
+        toInsert.photo = `/images/${this.collection}/${slugName}.${extension}`;
       } catch (err) {
         console.error(err);
       }
     }
     const id = await insert(this.collection, attributes, toInsert);
-    await insert("logs", attributes, {
-      idUser: rows[0].id,
+    await insert("logs", ["idUser", "date", "operation", "observation"], {
+      idUser: rows[0].user,
       date: new Date().getTime(),
       operation: `created ${this.collection}`,
       observation: id,
@@ -94,7 +109,7 @@ class Controller {
   async update(user, data, query) {
     if (!query) assert(data.id !== undefined, "Data must have a string id");
 
-    const { rows } = await select("users", ["id"], {
+    const { rows } = await select("users", ["user"], {
       attribute: "user",
       operator: "=",
       value: user,
@@ -176,8 +191,8 @@ class Controller {
    */
   async remove(user, ids) {
     assert(ids.length > 0, "at least one element must be deleted");
-    const { rows } = await select("users", ["id"], {
-      attribute: "id",
+    const { rows } = await select("users", ["user"], {
+      attribute: "user",
       operator: "=",
       value: user,
     });

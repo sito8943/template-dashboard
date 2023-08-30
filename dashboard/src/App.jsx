@@ -26,7 +26,7 @@ import { useUser } from "./contexts/UserProvider.jsx";
 import { useLanguage } from "./contexts/LanguageProvider";
 
 // utils
-import { logoutUser, userLogged, fromLocal, getUserName } from "./utils/auth";
+import { logoutUser, userLogged, fromLocal } from "./utils/auth";
 
 // services
 import { validateBasicKey } from "./services/auth";
@@ -90,7 +90,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (
+    /* if (
       userState.user &&
       (!userState.socket || (userState.socket && !userState.socket.connected))
     ) {
@@ -111,7 +111,7 @@ function App() {
       return () => {
         newSocket.close();
       };
-    }
+    } */
   }, [userState, setUserState]);
 
   return (

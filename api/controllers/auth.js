@@ -66,6 +66,7 @@ const signOut = async (user, ip) => {
  * @returns user data
  */
 const login = async (user, password, remember, ip) => {
+  console.log(user);
   const { rows } = await select(
     "users",
     ["id", "pw", "user", "photo", "state"],

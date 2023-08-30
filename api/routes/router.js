@@ -19,6 +19,7 @@ class Router {
       user,
       date: new Date().getTime(),
     });
+    console.log("saliio");
     return { status: 500, data: { message: err } };
   }
 
@@ -55,10 +56,11 @@ class Router {
           res.status(200).send({ ...result });
         } catch (err) {
           console.error(err);
-          return await Router.throwError(
+          const error = await Router.throwError(
             user,
             `error saving element of ${collection}, user: ${user}`
           );
+          res.status(error.status).send(error.data);
         }
       });
     }
@@ -69,26 +71,6 @@ class Router {
         console.info(`saving ${collection}`);
         const { user, data, query } = req.body;
         try {
-          if (data.banner && data.banner.length) {
-            try {
-              const encoded = Buffer.from(
-                data.banner.replace(/^data:image\/\w+;base64,/, ""),
-                "base64"
-              );
-              const extension = data.banner.split(";")[0].split("/")[1];
-              fs.writeFileSync(
-                `./public/images/${this.collection}/${
-                  data.id || query.value
-                }-banner.${extension}`,
-                encoded
-              );
-              data.banner = `/images/${this.collection}/${
-                data.id || query.value
-              }-banner.${extension}`;
-            } catch (err) {
-              console.error(err);
-            }
-          }
           if (data.photo && data.photo.length) {
             try {
               const encoded = Buffer.from(
@@ -116,10 +98,11 @@ class Router {
           res.status(200).send({ ...result });
         } catch (err) {
           console.error(err);
-          return await Router.throwError(
+          const error = await Router.throwError(
             user,
             `error updating element of ${collection}, user: ${user} item ${data.id}`
           );
+          res.status(error.status).send(error.data);
         }
       });
     }
@@ -135,10 +118,11 @@ class Router {
           res.status(200).send({ ...result });
         } catch (err) {
           console.error(err);
-          return await Router.throwError(
+          const error = await Router.throwError(
             user,
             `error deleting elements of ${collection}, user: ${user}, items: ${ids.toString()}`
           );
+          res.status(error.status).send(error.data);
         }
       });
     }
@@ -162,10 +146,11 @@ class Router {
           res.status(200).send({ ...result });
         } catch (err) {
           console.error(err);
-          return await Router.throwError(
+          const error = await Router.throwError(
             user,
             `error listing elements of ${collection}, user: ${user}`
           );
+          res.status(error.status).send(error.data);
         }
       });
       this.router.post("/list", middleware, async (req, res) => {
@@ -185,10 +170,11 @@ class Router {
           res.status(200).send({ ...result });
         } catch (err) {
           console.error(err);
-          return await Router.throwError(
+          const error = await Router.throwError(
             user,
             `error listing elements of ${collection}, user: ${user}`
           );
+          res.status(error.status).send(error.data);
         }
       });
     }
