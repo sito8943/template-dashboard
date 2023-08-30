@@ -28,6 +28,7 @@ const verifyBearer = async (auth) => {
   const bytes = CryptoJS.AES.decrypt(credentials, "app.elbule.com");
   var token = bytes.toString(CryptoJS.enc.Utf8);
   const [user, id, ip] = token.split("[!]");
+
   const responseToken = await select("tokens", ["token", "end"], {
     attribute: "idUser",
     operator: "=",
@@ -41,6 +42,7 @@ const verifyBearer = async (auth) => {
       const remoteTokenRAW = CryptoJS.AES.decrypt(data.token, "app.elbule.com");
       const remoteToken = remoteTokenRAW.toString(CryptoJS.enc.Utf8);
       const [remoteUser, remoteId, remoteIp] = remoteToken.split("[!]");
+
       if (remoteUser === user && remoteId === id && remoteIp === ip)
         return { user };
     } else {
@@ -77,6 +79,7 @@ const headers = {
 
 const validator = async (req, res, next) => {
   const ip = req.socket?.remoteAddress;
+
   if (req.headers.authorization) {
     if (req.headers.authorization.indexOf("Bearer ") === 0) {
       const verified = await verifyBearer(req.headers.authorization, ip);

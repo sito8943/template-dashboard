@@ -1,32 +1,25 @@
 import axios from "axios";
-
-import md5 from "md5";
+import { getCookie } from "some-javascript-utils/browser";
 
 // auth
 import { getAuth } from "../auth/auth";
 
 // utils
-import { getUserName } from "../views/Auth";
+import { getUserName } from "../utils/auth";
 
 // config
 import config from "../config";
 
-/**
- * Takes a user object and sends it to the backend to be authenticated
- * @param {string} users
- * @param {string} password
- * @param {string} email
- * @returns The response from the server.
- */
-export const signUp = async (user, email, password) => {
-  const response = await axios.post(
+export const fetchNotifications = async () => {
+  const response = await axios.get(
     // @ts-ignore
-    `${config.apiUrl}users/save`,
-    { user, data: { user, pw: md5(password), email } },
+    `${config.apiUrl}users/notifications?user=${getUserName()}`,
     {
-      headers: getAuth,
+      headers: {
+        ...getAuth,
+        Authorization: `Bearer ${getCookie(config.basicKey)}`,
+      },
     }
   );
-  const data = await response.data;
-  return data;
+  return response;
 };

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,7 +16,11 @@ import { useMode } from "../../contexts/ModeProvider";
 import { useLanguage } from "../../contexts/LanguageProvider";
 
 // components
+import Badge from "../Badge/Badge";
 import LazyImage from "../LazyImage/LazyImage";
+
+// services
+import { fetchNotifications } from "../../services/users";
 
 // utils
 import { utilsToggleTheme } from "../../utils/utils.js";
@@ -44,7 +48,22 @@ function Navbar() {
   }, [setModeState]);
 
   const [notifications, setNotifications] = useState([]);
+
+  const localFetchNotifications = useCallback(async () => {
+    try {
+      const remoteNotifications = await fetchNotifications();
+      const { list } = await remoteNotifications.data;
+      console.log(list);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   const openNotifications = () => {};
+
+  useEffect(() => {
+    if (userState.user) localFetchNotifications();
+  }, [userState.user]);
 
   return (
     <header className="px-2 py-2 flex items-center justify-between">
@@ -55,15 +74,20 @@ function Navbar() {
       <div className="flex gap2 items-center">
         {userState.user ? (
           <Link to="/settings/">
-            <LazyImage className="w-8 h-8 mr-2 object-cover rounded-full" src={getUserPhoto()} alt={getUserName()} />
+            <LazyImage
+              className="w-8 h-8 mr-2 object-cover rounded-full"
+              src={getUserPhoto()}
+              alt={getUserName()}
+            />
           </Link>
         ) : null}
         <button
           name="notifications"
-          className="icon-button"
+          className="icon-button relative"
           onClick={openNotifications}
           aria-label={languageState.texts.ariaLabels.notifications}
         >
+          {notifications.length ? <Badge /> : null}
           <FontAwesomeIcon icon={notifications.length ? faBell : faEmptyBell} />
         </button>
         <button
