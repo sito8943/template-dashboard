@@ -110,7 +110,6 @@ function SignIn() {
         const { data } = response;
         const { expiration, token, state, permissions } = data;
         createCookie(config.basicKey, expiration, token);
-        console.log(config.apiPhoto, data.photo);
         logUser({
           id: data.id,
           user: data.user,

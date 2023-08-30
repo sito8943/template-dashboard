@@ -130,21 +130,23 @@ class Controller {
           operator: "=",
         });
         const resultObj = oldData.rows[0];
-        if (resultObj.photo && resultObj.photo.length) {
-          // deleting old photo
-          fs.rmSync(`./public${resultObj.photo}`);
+        if (resultObj.photo !== data.photo) {
+          if (resultObj.photo && resultObj.photo.length) {
+            // deleting old photo if they are the same
+            fs.rmSync(`./public${resultObj.photo}`);
+          }
+          // writing new photo
+          const encoded = Buffer.from(
+            data.photo.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+          );
+          const extension = data.photo.split(";")[0].split("/")[1];
+          fs.writeFileSync(
+            `./public/images/${this.collection}/${data.name}.${extension}`,
+            encoded
+          );
+          data.photo = `/images/${this.collection}/${data.name}.${extension}`;
         }
-        // writing new photo
-        const encoded = Buffer.from(
-          data.photo.replace(/^data:image\/\w+;base64,/, ""),
-          "base64"
-        );
-        const extension = data.photo.split(";")[0].split("/")[1];
-        fs.writeFileSync(
-          `./public/images/${this.collection}/${data.name}.${extension}`,
-          encoded
-        );
-        data.photo = `/images/${this.collection}/${data.name}.${extension}`;
       } catch (err) {
         console.error(err);
       }

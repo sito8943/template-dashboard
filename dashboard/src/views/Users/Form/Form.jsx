@@ -98,9 +98,12 @@ function Form() {
   const [userType, setUserType] = useState("");
   const [userTypes, setUserTypes] = useState([]);
 
-  const onUserTypesSelect = useCallback((e) => {
-    setUserType(e.target.value);
-  }, []);
+  const onUserTypesSelect = useCallback(
+    (e) => {
+      setUserType(userTypes[e.target.value].id);
+    },
+    [userTypes]
+  );
 
   const { setNotificationState } = useNotification();
 
@@ -171,14 +174,14 @@ function Form() {
         setLoading(false);
         return;
       }
-
+      console.log(userType);
       try {
         const result = await saveModel("users", {
           id: id.length ? id : undefined,
           user,
           email,
           name,
-          pw: md5(password),
+          pw: !id.length ? md5(password) : undefined,
           photo,
           type: userType,
         });
@@ -223,6 +226,7 @@ function Form() {
       password,
       rPassword,
       photo,
+      userType,
     ]
   );
 

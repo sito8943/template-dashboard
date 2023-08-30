@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // images
 import crash from "../../assets/images/crash.webp";
@@ -9,6 +9,10 @@ function LazyImage(props) {
   const [loaded, setLoaded] = useState(false);
 
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setError(false);
+  }, [props.src]);
 
   return (
     <div
