@@ -9,9 +9,6 @@ const {
   VITE_ACCEPT_COOKIE,
   VITE_DECLINE_COOKIE,
   VITE_USER,
-  VITE_USER_ID,
-  VITE_USER_PHOTO,
-  VITE_USER_STATE,
   VITE_VALIDATION_COOKIE,
   VITE_RECOVERING_COOKIE,
 } = import.meta.env;
@@ -27,9 +24,6 @@ const config = {
   accept: VITE_ACCEPT_COOKIE,
   decline: VITE_DECLINE_COOKIE,
   user: VITE_USER,
-  userId: VITE_USER_ID,
-  userPhoto: VITE_USER_PHOTO,
-  userState: VITE_USER_STATE,
   validating: VITE_VALIDATION_COOKIE,
   recovering: VITE_RECOVERING_COOKIE,
 };

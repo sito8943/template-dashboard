@@ -105,13 +105,14 @@ function SignIn() {
         setLoading(true);
         const response = await login(user, password, remember);
         const { data } = response;
-        const { expiration, token, state } = data;
+        const { expiration, token, state, permissions } = data;
         createCookie(config.basicKey, expiration, token);
-        logUser(remember, {
+        logUser({
           id: data.id,
           user: data.user,
           photo: data.photo,
           state: data.state,
+          permissions,
         });
         setUserState({
           type: "logged-in",
@@ -120,6 +121,7 @@ function SignIn() {
             user: data.user,
             photo: data.photo,
             state,
+            permissions,
           },
         });
         navigate("/");

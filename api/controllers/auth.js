@@ -105,7 +105,9 @@ const login = async (user, password, remember, ip) => {
           },
         ]
       );
-      const permissionTypes = permissionTypesResponse.rows;
+      const permissionTypes = permissionTypesResponse.rows.map(
+        (permission) => permission.operation
+      );
       // token
       const expiration = giveToken(remember);
       const token =
