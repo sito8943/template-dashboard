@@ -21,7 +21,7 @@ function LazyImage(props) {
     >
       <img
         onError={(err) => {
-          console.log(err);
+          console.error(err);
           setError(true);
         }}
         onLoad={() => setLoaded(true)}

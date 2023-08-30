@@ -174,7 +174,6 @@ function Form() {
         setLoading(false);
         return;
       }
-      console.log(userType);
       try {
         const result = await saveModel("users", {
           id: id.length ? id : undefined,
