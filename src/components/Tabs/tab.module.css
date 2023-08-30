@@ -1,0 +1,15 @@
+.buttonTab {
+  @apply relative text-white w-[120px] h-[40px] px-2 py-1;
+}
+
+.label {
+  @apply z-10 absolute top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%];
+}
+
+.background {
+  @apply absolute top-0 left-0 bg-dark-background2 w-full h-[90%] transition hover:h-[100%];
+}
+
+.buttonTab:hover .background {
+  @apply h-[0%];
+}

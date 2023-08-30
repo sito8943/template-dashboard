@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+textarea {
+  resize: none;
+}
+
+input[type="file"] {
+  visibility: hidden;
+}
+
+input:focus-visible,
+input {
+  outline: none !important;
+}
+
+.main {
+  height: calc(100vh - 56px);
+  @apply flex items-start justify-start;
+}
+
+th,
+td,
+p,
+h2,
+h3,
+label {
+  @apply dark:text-white text-dark-background2;
+}
+
+h2 {
+  @apply text-4xl font-extrabold;
+}
+
+h3 {
+  @apply text-2xl font-extrabold;
+}
+
+.icon-button {
+  @apply w-10 h-10 text-primary rounded-full flex items-center justify-center text-xl transition hover:bg-pdark-hover;
+}
+
+.primary {
+  @apply border-2 border-primary bg-primary transition hover:bg-pdark text-white font-semibold;
+}
+
+.secondary {
+  @apply border-2 border-primary transition hover:bg-pdark dark:text-white;
+}
+
+.input-control {
+  @apply relative w-full flex flex-col items-start justify-start gap-2;
+}
+
+.input,
+.button {
+  @apply px-5 py-2 rounded-3xl;
+}
+
+.button {
+  @apply cursor-pointer;
+}
+
+.input:disabled {
+  @apply cursor-auto;
+}
+
+.small-button {
+  @apply px-5 py-1 rounded-3xl;
+}
+
+th {
+  @apply text-left px-2 py-1;
+}
+
+td {
+  @apply text-left px-2 py-3;
+}
+
+.navbar {
+  @apply py-2 max-w-[75em] h-[65px] m-[0_auto] flex items-center justify-between;
+}
+
+.padding-container {
+  padding: 0 15rem;
+}
+
+@media (max-width: 1200px) {
+  .navbar,
+  .padding-container {
+    padding: 0 5rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .navbar,
+  .padding-container {
+    padding: 0 2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .navbar,
+  .padding-container {
+    padding: 0 20px;
+  }
+}
+
+.fixed-loading {
+  @apply fixed top-0 left-0 w-full h-screen flex items-center justify-center dark:bg-dark-background2 bg-light-background2 z-30;
+}

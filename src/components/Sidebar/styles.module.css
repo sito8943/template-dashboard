@@ -1,0 +1,22 @@
+.sidebar {
+  @apply w-[350px];
+}
+
+.header {
+  @apply h-[55px] mt-[15px];
+}
+
+@media (max-width: 650px) {
+  .header {
+    @apply h-0 mt-0;
+  }
+
+  .sidebar h2,
+  .sidebar span {
+    display: none;
+  }
+
+  .sidebar {
+    @apply w-[36px];
+  }
+}
