@@ -13,14 +13,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
+import { useUser } from "../../contexts/UserProvider";
 import { useLanguage } from "../../contexts/LanguageProvider";
+
+// utils
+import { getUserPermissions } from "../../utils/auth";
 
 // styles
 import styles from "./styles.module.css";
-import { getUserPermissions } from "../../utils/auth";
 
 function Sidebar() {
   const location = useLocation();
+
+  const { userState } = useUser();
 
   const { languageState } = useLanguage();
 
@@ -43,7 +48,8 @@ function Sidebar() {
     return languageState.texts.sidebar.actions
       .filter((operation) => {
         if (operation.all) return true;
-        return getUserPermissions().indexOf(operation.id) >= 0;
+        if (userState.user)
+          return getUserPermissions().indexOf(operation.id) >= 0;
       })
       .map((action) => (
         <Link
@@ -62,7 +68,7 @@ function Sidebar() {
           <span>{action.label}</span>
         </Link>
       ));
-  }, [languageState, icons, location]);
+  }, [languageState, icons, location, userState]);
 
   return (
     <div className={`${styles.sidebar}`}>
