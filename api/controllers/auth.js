@@ -66,10 +66,9 @@ const signOut = async (user, ip) => {
  * @returns user data
  */
 const login = async (user, password, remember, ip) => {
-  console.log(user);
   const { rows } = await select(
     "users",
-    ["id", "pw", "user", "photo", "state"],
+    ["id", "pw", "user", "photo", "state", "type"],
     [
       { attribute: "user", operator: "=", value: user },
       { attribute: "email", operator: "=", value: user, logic: "OR" },
@@ -88,6 +87,26 @@ const login = async (user, password, remember, ip) => {
       return { status: 403, data: { error: "already logged" } };
     // @ts-ignore
     if (data.pw.toLowerCase() === password.toLowerCase()) {
+      // loading permissions
+      const permissionTypesResponse = await select(
+        ["permissions", "rolespermissions"],
+        ["operation"],
+        [
+          {
+            attribute: "permissions.id",
+            operator: "=",
+            value: "rolespermissions.idPermission",
+          },
+          {
+            attribute: "rolespermissions.idRole",
+            operator: "=",
+            value: data.type,
+            logic: "AND",
+          },
+        ]
+      );
+      const permissionTypes = permissionTypesResponse.rows;
+      // token
       const expiration = giveToken(remember);
       const token =
         /* It's encrypting the token */
@@ -131,6 +150,7 @@ const login = async (user, password, remember, ip) => {
           photo,
           token,
           expiration,
+          permissions: permissionTypes,
         },
       };
     } else return { status: 401, data: { error: "wrong password" } };
