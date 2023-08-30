@@ -6,6 +6,7 @@
         {
           "id": "home",
           "to": "/",
+          "all": true,
           "label": "Inicio"
         },
         {
@@ -16,11 +17,13 @@
         {
           "id": "settings",
           "to": "/settings/",
+          "all": true,
           "label": "Ajustes"
         },
         {
           "id": "logout",
           "to": "/sign-out/",
+          "all": true,
           "label": "Cerrar sesión"
         }
       ]

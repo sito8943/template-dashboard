@@ -17,6 +17,7 @@ import { useLanguage } from "../../contexts/LanguageProvider";
 
 // styles
 import styles from "./styles.module.css";
+import { getUserPermissions } from "../../utils/auth";
 
 function Sidebar() {
   const location = useLocation();
@@ -38,23 +39,29 @@ function Sidebar() {
 
   const printActions = useCallback(() => {
     const parsedLocation = location.pathname.split("/");
-    return languageState.texts.sidebar.actions.map((action) => (
-      <Link
-        to={action.to}
-        key={action.id}
-        className={`${
-          `/${parsedLocation[1]}` === action.to ||
-          `/${parsedLocation[1]}/` === action.to
-            ? "text-white bg-primary"
-            : "dark:text-white hover:text-white hover:bg-primary"
-        }  flex items-center gap-3 justify-start transition py-2 px-2`}
-      >
-        <div className="w-5 h-5 flex items-center justify-center">
-          <FontAwesomeIcon className="text-md" icon={icons[action.id]} />
-        </div>
-        <span>{action.label}</span>
-      </Link>
-    ));
+
+    return languageState.texts.sidebar.actions
+      .filter((operation) => {
+        if (operation.all) return true;
+        return getUserPermissions().indexOf(operation.id) >= 0;
+      })
+      .map((action) => (
+        <Link
+          to={action.to}
+          key={action.id}
+          className={`${
+            `/${parsedLocation[1]}` === action.to ||
+            `/${parsedLocation[1]}/` === action.to
+              ? "text-white bg-primary"
+              : "dark:text-white hover:text-white hover:bg-primary"
+          }  flex items-center gap-3 justify-start transition py-2 px-2`}
+        >
+          <div className="w-5 h-5 flex items-center justify-center">
+            <FontAwesomeIcon className="text-md" icon={icons[action.id]} />
+          </div>
+          <span>{action.label}</span>
+        </Link>
+      ));
   }, [languageState, icons, location]);
 
   return (

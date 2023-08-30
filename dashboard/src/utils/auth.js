@@ -12,6 +12,15 @@ export const fromLocal = () => {
   return data;
 };
 
+/**
+ *
+ * @returns array of permissions
+ */
+export const getUserPermissions = () => {
+  const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
+  return data.permissions;
+};
+
 export const getUserPhoto = () => {
   const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
   return data.photo;
