@@ -63,7 +63,12 @@ function Recovery() {
         helperText={emailHelperText}
       />
       <div className="flex gap-2 justify-end w-full">
-        <button type="submit" className="button primary self-end">
+        <button
+          type="submit"
+          name="send-password-recovery"
+          className="button primary self-end"
+          aria-label={languageState.texts.ariaLabels.recoverySend}
+        >
           {buttons.send}
         </button>
       </div>

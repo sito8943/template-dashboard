@@ -61,7 +61,7 @@ function Sidebar() {
     <div className={`${styles.sidebar}`}>
       <div className={`${styles.header}`}>
         <Link to="/">
-          <h2 className="ml-[8px]">Mypmatch</h2>
+          <h2 className="ml-[8px]">Template Dashboard</h2>
         </Link>
       </div>
       <div className="flex flex-col">{printActions()}</div>

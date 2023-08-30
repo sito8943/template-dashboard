@@ -311,8 +311,10 @@ function Form() {
           leftIcon={
             <button tabIndex={-1} type="button" onClick={toggleShowPassword}>
               <FontAwesomeIcon
-                className="absolute text-white top-[50%] -translate-y-[50%] left-3"
+                name="toggle-see-password"
                 icon={showPassword ? faLockOpen : faLock}
+                aria-label={languageState.texts.ariaLabels.toggleShowPassword}
+                className="absolute text-white top-[50%] -translate-y-[50%] left-3"
               />
             </button>
           }
@@ -331,8 +333,10 @@ function Form() {
           leftIcon={
             <button tabIndex={-1} type="button" onClick={toggleShowRPassword}>
               <FontAwesomeIcon
+                name="toggle-see-password"
+                icon={showPassword ? faLockOpen : faLock}
+                aria-label={languageState.texts.ariaLabels.toggleShowPassword}
                 className="absolute text-white top-[50%] -translate-y-[50%] left-3"
-                icon={showRPassword ? faLockOpen : faLock}
               />
             </button>
           }
@@ -340,7 +344,12 @@ function Form() {
         />
 
         <div className="mt-3">
-          <button type="submit" className="primary button">
+          <button
+            name="save"
+            aria-label={languageState.texts.ariaLabels.save}
+            type="submit"
+            className="primary button"
+          >
             {buttons.save}
           </button>
         </div>

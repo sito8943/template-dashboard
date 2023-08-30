@@ -70,15 +70,21 @@ function Table({
         <td>
           <div className="flex gap-2">
             {!notEditable ? (
-              <Link to={`/${collection}/insert?id=${row.id}`}>
+              <Link
+                name="edit-row"
+                to={`/${collection}/${row.id}`}
+                aria-label={languageState.texts.ariaLabels.editRow}
+              >
                 <FontAwesomeIcon icon={faPencil} />
               </Link>
             ) : null}
             {visitable ? (
               <a
+                name="preview"
                 target="_blank"
                 rel="noreferrer"
                 className="icon-button !text-white"
+                aria-label={languageState.texts.ariaLabels.preview}
                 href={`${config.webUrl}/${collection}/${toSlug(
                   row.title || row.name
                 )}`}
@@ -87,6 +93,8 @@ function Table({
               </a>
             ) : null}
             <button
+              name="delete-row"
+              aria-label={languageState.texts.ariaLabels.deleteRow}
               onClick={() => onDelete(row.id)}
               className="icon-button !text-white"
             >

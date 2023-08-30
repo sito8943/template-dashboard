@@ -3,14 +3,21 @@ import PropTypes from "prop-types";
 // @emotion/css
 import { css } from "@emotion/css";
 
+// contexts
+import { useLanguage } from "../../contexts/LanguageProvider";
+
 // styles
 import styles from "./tab.module.css";
 
 function Tab({ onClick, value, active }) {
+  const { languageState } = useLanguage();
+
   return (
     <button
-      onClick={() => onClick(value.label)}
       type="button"
+      name="table-tab"
+      aria-label={`${languageState.texts.ariaLabels.tableTab} ${value.label}`}
+      onClick={() => onClick(value.label)}
       className={`${styles.buttonTab} ${css({
         background: value.color,
       })}`}
@@ -20,7 +27,7 @@ function Tab({ onClick, value, active }) {
         className={`${styles.background} ${
           active === value.label ? "!h-[0%]" : ""
         }`}
-      ></div>
+      />
     </button>
   );
 }

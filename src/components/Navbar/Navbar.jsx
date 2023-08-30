@@ -38,14 +38,24 @@ function Navbar() {
   return (
     <header className="px-2 py-2 flex items-center justify-between">
       <Link className={`${styles.navbarTitle}`} to="/">
-        <h2 className="mt-[5px]">Mypmatch</h2>
+        <h2 className="mt-[5px]">Template Dashboard</h2>
       </Link>
       <nav>{printLinks()}</nav>
       <div className="flex gap2 items-center">
-        <button onClick={toggleTheme} className="icon-button">
+        <button
+          name="toggle-theme"
+          onClick={toggleTheme}
+          className="icon-button"
+          aria-label={languageState.texts.ariaLabels.toggleTheme}
+        >
           <FontAwesomeIcon icon={!modeState ? faSun : faMoon} />
         </button>
-        <Link to="/sign-out" className="icon-button">
+        <Link
+          to="/sign-out"
+          name="sign-out"
+          className="icon-button"
+          aria-label={languageState.texts.ariaLabels.signOut}
+        >
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
         </Link>
       </div>

@@ -121,8 +121,10 @@ function Security() {
         leftIcon={
           <button tabIndex={-1} type="button" onClick={toggleShowPassword}>
             <FontAwesomeIcon
-              className="absolute text-white top-[50%] -translate-y-[50%] left-3"
+              name="toggle-see-password"
               icon={showPassword ? faLockOpen : faLock}
+              aria-label={languageState.texts.toggleShowPassword}
+              className="absolute text-white top-[50%] -translate-y-[50%] left-3"
             />
           </button>
         }
@@ -141,14 +143,21 @@ function Security() {
         leftIcon={
           <button tabIndex={-1} type="button" onClick={toggleShowRPassword}>
             <FontAwesomeIcon
-              className="absolute text-white top-[50%] -translate-y-[50%] left-3"
+              name="toggle-see-password"
               icon={showRPassword ? faLockOpen : faLock}
+              aria-label={languageState.texts.ariaLabels.toggleShowPassword}
+              className="absolute text-white top-[50%] -translate-y-[50%] left-3"
             />
           </button>
         }
         helperText={rPasswordHelperText}
       />
-      <button className="primary button mt-2" type="submit">
+      <button
+        type="submit"
+        name="save-new-password"
+        className="primary button mt-2"
+        aria-label={languageState.texts.ariaLabels.saveNewPassword}
+      >
         {buttons.save}
       </button>
     </form>

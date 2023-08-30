@@ -182,25 +182,33 @@ function SignIn() {
             type: !showPassword ? "password" : "string",
           }}
           leftIcon={
-            <button tabIndex={-1} type="button" onClick={toggleShowPassword}>
+            <button
+              tabIndex={-1}
+              type="button"
+              name="toggle-see-password"
+              onClick={toggleShowPassword}
+              aria-label={languageState.texts.ariaLabels.toggleShowPassword}
+            >
               <FontAwesomeIcon
-                className="absolute text-white top-[50%] -translate-y-[50%] left-3"
                 icon={showPassword ? faLockOpen : faLock}
+                className="absolute text-white top-[50%] -translate-y-[50%] left-3"
               />
             </button>
           }
           helperText={passwordHelperText}
         />
         <Switch
-          onChange={handleRemember}
           id="remember"
           value={remember}
+          onChange={handleRemember}
           label={auth.labels.remember}
         />
         <p>
           {auth.recovery.body}
           <Link
+            name="go-recovery"
             to="/auth/recovery"
+            aria-label={languageState.texts.ariaLabels.goRecovery}
             className="ml-1 underline dark:text-white text-dark-background2"
           >
             {auth.recovery.link}
@@ -208,11 +216,10 @@ function SignIn() {
           .
         </p>
         <div className="w-full flex gap-5 justify-end items-center">
-          <Link to="/auth/sign-up" className="button secondary" type="button">
-            {auth.signUp.submit}
-          </Link>
           <button
+            name="login"
             type="submit"
+            aria-label={languageState.texts.ariaLabels.login}
             className="button primary self-end hover:bg-pdark hover:border-pdark cursor-default"
           >
             {auth.signIn.submit}

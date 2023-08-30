@@ -84,6 +84,8 @@ function Printer({ text, contentHTML }) {
           <Link to="/">
             <button
               id="go-back"
+              name="home-link"
+              aria-label={languageState.texts.ariaLabels.homeLink}
               className="fixed top-5 left-1 dark:text-white text-dark-background2 secondary-hover w-icon h-icon rounded-circle transition"
             >
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -91,7 +93,9 @@ function Printer({ text, contentHTML }) {
           </Link>
           <Tippy content={tooltips.changeMode}>
             <button
+              name="toggle-theme"
               onClick={toggleTheme}
+              aria-label={languageState.texts.ariaLabels.toggleTheme}
               className="fixed top-5 right-1 dark:text-white text-dark-background2 secondary-hover w-icon h-icon rounded-circle transition"
             >
               <FontAwesomeIcon icon={!modeState ? faMoon : faSun} />

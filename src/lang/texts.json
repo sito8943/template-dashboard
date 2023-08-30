@@ -160,7 +160,21 @@
     },
     "ariaLabels": {
       "toTop": "Ir al tope",
-      "closeNotification": "Cerrar notificación"
+      "tableTab": "Acción",
+      "login": "Iniciar sesión",
+      "editRow": "Editar Fila",
+      "preview": "Previsualizar",
+      "homeLink": "Ir al inicio",
+      "deleteRow": "Eliminar fila",
+      "save": "Guardar información",
+      "toggleTheme": "Alternar tema",
+      "goRecovery": "Recuperar contraseña",
+      "signOut": "Cerrar sesión actual",
+      "saveAttribute": "Guardar atribute",
+      "closeNotification": "Cerrar notificación",
+      "saveNewPassword": "Guardar nueva contraseña",
+      "toggleShowPassword": "Alternar ver contraseña",
+      "recoverySend": "Enviar solicitud de recuperacion de contraseña"
     },
     "messages": {
       "saved": "Guardado correctamente"
@@ -204,22 +218,6 @@
         "password": "Contraseña",
         "remember": "Mantener sesión abierta",
         "rPassword": "Repetir contraseña"
-      },
-
-      "signUp": {
-        "title": "Registrarse",
-        "submit": "Crear cuenta",
-        "already": "¿Ya tienes cuenta?",
-        "nation": {
-          "title": "Selecciona tu nación"
-        },
-
-        "terms": {
-          "body": "Al registrarte, acepta todos los",
-          "link": "Términos y Condiciones de uso de Mypmatch"
-        },
-
-        "link": "Ingresar"
       },
       "signIn": {
         "submit": "Entrar",
@@ -434,21 +432,6 @@
         "rPassword": "Repetir contraseña"
       },
 
-      "signUp": {
-        "title": "Registrarse",
-        "submit": "Crear cuenta",
-        "already": "¿Ya tienes cuenta?",
-        "nation": {
-          "title": "Selecciona tu nación"
-        },
-
-        "terms": {
-          "body": "Al registrarte, acepta todos los",
-          "link": "Términos y Condiciones de uso de Mypmatch"
-        },
-
-        "link": "Ingresar"
-      },
       "signIn": {
         "submit": "Entrar",
         "title": "Ingresar"

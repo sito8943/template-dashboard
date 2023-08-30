@@ -127,7 +127,12 @@ function Attribute({ attribute }) {
         }}
         helperText={attributeHelperText}
       />
-      <button className="primary button mt-2" type="submit">
+      <button
+        type="submit"
+        name={`save-${attribute}`}
+        className="primary button mt-2"
+        aria-label={`${languageState.texts.ariaLabels.saveAttribute} ${attribute}`}
+      >
         {buttons.save}
       </button>
     </form>
