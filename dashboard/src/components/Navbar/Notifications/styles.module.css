@@ -1,0 +1,14 @@
+.main {
+  width: 300px;
+  height: 400px;
+  right: 10px;
+  top: 55px;
+  transition: opacity 300ms ease;
+  @apply absolute shadow-md shadow-[black];
+}
+
+@media (max-width: 310px) {
+  .main {
+    @apply w-full top-0 right-0 h-screen;
+  }
+}

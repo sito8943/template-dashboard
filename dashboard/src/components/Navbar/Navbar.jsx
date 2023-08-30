@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
+import loadable from "@loadable/component";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,6 +29,9 @@ import { getUserPhoto, getUserName } from "../../utils/auth";
 
 // styles
 import styles from "./styles.module.css";
+
+// lazy
+const Notifications = loadable(() => import("./Notifications/Notifications"));
 
 function Navbar() {
   const { userState } = useUser();
@@ -59,7 +63,18 @@ function Navbar() {
     }
   }, []);
 
-  const openNotifications = () => {};
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const openNotifications = () => setShowNotifications(true);
+  const hideNotifications = useCallback(() => setShowNotifications(false), []);
+
+  useEffect(() => {
+    if (showNotifications)
+      setTimeout(() => {
+        window.addEventListener("click", hideNotifications);
+      }, 200);
+    else window.removeEventListener("click", hideNotifications);
+  }, [showNotifications]);
 
   useEffect(() => {
     if (userState.user) localFetchNotifications();
@@ -90,6 +105,11 @@ function Navbar() {
           {notifications.length ? <Badge /> : null}
           <FontAwesomeIcon icon={notifications.length ? faBell : faEmptyBell} />
         </button>
+        <Notifications
+          show={showNotifications}
+          notifications={notifications}
+          onClose={hideNotifications}
+        />
         <button
           name="toggle-theme"
           onClick={toggleTheme}
