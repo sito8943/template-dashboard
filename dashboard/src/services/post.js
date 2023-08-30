@@ -63,7 +63,7 @@ export const deleteModel = async (collection, id) => {
   const response = await axios.post(
     `${config.apiUrl}${collection}/delete`,
     {
-      user: getUserId(),
+      user: getUserName,
       ids: [id],
     },
     {
