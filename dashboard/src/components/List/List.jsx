@@ -46,7 +46,7 @@ function List({ collection, additionalQueries, visitable, notEditable }) {
 
   useEffect(() => {
     if (!userState.user) navigate("/auth/");
-  });
+  }, [useState]);
 
   const listReducer = (old, action) => {
     const { type } = action;
