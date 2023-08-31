@@ -2,6 +2,8 @@ var CryptoJS = require("crypto-js");
 
 const packageJson = require("../package.json");
 
+const config = require("../config");
+
 const keys = [];
 const connections = {};
 
@@ -25,7 +27,7 @@ const { select, deleteDocuments } = require("sito-node-mysql");
 
 const verifyBearer = async (auth) => {
   const credentials = auth.split(" ")[1];
-  const bytes = CryptoJS.AES.decrypt(credentials, "app.elbule.com");
+  const bytes = CryptoJS.AES.decrypt(credentials, config.crypto);
   var token = bytes.toString(CryptoJS.enc.Utf8);
   const [user, id, ip] = token.split("[!]");
 
@@ -39,7 +41,7 @@ const verifyBearer = async (auth) => {
     const [data] = rows;
     const { end } = data;
     if (new Date().getTime() < Number(end)) {
-      const remoteTokenRAW = CryptoJS.AES.decrypt(data.token, "app.elbule.com");
+      const remoteTokenRAW = CryptoJS.AES.decrypt(data.token, config.crypto);
       const remoteToken = remoteTokenRAW.toString(CryptoJS.enc.Utf8);
       const [remoteUser, remoteId, remoteIp] = remoteToken.split("[!]");
 

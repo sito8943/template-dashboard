@@ -2,7 +2,10 @@
   "es": {
     "navbarTitle": "Template Dashboard",
     "analytics": {
-      "title": "Métricas"
+      "title": "Métricas",
+      "actions": {
+        "fullReport": "Reporte completo"
+      }
     },
     "sidebar": {
       "actions": [

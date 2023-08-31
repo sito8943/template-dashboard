@@ -5,6 +5,7 @@ const path = require("path");
 const authRouter = require("./routes/auth");
 const usersRouter = require("./routes/users");
 const userTypesRouter = require("./routes/userTypes");
+const analytics = require("./routes/analytics");
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use("/api/users", usersRouter);
 app.use("/api-client/users", usersRouter);
 app.use("/api/userTypes", userTypesRouter);
 app.use("/api/user-types", userTypesRouter);
+app.use("/api/analytics", analytics);
 
 // errors logs
 app.post("/error/logs", async (req, res) => {

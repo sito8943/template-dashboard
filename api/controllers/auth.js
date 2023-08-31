@@ -3,6 +3,8 @@ var CryptoJS = require("crypto-js");
 
 const { select, update, insert, deleteDocuments } = require("sito-node-mysql");
 
+const config = require("../config");
+
 /**
  *
  * @param {boolean} remember
@@ -114,7 +116,7 @@ const login = async (user, password, remember, ip) => {
         /* It's encrypting the token */
         CryptoJS.AES.encrypt(
           `${user}[!]${data.id}[!]${ip}`,
-          "app.elbule.com"
+          config.crypto
         ).toString();
 
       await update(

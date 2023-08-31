@@ -11,6 +11,8 @@ const {
   VITE_USER,
   VITE_VALIDATION_COOKIE,
   VITE_RECOVERING_COOKIE,
+  // COMMUNICATION
+  VITE_CRYPTO,
 } = import.meta.env;
 
 const config = {
@@ -26,6 +28,8 @@ const config = {
   user: VITE_USER,
   validating: VITE_VALIDATION_COOKIE,
   recovering: VITE_RECOVERING_COOKIE,
+  // COMMUNICATION
+  crypto: VITE_CRYPTO,
 };
 
 export default config;

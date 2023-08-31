@@ -1,11 +1,20 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLanguage } from "../../contexts/LanguageProvider";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFile } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
 import { useUser } from "../../contexts/UserProvider";
+import { useLanguage } from "../../contexts/LanguageProvider";
+import { useNotification } from "../../contexts/NotificationProvider";
+
+// services
+import { fetchEvents, fetchTriggers } from "../../services/analytics";
 
 // components
+import Loading from "../../components/Loading/Loading";
+import LineChart from "../../components/Charts/LineChart";
 
 function Home() {
   const navigate = useNavigate();
@@ -13,248 +22,89 @@ function Home() {
   const { userState } = useUser();
   const { languageState } = useLanguage();
 
+  const { setNotificationState } = useNotification();
+
+  const [loading, setLoading] = useState(true);
+
+  const showNotification = useCallback(
+    (ntype, message) =>
+      setNotificationState({
+        type: "set",
+        ntype,
+        message,
+      }),
+    [setNotificationState]
+  );
+
+  const [eventList, setEventList] = useState([]);
+  const [year, setYear] = useState(0);
+  const [month, setMonth] = useState(0);
+  const [day, setDay] = useState(0);
+  const [date, setDate] = useState(new Date().getTime());
+
+  const localFetchTriggers = useCallback(
+    async (list) => {
+      try {
+        const response = await fetchTriggers(year, month, day, date, list);
+      } catch (err) {
+        console.error(err);
+        if (String(err) === "AxiosError: Network Error")
+          showNotification("error", errors.notConnected);
+        else showNotification("error", String(err));
+      }
+      setLoading(false);
+    },
+    [year, month, day, date]
+  );
+
+  const localFetchEvents = async () => {
+    setLoading(true);
+    try {
+      const response = await fetchEvents();
+      const { list } = await response.json();
+      setEventList(list);
+      await localFetchTriggers(list.map((event) => event.id));
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", errors.notConnected);
+      else showNotification("error", String(err));
+    }
+  };
+
   useEffect(() => {
     if (!userState.user) navigate("/auth/");
+    else localFetchEvents();
   }, [userState]);
 
-  useEffect(() => {
-    // ApexCharts options and config
-    let options = {
-      chart: {
-        height: "100%",
-        maxWidth: "100%",
-        type: "line",
-        fontFamily: "Inter, sans-serif",
-        dropShadow: {
-          enabled: false,
-        },
-        toolbar: {
-          show: false,
-        },
-      },
-      tooltip: {
-        enabled: true,
-        x: {
-          show: false,
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        width: 6,
-        curve: "smooth",
-      },
-      grid: {
-        show: true,
-        strokeDashArray: 4,
-        padding: {
-          left: 2,
-          right: 2,
-          top: -26,
-        },
-      },
-      series: [
-        {
-          name: "Clicks",
-          data: [6500, 6418, 6456, 6526, 6356, 6456],
-          color: "#1A56DB",
-        },
-        {
-          name: "CPC",
-          data: [6456, 6356, 6526, 6332, 6418, 6500],
-          color: "#7E3AF2",
-        },
-      ],
-      legend: {
-        show: false,
-      },
+  const prepareColor = (color) => `text-[${color}]`;
 
-      xaxis: {
-        categories: [
-          "01 Feb",
-          "02 Feb",
-          "03 Feb",
-          "04 Feb",
-          "05 Feb",
-          "06 Feb",
-          "07 Feb",
-        ],
-        labels: {
-          show: true,
-          style: {
-            fontFamily: "Inter, sans-serif",
-            cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400",
-          },
-        },
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-      },
-      yaxis: {
-        show: false,
-      },
-    };
-
-    if (
-      document.getElementById("line-chart") &&
-      typeof ApexCharts !== "undefined"
-    ) {
-      const chart = new ApexCharts(
-        document.getElementById("line-chart"),
-        options
-      );
-      chart.render();
-    }
-  }, []);
+  const printEvents = useMemo(() => {
+    return eventList.map((event) => (
+      <div>
+        <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
+          {event.name}{" "}
+          <span
+            className={`${prepareColor(event.color)} ml-1 -mt-[5px] text-4xl`}
+          >
+            •
+          </span>
+        </h5>
+        <p className="text-gray-900 dark:text-white text-2xl leading-none font-bold">
+          {event.count}
+        </p>
+      </div>
+    ));
+  }, [eventList]);
 
   return (
-    <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-wrap gap-5">
+    <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-col flex-wrap gap-5">
       <h2>{languageState.texts.analytics.title}</h2>
-
-      <div className="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+      {loading ? <Loading /> : null}
+      <div className="w-full bg-light-background2 rounded-lg shadow dark:bg-dark-background2 p-4 md:p-6">
         <div className="flex justify-between mb-5">
-          <div className="grid gap-4 grid-cols-2">
-            <div>
-              <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
-                Clicks
-                <svg
-                  data-popover-target="clicks-info"
-                  data-popover-placement="bottom"
-                  className="w-3 h-3 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ml-1"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div
-                  data-popover
-                  id="clicks-info"
-                  role="tooltip"
-                  className="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400"
-                >
-                  <div className="p-3 space-y-2">
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Clicks growth - Incremental
-                    </h3>
-                    <p>
-                      Report helps navigate cumulative growth of community
-                      activities. Ideally, the chart should have a growing
-                      trend, as stagnating chart signifies a significant
-                      decrease of community activity.
-                    </p>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Calculation
-                    </h3>
-                    <p>
-                      For each date bucket, the all-time volume of activities is
-                      calculated. This means that activities in period n contain
-                      all activities up to period n, plus the activities
-                      generated by your community in period.
-                    </p>
-                    <a
-                      href="#"
-                      className="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline"
-                    >
-                      Read more{" "}
-                      <svg
-                        className="w-2 h-2 ml-1.5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 6 10"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m1 9 4-4-4-4"
-                        />
-                      </svg>
-                    </a>
-                  </div>
-                  <div data-popper-arrow></div>
-                </div>
-              </h5>
-              <p className="text-gray-900 dark:text-white text-2xl leading-none font-bold">
-                42,3k
-              </p>
-            </div>
-            <div>
-              <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
-                CPC
-                <svg
-                  data-popover-target="cpc-info"
-                  data-popover-placement="bottom"
-                  className="w-3 h-3 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ml-1"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div
-                  data-popover
-                  id="cpc-info"
-                  role="tooltip"
-                  className="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400"
-                >
-                  <div className="p-3 space-y-2">
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      CPC growth - Incremental
-                    </h3>
-                    <p>
-                      Report helps navigate cumulative growth of community
-                      activities. Ideally, the chart should have a growing
-                      trend, as stagnating chart signifies a significant
-                      decrease of community activity.
-                    </p>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Calculation
-                    </h3>
-                    <p>
-                      For each date bucket, the all-time volume of activities is
-                      calculated. This means that activities in period n contain
-                      all activities up to period n, plus the activities
-                      generated by your community in period.
-                    </p>
-                    <a
-                      href="#"
-                      className="flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700 hover:underline"
-                    >
-                      Read more{" "}
-                      <svg
-                        className="w-2 h-2 ml-1.5"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 6 10"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m1 9 4-4-4-4"
-                        />
-                      </svg>
-                    </a>
-                  </div>
-                  <div data-popper-arrow></div>
-                </div>
-              </h5>
-              <p className="text-gray-900 dark:text-white text-2xl leading-none font-bold">
-                $5.40
-              </p>
-            </div>
-          </div>
+          <div className="grid gap-4 grid-cols-2">{printEvents}</div>
+
           <div>
             <button
               id="dropdownDefaultButton"
@@ -332,25 +182,13 @@ function Home() {
             </div>
           </div>
         </div>
-        <div id="line-chart"></div>
+        <LineChart />
         <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
           <div className="pt-5">
-            <a
-              href="#"
-              className="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              <svg
-                className="w-3.5 h-3.5 text-white mr-2"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 16 20"
-              >
-                <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Zm-3 15H4.828a1 1 0 0 1 0-2h6.238a1 1 0 0 1 0 2Zm0-4H4.828a1 1 0 0 1 0-2h6.238a1 1 0 1 1 0 2Z" />
-                <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-              </svg>
-              View full report
-            </a>
+            <Link to="/" className="button primary">
+              <FontAwesomeIcon icon={faFile} className="mr-2" />
+              {languageState.texts.analytics.actions.fullReport}
+            </Link>
           </div>
         </div>
       </div>
