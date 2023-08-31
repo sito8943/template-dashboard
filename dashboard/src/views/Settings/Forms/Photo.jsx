@@ -151,7 +151,7 @@ function Photo({ model }) {
   );
 
   return (
-    <div className="relative half-behavior">
+    <section className="relative half-behavior">
       {loading ? (
         <Loading className="w-[250px] h-[250px] absolute top-0 left-0 dark:bg-dark-background bg-light-background z-20" />
       ) : null}
@@ -164,7 +164,7 @@ function Photo({ model }) {
         value={photos.photo}
         onChange={onChangePhoto}
       />
-    </div>
+    </section>
   );
 }
 

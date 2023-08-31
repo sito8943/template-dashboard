@@ -16,7 +16,7 @@ function Home() {
   });
 
   return (
-    <div className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-wrap gap-5"></div>
+    <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-wrap gap-5"></main>
   );
 }
 

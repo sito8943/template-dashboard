@@ -15,11 +15,16 @@ function NotFound() {
   }, [languageState]);
 
   return (
-    <div className="w-full h-screen flex items-center justify-center flex-col gap-5">
-      <FontAwesomeIcon icon={faSadTear} className="dark:text-white text-7xl appear" />
+    <main className="w-full h-screen flex items-center justify-center flex-col gap-5">
+      <FontAwesomeIcon
+        icon={faSadTear}
+        className="dark:text-white text-7xl appear"
+      />
       <h2 className="text-center appear">404 - NOT FOUND</h2>
-      <Link to="/" className="primary button appear">{buttons.goHome}</Link>
-    </div>
+      <Link to="/" className="primary button appear">
+        {buttons.goHome}
+      </Link>
+    </main>
   );
 }
 

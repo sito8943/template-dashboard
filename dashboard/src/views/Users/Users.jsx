@@ -21,7 +21,7 @@ function Users() {
   }, [languageState]);
 
   return (
-    <div className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto">
+    <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto">
       <h2>{users.title}</h2>
       <ModelNavigator collection="users" />
       {location.pathname === "/users/list" ||
@@ -30,7 +30,7 @@ function Users() {
       ) : (
         <Form />
       )}
-    </div>
+    </main>
   );
 }
 

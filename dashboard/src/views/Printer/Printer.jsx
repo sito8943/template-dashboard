@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Fragment } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
@@ -76,11 +76,11 @@ function Printer({ text, contentHTML }) {
   }, [text]);
 
   return (
-    <div className="printer flex flex-col gap-5">
+    <main className="printer flex flex-col gap-5">
       {loading ? (
         <Loading className="fixed top-0 left-0 h-full w-full" />
       ) : (
-        <>
+        <Fragment>
           <Link to="/">
             <button
               id="go-back"
@@ -101,7 +101,7 @@ function Printer({ text, contentHTML }) {
               <FontAwesomeIcon icon={!modeState ? faMoon : faSun} />
             </button>
           </Tippy>
-        </>
+        </Fragment>
       )}
       {content || contentHTML ? (
         <div>
@@ -111,7 +111,7 @@ function Printer({ text, contentHTML }) {
           {parse(content || contentHTML)}
         </div>
       ) : null}
-    </div>
+    </main>
   );
 }
 
