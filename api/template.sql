@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 30, 2023 at 09:28 PM
+-- Generation Time: Aug 31, 2023 at 02:24 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -20,6 +20,44 @@ SET time_zone = "+00:00";
 --
 -- Database: `template`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `analytics`
+--
+
+CREATE TABLE `analytics` (
+  `id` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `slugName` text NOT NULL,
+  `date` bigint(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `analytics`
+--
+
+INSERT INTO `analytics` (`id`, `name`, `slugName`, `date`) VALUES
+('6df77039-4794-11ee-9725-6c02e0b9ae9e', 'Visita', 'visita', 1693441124136),
+('6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'Rebote', 'rebote', 1693441124136);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `basictrigger`
+--
+
+CREATE TABLE `basictrigger` (
+  `id` varchar(36) NOT NULL,
+  `idEvent` varchar(36) NOT NULL,
+  `language` text NOT NULL,
+  `country` text NOT NULL,
+  `url` text NOT NULL,
+  `referrer` text NOT NULL,
+  `device` text NOT NULL,
+  `date` bigint(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -224,6 +262,19 @@ INSERT INTO `usertypes` (`id`, `name`, `date`, `slugName`) VALUES
 --
 
 --
+-- Indexes for table `analytics`
+--
+ALTER TABLE `analytics`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `basictrigger`
+--
+ALTER TABLE `basictrigger`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idEventBasicTriggered` (`idEvent`);
+
+--
 -- Indexes for table `errors`
 --
 ALTER TABLE `errors`
@@ -287,6 +338,12 @@ ALTER TABLE `usertypes`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `basictrigger`
+--
+ALTER TABLE `basictrigger`
+  ADD CONSTRAINT `idEventBasicTriggered` FOREIGN KEY (`idEvent`) REFERENCES `analytics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `logs`

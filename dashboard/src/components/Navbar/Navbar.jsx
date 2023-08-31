@@ -87,7 +87,6 @@ function Navbar() {
       </Link>
       <nav>{printLinks()}</nav>
       <div className="flex gap2 items-center">
-        {console.log(getUserPhoto())}
         {userState.user ? (
           <Link to="/settings/">
             <LazyImage

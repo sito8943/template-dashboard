@@ -22,7 +22,7 @@ function Auth() {
   }, [toggleModeState]);
 
   return (
-    <section className="min-h-screen dark:bg-dark-background2 bg-light-background2 flex flex-col items-center justify-between">
+    <div className="min-h-screen dark:bg-dark-background2 bg-light-background2 flex flex-col items-center justify-between">
       <header className="navbar w-full h-20 flex items-center justify-between">
         <Link
           to="/"
@@ -41,14 +41,15 @@ function Auth() {
           <FontAwesomeIcon icon={!modeState ? faSun : faMoon} />
         </button>
       </header>
-
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
       <footer className="flex items-center justify-center w-full">
         <span className="dark:text-white">
           Template Dashboard {new Date().getFullYear()} &#169;
         </span>
       </footer>
-    </section>
+    </div>
   );
 }
 

@@ -19,7 +19,7 @@ function View() {
   }, []);
 
   return (
-    <section
+    <div
       className={`entrance ${entered ? "overflow-auto" : "overflow-hidden"}`}
     >
       <Navbar />
@@ -28,7 +28,7 @@ function View() {
         <Outlet />
       </div>
       <Footer />
-    </section>
+    </div>
   );
 }
 

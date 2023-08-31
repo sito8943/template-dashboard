@@ -71,6 +71,14 @@ function Recovery() {
         >
           {buttons.send}
         </button>
+        <Link
+          name="login"
+          to="/auth/"
+          className="button secondary self-end hover:bg-pdark hover:border-pdark cursor-default"
+          aria-label={languageState.texts.ariaLabels.login}
+        >
+          {languageState.texts.buttons.login}
+        </Link>
       </div>
     </form>
   );

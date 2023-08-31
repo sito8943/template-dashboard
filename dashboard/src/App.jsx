@@ -115,7 +115,7 @@ function App() {
   }, [userState.user, setUserState]);
 
   return (
-    <main className="w-full min-h-screen dark:bg-dark-background2 bg-light-background2 transition">
+    <div className="w-full min-h-screen dark:bg-dark-background2 bg-light-background2 transition">
       <Notification />
       <BrowserRouter>
         <Routes>
@@ -132,7 +132,7 @@ function App() {
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </main>
+    </div>
   );
 }
 

@@ -71,9 +71,9 @@ function Sidebar() {
   }, [languageState, icons, location, userState]);
 
   return (
-    <div className={`${styles.sidebar}`}>
+    <aside className={`${styles.sidebar}`}>
       <div className="flex flex-col">{printActions()}</div>
-    </div>
+    </aside>
   );
 }
 
