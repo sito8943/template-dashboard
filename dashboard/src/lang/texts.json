@@ -1,6 +1,9 @@
 {
   "es": {
     "navbarTitle": "Template Dashboard",
+    "analytics": {
+      "title": "Métricas"
+    },
     "sidebar": {
       "actions": [
         {
