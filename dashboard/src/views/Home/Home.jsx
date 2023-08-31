@@ -81,7 +81,7 @@ function Home() {
 
   const printEvents = useMemo(() => {
     return eventList.map((event) => (
-      <div>
+      <div key={event.id}>
         <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
           {event.name}{" "}
           <span

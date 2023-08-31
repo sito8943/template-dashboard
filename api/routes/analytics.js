@@ -42,20 +42,28 @@ router.get("/fetch", [validator], async (req, res) => {
       "basictrigger",
       [],
       [
-        { attribute: "date", operator: "<=", value: Number(date) },
+        {
+          attribute: "date",
+          operator: "<=",
+          value: Number(date),
+        },
         ...events.map((event, i) => {
-          if (i > 0)
-            return {
-              attribute: "idEvent",
-              operator: "=",
-              value: event,
-              logic: "OR",
-            };
-          return {
+          const toReturn = {
             attribute: "idEvent",
             operator: "=",
             value: event,
+          };
+          if (i > 0 && i < events.length - 1)
+            return {
+              ...toReturn,
+              logic: "OR",
+            };
+          if (i === events.length - 1)
+            return { ...toReturn, logic: "OR", parenthesis: ")" };
+          return {
+            ...toReturn,
             logic: "AND",
+            parenthesis: "(",
           };
         }),
       ]

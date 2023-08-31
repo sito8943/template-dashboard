@@ -747,10 +747,10 @@ simple-update-notifier@^1.0.7:
   dependencies:
     semver "~7.0.0"
 
-sito-node-mysql@^1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/sito-node-mysql/-/sito-node-mysql-1.10.1.tgz#e6fe0e26a8acb9ca596b1afaa361ab245681ee65"
-  integrity sha512-hg+xR5IOjOq82H8uannxuhHktblAHh1G8MEzoRtcKhZ3G5AqqGwFKKlTf5UCkCxtD3oJJiI58rOMdm5R6+7dcw==
+sito-node-mysql@^1.10.8:
+  version "1.10.8"
+  resolved "https://registry.yarnpkg.com/sito-node-mysql/-/sito-node-mysql-1.10.8.tgz#837360c6290df2c0ed6d633c7d919aa59e1bdf63"
+  integrity sha512-lu+x6wXYetyGOKOg1aP5XRWgfij8wIGO8weEWXB4h8+H47x13P44Sabl0bJ2e+kPDHzlXAzznXJx62Mu7W37cw==
   dependencies:
     mysql2 "^3.3.4"
     v4 "^0.0.1"
