@@ -57,7 +57,6 @@ function Navbar() {
     try {
       const remoteNotifications = await fetchNotifications();
       const { list } = await remoteNotifications.data;
-      console.log(list);
     } catch (err) {
       console.error(err);
     }

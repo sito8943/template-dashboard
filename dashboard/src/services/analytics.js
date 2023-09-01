@@ -9,6 +9,28 @@ import { encrypt } from "../utils/crypto";
 // config
 import config from "../config";
 
+/**
+ *
+ * @param {number} year
+ * @param {number} month
+ * @param {string} attribute
+ * @returns
+ */
+export async function fetchAttribute(year, month, attribute) {
+  const response = await fetch(
+    `${config.apiUrl}analytics/attribute?year=${year}&month=${month}&attribute=${attribute}`,
+    {
+      method: "GET",
+      headers: {
+        ...getAuth,
+        Authorization: `Bearer ${getCookie(config.basicKey)}`,
+      },
+    }
+  );
+
+  return response;
+}
+
 export async function fetchEvents() {
   const response = await fetch(`${config.apiUrl}analytics/list`, {
     method: "GET",
@@ -29,12 +51,12 @@ export async function fetchEvents() {
  * @param {string[]} events
  * @returns
  */
-export async function fetchTriggers(year, month, day, date, events) {
+export async function fetchTriggers(year, month, events) {
   const encrypted = encrypt({ events }, config.crypto);
   const response = await fetch(
     `${config.apiUrl}analytics/fetch?params=${encodeURIComponent(
       encrypted
-    )}&year=${year}&month=${month}&day=${day}&date=${date}`,
+    )}&year=${year}&month=${month}`,
     {
       method: "GET",
       headers: {

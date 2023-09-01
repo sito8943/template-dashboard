@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.red {
+  @apply text-[red];
+}
+
+.green {
+  @apply text-[green];
+}
+
 textarea {
   resize: none;
 }

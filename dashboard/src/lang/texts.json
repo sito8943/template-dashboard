@@ -2,7 +2,34 @@
   "es": {
     "navbarTitle": "Template Dashboard",
     "analytics": {
+      "to": "a",
+      "months": [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ],
+      "charts": {
+        "bars": "Las gráficas de barras comparan diferentes categorías de datos, mostrando tendencias o cambios a lo largo del tiempo. ",
+        "line": "El gráfico de líneas, a través de puntos de datos conectados por líneas rectas puede mostrar la información que necesites evaluar. ",
+        "pie": "Esta gráfica se representa a través de un círculo dividido en secciones que representan cada porción del conjunto. "
+      },
       "title": "Métricas",
+      "attributes": {
+        "country": "Países",
+        "language": "Lenguajes",
+        "url": "URLs",
+        "referrer": "Referidos",
+        "device": "Dispositivos"
+      },
       "actions": {
         "fullReport": "Reporte completo"
       }
@@ -142,6 +169,10 @@
       "existSession": "Ya hay una sesión abierta con esta cuenta"
     },
     "inputs": {
+      "month": "Mes",
+      "year": "Año",
+      "startDate": "Fecha inicial",
+      "endDate": "Fecha final",
       "userType": "Tipo de usuario",
       "name": "Nombre y Apellidos",
       "email": "Correo Electrónico"
