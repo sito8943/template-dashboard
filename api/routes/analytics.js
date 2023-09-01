@@ -12,26 +12,6 @@ const config = require("../config");
 const { decrypt } = require("../utils/crypto");
 const { validator, headers } = require("../utils/secure");
 
-router.get("/list", [validator], async (req, res) => {
-  try {
-    const allEvents = await select("analytics", []);
-    const events = allEvents.rows;
-    console.info(`${events.length} retrieved successfully`);
-
-    res.status(200).send({ list: events });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ error: err });
-  }
-});
-
-const prepareDate = (year, month) => {
-  const date = new Date();
-  if (year) date.setFullYear(year);
-  if (month) date.setMonth(month);
-  return date.getTime();
-};
-
 const allColors = [
   "#FF0000",
   "#0000FF",
@@ -155,20 +135,45 @@ const allColors = [
   "#F8F8FF",
 ];
 
+router.get("/list", [validator], async (req, res) => {
+  try {
+    const allEvents = await select("analytics", []);
+    const events = allEvents.rows;
+    console.info(`${events.length} retrieved successfully`);
+
+    res.status(200).send({ list: events });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err });
+  }
+});
+
+const prepareDate = (year, month) => {
+  console.log(year, month);
+  const date = new Date();
+  if (year) {
+    date.setFullYear(year);
+    date.setMonth(11);
+  }
+  if (month) date.setMonth(month);
+  return date.getTime();
+};
+
 router.get("/attribute", [validator], async (req, res) => {
   const { year, month, attribute } = req.query;
   try {
-    const date = prepareDate(year, month);
+    const date = prepareDate(Number(year), Number(month));
 
-    const response = await select("basictrigger", ["country"], {
+    const response = await select("basictrigger", [attribute], {
       attribute: "date",
       operator: "<=",
-      value: Number(date.getTime()),
+      value: date,
     });
     const result = {};
     const colors = [];
     const labels = [];
     const rows = response.rows;
+    console.log(rows);
     let i = 0;
     rows.forEach((event) => {
       const att = event[attribute];
@@ -180,6 +185,7 @@ router.get("/attribute", [validator], async (req, res) => {
         labels.push(att);
       }
     });
+
     const series = Object.values(result).map((value) => value.count);
     res.status(200).send({ colors, labels, series });
   } catch (err) {

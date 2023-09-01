@@ -110,9 +110,6 @@ function LineComponent() {
 
   return (
     <div className="w-full  rounded-lg shadow bg-light-background2 dark:bg-dark-background2 p-4">
-      {loading ? (
-        <Loading className="absolute top-0 left-0 w-full h-full bg-light-background dark:bg-dark-background" />
-      ) : null}
       <div className="flex justify-between mb-5 items-center">
         <div className="grid gap-4 grid-cols-2">{printEvents}</div>
 
@@ -140,7 +137,12 @@ function LineComponent() {
           />
         </div>
       </div>
-      <LineChart series={series} categories={categories} />
+      {loading ? (
+        <Loading className="absolute top-0 left-0 w-full h-full bg-light-background dark:bg-dark-background" />
+      ) : (
+        <LineChart series={series} categories={categories} />
+      )}
+
       {/* <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
         <div className="pt-5">
           <Link to="/" className="button primary">
