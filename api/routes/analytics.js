@@ -68,7 +68,14 @@ router.get("/fetch", [validator], async (req, res) => {
         }),
       ]
     );
+    const rows = response.rows;
+    // grouping by id
     const resultObj = {};
+    rows.forEach((event) => {
+      if (resultObj[event.idEvent]) resultObj[event.idEvent].push(event);
+      else resultObj[event.idEvent] = [event];
+    });
+    res.status(200).send({ data: resultObj });
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: err });

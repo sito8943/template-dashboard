@@ -1,7 +1,7 @@
 .check-input {
   height: 0;
   width: 0;
-  display: none;
+  display: none !important;
 }
 
 .switcher {

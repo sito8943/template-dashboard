@@ -142,6 +142,9 @@ function SignIn() {
             case 401:
               showNotification("error", errors.wrongCredentials);
               break;
+            default:
+              showNotification("error", String(err));
+              break;
           }
         } else showNotification("error", String(err));
       }
