@@ -10,7 +10,6 @@ export default function PieChart({ colors, labels, series }) {
   const [rChart, setChart] = useState();
 
   useEffect(() => {
-    console.log(rChart);
     let options = {
       series,
       colors,
@@ -73,10 +72,10 @@ export default function PieChart({ colors, labels, series }) {
       );
       chart.render();
 
-      setChart(chart);
+      // setChart(chart);
     }
     return () => {
-      if (rChart) rChart.destroy();
+      // if (rChart) rChart.destroy();
     };
   }, [series, colors, labels]);
 

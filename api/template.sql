@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 01, 2023 at 05:58 PM
+-- Generation Time: Sep 03, 2023 at 06:12 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -40,8 +40,8 @@ CREATE TABLE `analytics` (
 --
 
 INSERT INTO `analytics` (`id`, `name`, `slugName`, `color`, `date`) VALUES
-('6df77039-4794-11ee-9725-6c02e0b9ae9e', 'Visita', 'visita', 'green', 1693441124136),
-('6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'Rebote', 'rebote', 'red', 1693441124136);
+('6df77039-4794-11ee-9725-6c02e0b9ae9e', 'Visitas', 'visitas', 'green', 1693441124136),
+('6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'Rebotes', 'rebotes', 'red', 1693441124136);
 
 -- --------------------------------------------------------
 
@@ -65,9 +65,9 @@ CREATE TABLE `basictrigger` (
 --
 
 INSERT INTO `basictrigger` (`id`, `idEvent`, `language`, `country`, `url`, `referrer`, `device`, `date`) VALUES
-('0bb29f26-47f3-11ee-a321-6c02e0b9ae9e', '6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'en', 'US', 'https://www.example.com/page1', 'https://www.google.com', 'pc', 1630387200000),
-('0bb2ac2a-47f3-11ee-a321-6c02e0b9ae9e', '6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'es', 'ES', 'https://www.example.com/page2', 'https://www.bing.com', 'mobile', 1630473600000),
-('22f6dba5-47f3-11ee-a321-6c02e0b9ae9e', '6df77039-4794-11ee-9725-6c02e0b9ae9e', 'fr', 'FR', 'https://www.example.com/page3', 'direct', 'pc', 1630560000000);
+('0bb29f26-47f3-11ee-a321-6c02e0b9ae9e', '6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'en', 'US', 'https://www.example.com/page1', 'https://www.google.com', 'pc', 1693605386888),
+('0bb2ac2a-47f3-11ee-a321-6c02e0b9ae9e', '6df78f00-4794-11ee-9725-6c02e0b9ae9e', 'es', 'ES', 'https://www.example.com/page2', 'https://www.bing.com', 'mobile', 1693605386888),
+('22f6dba5-47f3-11ee-a321-6c02e0b9ae9e', '6df77039-4794-11ee-9725-6c02e0b9ae9e', 'fr', 'FR', 'https://www.example.com/page3', 'direct', 'pc', 1693605386888);
 
 -- --------------------------------------------------------
 
@@ -121,6 +121,8 @@ INSERT INTO `logs` (`id`, `idUser`, `operation`, `date`, `observation`) VALUES
 ('299c6913-f9ea-4a25-85ae-184838cdb500', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693401356165, 'sign out'),
 ('2ab9cedd-0cdb-419d-9139-6d0d45fee8fd', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693441861612, 'sign out'),
 ('3e9c3255-5568-4c68-a8f1-9522c56c9ccc', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693441516684, 'sign out'),
+('46bf1b3c-7d24-4d75-b2b8-6a6720788b13', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693585822179, 'sign out'),
+('517ad6cf-05d1-4f4b-bb3d-bbe24be3a1ab', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693745230043, 'sign out'),
 ('555f4ed9-ea31-4c97-86bc-5ec79efb1caa', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1693411393172, 'sign out'),
 ('56c3dc83-0d28-4eab-9aec-666439e49630', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693423368082, 'sign out'),
 ('5bd411b1-cd88-433d-80aa-785491ac1250', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693420284461, 'sign out'),
@@ -131,10 +133,13 @@ INSERT INTO `logs` (`id`, `idUser`, `operation`, `date`, `observation`) VALUES
 ('8de9c919-059e-44fd-aff3-9b5596267662', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-out', 1693411406207, 'sign out'),
 ('966219bb-5df5-4470-9234-6509a6809308', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693420293102, 'sign out'),
 ('a05deee0-cb97-493c-af92-f8eda12f55fd', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693496945706, 'sign out'),
+('ab4770e7-f4e2-4b3c-b22e-5987145828ce', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693584030382, 'sign out'),
 ('b11695d8-1271-49a4-91c1-22ee92fade78', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693423294274, 'sign out'),
 ('b36fa7be-fae4-4499-aa91-b415c35affe9', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693408582678, 'sign out'),
+('b491312d-b435-4de7-a3cf-cddb6490f6b5', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693745155502, 'sign out'),
 ('b519f87d-405b-4e99-913e-098718504f0d', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693411412412, 'sign out'),
 ('c1077c21-cee8-42ac-a65b-10a90b087bdf', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693401599304, 'sign out'),
+('c1d0578f-7cf0-4b8c-9c56-4cc261286e29', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1693745240777, 'sign out'),
 ('ce6760ca-2959-47ed-a442-c16961ecef17', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693441620776, 'sign out'),
 ('cee77685-f501-45f3-af7e-7f7e9a5996b7', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693496927235, 'sign out'),
 ('db6dd115-0eef-46d9-a608-9bcc200e88ad', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1693423565906, 'sign out'),
@@ -228,7 +233,7 @@ CREATE TABLE `tokens` (
 --
 
 INSERT INTO `tokens` (`id`, `idUser`, `start`, `end`, `token`) VALUES
-('7ec18a40-9f6e-40c7-af4c-8dab81e6f568', 'bb2be934-4203-4c94-bc9f-f89290858b01', 1693583345708, 1693583345708, 'U2FsdGVkX1/u9FnIM7nMFWGt861fmp3sv2RR0ii0SfBhRB8SfB7+wly9ucoRWKS5wnmWFa8m/xTMz3ShQbm8ct9+yS3wkWxgNN0Ly9ySYGA=');
+('362eb415-bc16-443c-b2b3-ab896557326f', 'bb2be934-4203-4c94-bc9f-f89290858b01', 1693831640780, 1693831640780, 'U2FsdGVkX182SvxGS/WVUx0B2QUVZ1LIZ49F6ACxR/7CEe+rQNNFNUsUNd0ymj3Jo7Yd43VKbVKPLljwIKpI41QglwIYzsBcZ9gEsRQmUEp6QFHcpLFZ9khsvaBueE6O');
 
 -- --------------------------------------------------------
 
@@ -257,7 +262,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `user`, `name`, `email`, `type`, `pw`, `status`, `state`, `lastOnline`, `date`, `photo`, `slugName`) VALUES
 ('60cf833f-61ef-4619-bf17-1d55596bbf17', 'developer', 'Developer Comunicador', 'developer@gmail.com', 2, '25d55ad283aa400af464c76d713c07ad', 0, 0, 0, 1693411735331, '/images/users/60cf833f-61ef-4619-bf17-1d55596bbf17-photo.png', 'developer-comunicador'),
-('bb2be934-4203-4c94-bc9f-f89290858b01', 'sito8943', 'Carlos Andrés Mora González', 'sito8943@gmail.com', 1, '25d55ad283aa400af464c76d713c07ad', 1, 0, 1693498020882, 1691803729141, '/images/users/sito8943-photo.jpeg', 'sito8943');
+('bb2be934-4203-4c94-bc9f-f89290858b01', 'sito8943', 'Carlos Andrés Mora González', 'sito8943@gmail.com', 1, '25d55ad283aa400af464c76d713c07ad', 1, 0, 1693757520527, 1691803729141, '/images/users/sito8943-photo.jpeg', 'sito8943');
 
 -- --------------------------------------------------------
 

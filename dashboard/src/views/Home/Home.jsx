@@ -6,9 +6,7 @@ import { useUser } from "../../contexts/UserProvider";
 import { useLanguage } from "../../contexts/LanguageProvider";
 
 // components
-import PieComponent from "./Anaylitics/PieComponent";
-import LineComponent from "./Anaylitics/LineComponent";
-import BarComponent from "./Anaylitics/BarComponent";
+import ChartBox from "./ChartBox/ChartBox";
 
 function Home() {
   const navigate = useNavigate();
@@ -23,7 +21,9 @@ function Home() {
   return (
     <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-col gap-5 relative">
       <h2>{languageState.texts.analytics.title}</h2>
-      <BarComponent />
+      <div className="flex flex-wrap  ">
+        <ChartBox />
+      </div>
     </main>
   );
 }

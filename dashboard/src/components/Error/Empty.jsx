@@ -10,7 +10,7 @@ function Empty() {
   const { languageState } = useLanguage();
 
   return (
-    <div className="flex flex-col w-full min-h-[150px] items-center justify-center gap-3">
+    <div className="flex flex-col w-full min-h-[150px] h-full items-center justify-center gap-3">
       <h3>{languageState.texts.empty.title}</h3>
       <FontAwesomeIcon className="dark:text-white text-4xl" icon={faSadTear} />
     </div>

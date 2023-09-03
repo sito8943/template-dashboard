@@ -10,7 +10,7 @@ import Loading from "../../../components/Loading/Loading";
 import PieChart from "../../../components/Charts/PieChart";
 
 // services
-import { fetchAttribute } from "../../../services/analytics";
+import { pieChart, fetchEvents } from "../../../services/analytics";
 
 // styles
 import "./chart.css";
@@ -30,6 +30,7 @@ function PieComponent() {
     [setNotificationState]
   );
 
+  const [event, setEvent] = useState("");
   const [attribute, setAttribute] = useState("country");
   const [loading, setLoading] = useState(true);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -40,18 +41,40 @@ function PieComponent() {
   const [labels, setLabels] = useState([]);
   const [empty, setEmpty] = useState(false);
 
+  const [eventList, setEventList] = useState([]);
+
+  const localFetchEvents = async () => {
+    setLoading(true);
+    try {
+      const response = await fetchEvents();
+      const { list } = await response.json();
+      setEventList(list);
+      localFetch({});
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", languageState.texts.errors.notConnected);
+      else showNotification("error", String(err));
+    }
+  };
+
+  useEffect(() => {
+    localFetchEvents();
+  }, []);
+
   const localFetch = useCallback(
     async (options) => {
       setLoading(true);
       setEmpty(false);
       try {
-        console.log(attribute);
-        const response = await fetchAttribute(
+        const response = await pieChart(
           options.year || year,
           options.month || month,
-          attribute
+          options.attribute || attribute,
+          options.event || event
         );
         const data = await response.json();
+        console.log(data);
         const { colors, labels, series } = data;
         if (!colors.length || !labels.length || !series.length) setEmpty(true);
         setCounts(series);
@@ -68,19 +91,16 @@ function PieComponent() {
     [year, month, attribute]
   );
 
-  useEffect(() => {
-    localFetch({});
-  }, [attribute]);
-
   return (
     <div className="chart">
       <div className="flex items-center mb-1 justify-between w-full">
-        <h3 className="text-xl font-bold leading-none">
+        <div className="flex flex-wrap gap-2">
           <select
             value={attribute}
             className="input primary !py-0 h-[30px]"
             onChange={(e) => {
               setAttribute(e.target.value);
+              localFetch({ attribute: e.target.value });
             }}
           >
             {Object.keys(languageState.texts.analytics.attributes).map(
@@ -91,12 +111,28 @@ function PieComponent() {
               )
             )}
           </select>
-        </h3>
-        <div className="p-3 flex gap-3" aria-labelledby="dateRangeButton">
+          <select
+            value={event}
+            className="input primary !py-0 h-[30px]"
+            onChange={(e) => {
+              setEvent(e.target.value);
+              localFetch({ event: e.target.value });
+            }}
+          >
+            <option value={""}>
+              {languageState.texts.analytics.allEvents}
+            </option>
+            {eventList.map((event) => (
+              <option key={event.id} value={event.id}>
+                {event.name}
+              </option>
+            ))}
+          </select>
           <select
             value={month}
             onChange={(e) => {
               setMonth(Number(e.target.value));
+              console.log(e.target.value);
               localFetch({ month: Number(e.target.value) });
             }}
             className="input primary !py-0 h-[30px]"

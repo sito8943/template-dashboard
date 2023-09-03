@@ -180,33 +180,68 @@ const prepareDate = (year, month) => {
   return date.getTime();
 };
 
-router.get("/attribute", [validator], async (req, res) => {
-  const { year, month, attribute } = req.query;
+router.get("/pie-chart", [validator], async (req, res) => {
+  const { year, month, attribute, event } = req.query;
   try {
-    const date = prepareDate(Number(year), Number(month));
+    let series = [];
+    let result = {};
+    let colors = [];
+    let labels = [];
+    if (attribute && !event.length) {
+      const date = prepareDate(Number(year), Number(month));
 
-    const response = await select("basictrigger", [attribute], {
-      attribute: "date",
-      operator: "<=",
-      value: date,
-    });
-    const result = {};
-    const colors = [];
-    const labels = [];
-    const rows = response.rows;
-    let i = 0;
-    rows.forEach((event) => {
-      const att = event[attribute];
-      if (result[att]) result[att].count += 1;
-      else {
-        colors.push(allColors[i]);
-        i += 1;
-        result[att] = { count: 1, label: att };
-        labels.push(att);
-      }
-    });
+      const response = await select("basictrigger", [attribute], {
+        attribute: "date",
+        operator: "<=",
+        value: date,
+      });
 
-    const series = Object.values(result).map((value) => value.count);
+      const rows = response.rows;
+      let i = 0;
+      rows.forEach((event) => {
+        const att = event[attribute];
+        if (result[att]) result[att].count += 1;
+        else {
+          colors.push(allColors[i]);
+          i += 1;
+          result[att] = { count: 1, label: att };
+          labels.push(att);
+        }
+      });
+
+      series = Object.values(result).map((value) => value.count);
+    } else if (attribute && event.length) {
+      const date = prepareDate(Number(year), Number(month));
+
+      const response = await select(
+        "basictrigger",
+        [attribute],
+        [
+          {
+            attribute: "date",
+            operator: "<=",
+            value: date,
+          },
+          { attribute: "idEvent", operator: "=", value: event, logic: "AND" },
+        ]
+      );
+
+      const rows = response.rows;
+      let i = 0;
+      rows.forEach((event) => {
+        const att = event[attribute];
+        if (result[att]) result[att].count += 1;
+        else {
+          colors.push(allColors[i]);
+          i += 1;
+          result[att] = { count: 1, label: att };
+          labels.push(att);
+        }
+      });
+
+      series = Object.values(result).map((value) => value.count);
+    }
+
     res.status(200).send({ colors, labels, series });
   } catch (err) {
     console.error(err);

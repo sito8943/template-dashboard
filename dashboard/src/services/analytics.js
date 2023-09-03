@@ -14,11 +14,12 @@ import config from "../config";
  * @param {number} year
  * @param {number} month
  * @param {string} attribute
+ * @param {string} event
  * @returns
  */
-export async function fetchAttribute(year, month, attribute) {
+export async function pieChart(year, month, attribute, event) {
   const response = await fetch(
-    `${config.apiUrl}analytics/attribute?year=${year}&month=${month}&attribute=${attribute}`,
+    `${config.apiUrl}analytics/pie-chart?year=${year}&month=${month}&attribute=${attribute}&event=${event}`,
     {
       method: "GET",
       headers: {
