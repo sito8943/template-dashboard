@@ -50,12 +50,40 @@ export async function fetchEvents() {
  * @param {number} month
  * @param {number} day
  * @param {string[]} events
+ * @param {boolean} attributes
  * @returns
  */
-export async function fetchTriggers(year, month, events) {
+export async function lineChart(year, month, events) {
   const encrypted = encrypt({ events }, config.crypto);
   const response = await fetch(
-    `${config.apiUrl}analytics/fetch?params=${encodeURIComponent(
+    `${config.apiUrl}analytics/line-chart?params=${encodeURIComponent(
+      encrypted
+    )}&year=${year}&month=${month}`,
+    {
+      method: "GET",
+      headers: {
+        ...getAuth,
+        Authorization: `Bearer ${getCookie(config.basicKey)}`,
+      },
+    }
+  );
+
+  return response;
+}
+
+/**
+ *
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ * @param {string[]} events
+ * @param {boolean} attributes
+ * @returns
+ */
+export async function barChart(year, month, events) {
+  const encrypted = encrypt({ events }, config.crypto);
+  const response = await fetch(
+    `${config.apiUrl}analytics/bar-chart?params=${encodeURIComponent(
       encrypted
     )}&year=${year}&month=${month}`,
     {

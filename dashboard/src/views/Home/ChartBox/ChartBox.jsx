@@ -17,7 +17,7 @@ import BarComponent from "../Anaylitics/BarComponent";
 // styles
 import "./style.css";
 
-function ChartBox(onDelete) {
+function ChartBox({ onDelete }) {
   const [chart, setChart] = useState(0);
 
   const createPie = () => setChart(1);

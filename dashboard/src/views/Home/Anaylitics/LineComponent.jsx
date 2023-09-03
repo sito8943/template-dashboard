@@ -17,7 +17,7 @@ import Loading from "../../../components/Loading/Loading";
 import LineChart from "../../../components/Charts/LineChart";
 
 // services
-import { fetchEvents, fetchTriggers } from "../../../services/analytics";
+import { fetchEvents, lineChart } from "../../../services/analytics";
 
 // styles
 import "./chart.css";
@@ -54,7 +54,7 @@ function LineComponent() {
     async (list) => {
       try {
         setEmpty(false);
-        const response = await fetchTriggers(year, month, list);
+        const response = await lineChart(year, month, list);
         const { series, categories } = await response.json();
         setSeries(
           series.map((item) => ({ ...item, color: colors[item.color] }))

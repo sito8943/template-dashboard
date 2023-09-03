@@ -176,7 +176,7 @@ const prepareDate = (year, month) => {
     date.setFullYear(year);
     date.setMonth(11);
   }
-  if (month) date.setMonth(month);
+  if (month) date.setMonth(month - 1);
   return date.getTime();
 };
 
@@ -189,25 +189,34 @@ router.get("/pie-chart", [validator], async (req, res) => {
     let labels = [];
     if (attribute && !event.length) {
       const date = prepareDate(Number(year), Number(month));
-
-      const response = await select("basictrigger", [attribute], {
+      const now = new Date(date);
+      const response = await select("basictrigger", [attribute, "date"], {
         attribute: "date",
-        operator: "<=",
+        operator: "<",
         value: date,
       });
 
       const rows = response.rows;
       let i = 0;
-      rows.forEach((event) => {
-        const att = event[attribute];
-        if (result[att]) result[att].count += 1;
-        else {
-          colors.push(allColors[i]);
-          i += 1;
-          result[att] = { count: 1, label: att };
-          labels.push(att);
-        }
-      });
+      rows
+        .filter((event) => {
+          if (Number(month)) {
+            const dateForMonth = new Date(event.date);
+            if (dateForMonth.getMonth() === now.getMonth()) return true;
+            return false;
+          }
+          return true;
+        })
+        .forEach((event) => {
+          const att = event[attribute];
+          if (result[att]) result[att].count += 1;
+          else {
+            colors.push(allColors[i]);
+            i += 1;
+            result[att] = { count: 1, label: att };
+            labels.push(att);
+          }
+        });
 
       series = Object.values(result).map((value) => value.count);
     } else if (attribute && event.length) {
@@ -249,7 +258,7 @@ router.get("/pie-chart", [validator], async (req, res) => {
   }
 });
 
-router.get("/fetch", [validator], async (req, res) => {
+router.get("/line-chart", [validator], async (req, res) => {
   const { params, year, month, attributes } = req.query;
   const decrypted = JSON.parse(decrypt(params));
   const { events } = decrypted;

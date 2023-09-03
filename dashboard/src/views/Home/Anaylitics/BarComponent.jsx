@@ -17,7 +17,7 @@ import Loading from "../../../components/Loading/Loading";
 import BarChart from "../../../components/Charts/BarChart";
 
 // services
-import { fetchEvents, fetchTriggers } from "../../../services/analytics";
+import { fetchEvents, barChart } from "../../../services/analytics";
 
 // styles
 import "./chart.css";
@@ -59,7 +59,7 @@ function BarComponent() {
       if (selectedEvent) {
         try {
           setEmpty(false);
-          const response = await fetchTriggers(
+          const response = await barChart(
             options.year || year,
             options.month || month,
             [selectedEvent.id]
