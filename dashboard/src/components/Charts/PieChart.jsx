@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useMemo } from "react";
-import PropTypes from "prop-types";
+import React, { useMemo, useState, useEffect } from "react";
 
 export default function PieChart({ colors, labels, series }) {
   const total = useMemo(() => {
@@ -9,7 +7,10 @@ export default function PieChart({ colors, labels, series }) {
     return count;
   }, [series]);
 
+  const [rChart, setChart] = useState();
+
   useEffect(() => {
+    console.log(rChart);
     let options = {
       series,
       colors,
@@ -54,7 +55,7 @@ export default function PieChart({ colors, labels, series }) {
           },
         },
         axisTicks: {
-          show: false
+          show: false,
         },
         axisBorder: {
           show: false,
@@ -71,7 +72,12 @@ export default function PieChart({ colors, labels, series }) {
         options
       );
       chart.render();
+
+      setChart(chart);
     }
+    return () => {
+      if (rChart) rChart.destroy();
+    };
   }, [series, colors, labels]);
 
   return <div className="py-4" id="pie-chart"></div>;

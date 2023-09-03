@@ -1,15 +1,18 @@
 // @ts-check
-import React, { useMemo, useEffect, useCallback, useState } from "react";
-import { Link } from "react-router-dom";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
+import React, {
+  useMemo,
+  useEffect,
+  useCallback,
+  useState,
+  Fragment,
+} from "react";
 
 // contexts
 import { useLanguage } from "../../../contexts/LanguageProvider";
 import { useNotification } from "../../../contexts/NotificationProvider";
 
 // components
+import Empty from "../../../components/Error/Empty";
 import Loading from "../../../components/Loading/Loading";
 import LineChart from "../../../components/Charts/LineChart";
 
@@ -40,16 +43,20 @@ function LineComponent() {
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const [empty, setEmpty] = useState(false);
+
   const colors = { red: "#FF0000", green: "#00FF00" };
 
   const localFetchTriggers = useCallback(
     async (list) => {
       try {
+        setEmpty(false);
         const response = await fetchTriggers(year, month, list);
         const { series, categories } = await response.json();
         setSeries(
           series.map((item) => ({ ...item, color: colors[item.color] }))
         );
+        if (!series.length || !categories.length) setEmpty(true);
         setEventsSelected(series);
         setCategories(categories);
       } catch (err) {
@@ -140,7 +147,13 @@ function LineComponent() {
       {loading ? (
         <Loading className="absolute top-0 left-0 w-full h-full bg-light-background dark:bg-dark-background" />
       ) : (
-        <LineChart series={series} categories={categories} />
+        <Fragment>
+          {!empty ? (
+            <LineChart series={series} categories={categories} />
+          ) : (
+            <Empty />
+          )}
+        </Fragment>
       )}
 
       {/* <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">

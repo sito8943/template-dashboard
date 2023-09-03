@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import loadable from "@loadable/component";
 
@@ -24,6 +24,7 @@ import Home from "./views/Home/Home";
 import { useMode } from "./contexts/ModeProvider";
 import { useUser } from "./contexts/UserProvider.jsx";
 import { useLanguage } from "./contexts/LanguageProvider";
+import { useNotification } from "./contexts/NotificationProvider";
 
 // utils
 import { logoutUser, userLogged, fromLocal, getUserName } from "./utils/auth";
@@ -42,9 +43,20 @@ function App() {
   const { setModeState } = useMode();
 
   const { setLanguageState } = useLanguage();
+  const { setNotificationState } = useNotification();
   const { userState, setUserState } = useUser();
 
   const [loading, setLoading] = useState(true);
+
+  const showNotification = useCallback(
+    (ntype, message) =>
+      setNotificationState({
+        type: "set",
+        ntype,
+        message,
+      }),
+    [setNotificationState]
+  );
 
   const fetch = async () => {
     try {
@@ -53,9 +65,23 @@ function App() {
         logoutUser();
       } else setUserState({ type: "logged-in", user: fromLocal() });
     } catch (err) {
-      if (String(err) !== "AxiosError: Network Error") {
-        logoutUser();
-      }
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        return showNotification("error", errors.notConnected);
+      const { response } = err;
+      if (response) {
+        const { status } = response;
+        switch (status) {
+          case 403:
+          case 401:
+            logoutUser();
+            break;
+          default:
+            showNotification("error", String(err));
+            break;
+        }
+      } else showNotification("error", String(err));
+      showNotification("error", String(err));
     }
   };
 

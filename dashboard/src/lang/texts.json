@@ -1,6 +1,9 @@
 {
   "es": {
     "navbarTitle": "Template Dashboard",
+    "empty": {
+      "title": "No hay resultados"
+    },
     "analytics": {
       "to": "a",
       "months": [

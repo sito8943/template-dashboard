@@ -1,15 +1,11 @@
 import React, { useEffect, useCallback, useState, Fragment } from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
 import { useLanguage } from "../../../contexts/LanguageProvider";
 import { useNotification } from "../../../contexts/NotificationProvider";
 
 // components
+import Empty from "../../../components/Error/Empty";
 import Loading from "../../../components/Loading/Loading";
 import PieChart from "../../../components/Charts/PieChart";
 
@@ -45,6 +41,7 @@ function PieComponent() {
     setLoading(true);
     setEmpty(false);
     try {
+      console.log(attribute);
       const response = await fetchAttribute(year, month, attribute);
       const data = await response.json();
       const { colors, labels, series } = data;
@@ -63,7 +60,7 @@ function PieComponent() {
 
   useEffect(() => {
     localFetch();
-  }, []);
+  }, [attribute]);
 
   return (
     <div className="w-full bg-light-background2 rounded-lg shadow dark:bg-dark-background2 p-4">
@@ -74,7 +71,6 @@ function PieComponent() {
             className="input primary !py-0 h-[30px]"
             onChange={(e) => {
               setAttribute(e.target.value);
-              localFetch();
             }}
           >
             {Object.keys(languageState.texts.analytics.attributes).map(
@@ -122,7 +118,9 @@ function PieComponent() {
         <Fragment>
           {!empty ? (
             <PieChart labels={labels} colors={colors} series={count} />
-          ) : <Empty text="metrics" />}
+          ) : (
+            <Empty />
+          )}
         </Fragment>
       )}
 

@@ -18,6 +18,7 @@ export const getUserPermissions = () => {
 };
 
 export const getUserPhoto = () => {
+  console.log(decrypt(localStorage.getItem(config.user)));
   const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
   return data.photo;
 };
