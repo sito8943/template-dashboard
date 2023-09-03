@@ -48,6 +48,10 @@
         "referrer": "Referidos",
         "device": "Dispositivos"
       },
+      "models": {
+        "events": "Eventos",
+        "attributes": "Atributos"
+      },
       "actions": {
         "fullReport": "Reporte completo"
       }

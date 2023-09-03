@@ -50,7 +50,7 @@ function LineComponent() {
 
   const colors = { red: "#FF0000", green: "#00FF00" };
 
-  const localFetchTriggers = useCallback(
+  const localFetch = useCallback(
     async (list) => {
       try {
         setEmpty(false);
@@ -86,13 +86,13 @@ function LineComponent() {
       const response = await fetchEvents();
       const { list } = await response.json();
       setEventList(list);
-      await localFetchTriggers(list.map((event) => event.id));
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
         showNotification("error", languageState.texts.errors.notConnected);
       else showNotification("error", String(err));
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -125,12 +125,28 @@ function LineComponent() {
     ));
   }, [eventsSelected]);
 
+  const [events, setEvents] = useState("events");
+
   return (
     <div className="chart">
       <div className="flex justify-between mb-5 items-center">
         <div className="grid gap-4 grid-cols-2">{printEvents}</div>
 
-        <div className="p-3 flex gap-3" aria-labelledby="dateRangeButton">
+        <div className="p-3 flex gap-3 pr-10" aria-labelledby="dateRangeButton">
+          <select
+            value={events}
+            className="input primary !py-0 h-[30px]"
+            onChange={(e) => {
+              setEvents(e.target.value);
+              localFetch({ events: e.target.value });
+            }}
+          >
+            {Object.keys(languageState.texts.analytics.models).map((model) => (
+              <option key={model} value={model}>
+                {languageState.texts.analytics.models[model]}
+              </option>
+            ))}
+          </select>
           <select
             value={month}
             onChange={(e) => setMonth(Number(e.target.value))}
