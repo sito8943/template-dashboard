@@ -61,7 +61,14 @@ function LineComponent() {
         );
         if (!series.length || !categories.length) setEmpty(true);
         setEventsSelected(series);
-        setCategories(categories);
+        if (month)
+          setCategories(
+            categories.map(
+              (category) =>
+                `${category} ${languageState.texts.analytics.reducedMonths[month]}`
+            )
+          );
+        else setCategories(languageState.texts.analytics.reducedMonths);
       } catch (err) {
         console.error(err);
         if (String(err) === "AxiosError: Network Error")
@@ -70,7 +77,7 @@ function LineComponent() {
       }
       setLoading(false);
     },
-    [year, month]
+    [year, month, languageState]
   );
 
   const localFetchEvents = async () => {

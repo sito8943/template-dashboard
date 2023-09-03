@@ -46,7 +46,7 @@ function BarComponent() {
   const [series, setSeries] = useState([]);
   const [rColors, setColors] = useState([]);
 
-  const [categories, setCatagories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [empty, setEmpty] = useState(false);
 
   const colors = { red: "#FF0000", green: "#00FF00" };
@@ -72,9 +72,6 @@ function BarComponent() {
               item.data.forEach((num) => {
                 newTotal += num;
               });
-              categories.forEach((category, i) => {
-                item.data[i] = { x: category, y: item.data[i] };
-              });
               newColors.push(colors[item.color]);
               item.color = colors[item.color];
               delete item.id;
@@ -84,8 +81,15 @@ function BarComponent() {
           setTotal(newTotal);
           if (!series.length || !categories.length) setEmpty(true);
           setSeries(series);
+          if (month)
+            setCategories(
+              categories.map(
+                (category) =>
+                  `${category} ${languageState.texts.analytics.reducedMonths[month]}`
+              )
+            );
+          else setCategories(languageState.texts.analytics.reducedMonths);
           // @ts-ignore
-          setCatagories(categories);
           setColors(newColors);
         } catch (err) {
           console.error(err);
@@ -96,7 +100,7 @@ function BarComponent() {
       }
       setLoading(false);
     },
-    [year, month, selectedEvent]
+    [year, month, selectedEvent, languageState]
   );
 
   const localFetchEvents = async () => {
@@ -177,8 +181,22 @@ function BarComponent() {
           </select>
         </div>
       </div>
+      {loading ? (
+        <Loading className="absolute top-0 left-0 w-full h-full bg-light-background dark:bg-dark-background" />
+      ) : (
+        <Fragment>
+          {!empty ? (
+            <BarChart
+              series={series}
+              colors={rColors}
+              categories={categories}
+            />
+          ) : (
+            <Empty />
+          )}
+        </Fragment>
+      )}
 
-      <BarChart series={series} colors={rColors} categories={categories} />
       <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
         <div className="flex justify-end gap-3 items-center pt-5">
           <select

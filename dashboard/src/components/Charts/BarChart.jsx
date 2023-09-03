@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 function BarChart({ series, colors, categories }) {
-  console.log(series, colors, categories);
+  // console.log(series, colors, categories);
 
   useEffect(() => {
     /* const options = {
@@ -66,7 +66,7 @@ function BarChart({ series, colors, categories }) {
         opacity: 1,
       },
     }; */
-
+    console.log(series);
     var options = {
       series: [
         {
@@ -102,25 +102,10 @@ function BarChart({ series, colors, categories }) {
         colors: ["transparent"],
       },
       xaxis: {
-        categories: [
-          "Ene",
-          "Feb",
-          "Mar",
-          "Abr",
-          "May",
-          "Jun",
-          "Jul",
-          "Ago",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dic",
-        ],
+        categories,
       },
       yaxis: {
-        title: {
-          text: "$ (thousands)",
-        },
+        title: {},
       },
       fill: {
         opacity: 1,
@@ -128,7 +113,7 @@ function BarChart({ series, colors, categories }) {
       tooltip: {
         y: {
           formatter: function (val) {
-            return "$ " + val + " thousands";
+            return val;
           },
         },
       },

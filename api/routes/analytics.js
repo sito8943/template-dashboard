@@ -135,6 +135,28 @@ const allColors = [
   "#F8F8FF",
 ];
 
+const prepareEventQuery = (events) =>
+  events.map((event, i) => {
+    const toReturn = {
+      attribute: "idEvent",
+      operator: "=",
+      value: event,
+    };
+    if (events.length === 1) return { ...toReturn, logic: "AND" };
+    if (i > 0 && i < events.length - 1)
+      return {
+        ...toReturn,
+        logic: "OR",
+      };
+    if (i === events.length - 1)
+      return { ...toReturn, logic: "OR", parenthesis: ")" };
+    return {
+      ...toReturn,
+      logic: "AND",
+      parenthesis: "(",
+    };
+  });
+
 router.get("/list", [validator], async (req, res) => {
   try {
     const allEvents = await select("analytics", []);
@@ -149,7 +171,6 @@ router.get("/list", [validator], async (req, res) => {
 });
 
 const prepareDate = (year, month) => {
-  console.log(year, month);
   const date = new Date();
   if (year) {
     date.setFullYear(year);
@@ -215,26 +236,7 @@ router.get("/fetch", [validator], async (req, res) => {
           value: "analytics.id",
           logic: "AND",
         },
-        ...events.map((event, i) => {
-          const toReturn = {
-            attribute: "idEvent",
-            operator: "=",
-            value: event,
-          };
-          if (events.length === 1) return { ...toReturn, logic: "AND" };
-          if (i > 0 && i < events.length - 1)
-            return {
-              ...toReturn,
-              logic: "OR",
-            };
-          if (i === events.length - 1)
-            return { ...toReturn, logic: "OR", parenthesis: ")" };
-          return {
-            ...toReturn,
-            logic: "AND",
-            parenthesis: "(",
-          };
-        }),
+        ...prepareEventQuery(events),
       ]
     );
     const rows = response.rows;
@@ -271,7 +273,7 @@ router.get("/fetch", [validator], async (req, res) => {
     categories.forEach((category, i) => {
       categories[i] = i + 1;
     });
-    console.log(resultObj);
+
     res.status(200).send({ series: Object.values(resultObj), categories });
   } catch (err) {
     console.error(err);
@@ -280,5 +282,72 @@ router.get("/fetch", [validator], async (req, res) => {
 });
 
 router.post("/trigger", async (req, res) => {});
+
+router.post("/all-of", async (req, res) => {
+  const { params, year, month } = req.query;
+  const decrypted = JSON.parse(decrypt(params));
+  const { events } = decrypted;
+  const date = prepareDate(Number(year), Number(month));
+  try {
+    // fetching by day
+    const response = await select(
+      ["basictrigger", "analytics"],
+      [],
+      [
+        {
+          attribute: "basictrigger.date",
+          operator: "<=",
+          value: Number(date),
+        },
+        {
+          attribute: "basictrigger.idEvent",
+          operator: "=",
+          value: "analytics.id",
+          logic: "AND",
+        },
+        ...prepareEventQuery(events),
+      ]
+    );
+    const rows = response.rows;
+    // grouping by id
+
+    const resultObj = {};
+    let categories = [];
+    // by year categories are 12 months
+    if (Number(year)) categories = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    if (Number(month)) {
+      const theYearMonthDate = new Date(
+        Number(year),
+        Number(month),
+        0
+      ).getDate();
+      categories = new Array(theYearMonthDate).fill(0);
+    }
+    rows.forEach((event) => {
+      if (!resultObj[event.idEvent])
+        resultObj[event.idEvent] = {
+          id: event.idEvent,
+          name: event.name,
+          color: event.color,
+        };
+      // if not initialized creates copy of categories
+      if (!resultObj[event.idEvent].data)
+        resultObj[event.idEvent].data = [...categories];
+      const { date } = event;
+      const thatDate = new Date(date);
+      if (Number(year) && !Number(month))
+        resultObj[event.idEvent].data[thatDate.getMonth()] += 1;
+      else resultObj[event.idEvent].data[thatDate.getDate()] += 1;
+    });
+    categories.forEach((category, i) => {
+      categories[i] = i + 1;
+    });
+
+    res.status(200).send({ series: Object.values(resultObj), categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err });
+  }
+});
 
 module.exports = router;
