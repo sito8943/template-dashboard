@@ -6,6 +6,7 @@ import {
   faLineChart,
   faChartColumn,
   faTrash,
+  faCancel,
 } from "@fortawesome/free-solid-svg-icons";
 
 // components
@@ -13,17 +14,18 @@ import PieComponent from "../Anaylitics/PieComponent";
 import LineComponent from "../Anaylitics/LineComponent";
 import BarComponent from "../Anaylitics/BarComponent";
 
-function ChartBox() {
+// styles
+import "./style.css";
+
+function ChartBox(onDelete) {
   const [chart, setChart] = useState(0);
 
   const createPie = () => setChart(1);
   const createBar = () => setChart(2);
   const createLine = () => setChart(3);
 
-  const deleteChart = () => setChart(0);
-
   return (
-    <div className="aGrow relative flex-[50%] rounded-lg border-dashed border-primary border-2 min-h-[320px] flex items-center justify-center">
+    <div className={`appear chart-box ${chart === 0 ? "min-h-[320px]" : ""}`}>
       {chart === 0 ? (
         <Fragment>
           <button onClick={createPie} type="button" className="icon-button">
@@ -37,13 +39,13 @@ function ChartBox() {
           </button>
         </Fragment>
       ) : (
-        <div className="w-full h-full">
+        <div className="w-full">
           <button
             type="button"
-            onClick={deleteChart}
-            className="icon-button !text-error !text-sm absolute top-0 right-0"
+            className="icon-button absolute top-0 right-0 !text-error"
+            onClick={onDelete}
           >
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faCancel} />
           </button>
           {chart === 1 ? <PieComponent /> : null}
           {chart === 2 ? <BarComponent /> : null}

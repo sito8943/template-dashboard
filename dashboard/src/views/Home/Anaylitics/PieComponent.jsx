@@ -74,7 +74,6 @@ function PieComponent() {
           options.event || event
         );
         const data = await response.json();
-        console.log(data);
         const { colors, labels, series } = data;
         if (!colors.length || !labels.length || !series.length) setEmpty(true);
         setCounts(series);
@@ -132,7 +131,6 @@ function PieComponent() {
             value={month}
             onChange={(e) => {
               setMonth(Number(e.target.value));
-              console.log(e.target.value);
               localFetch({ month: Number(e.target.value) });
             }}
             className="input primary !py-0 h-[30px]"

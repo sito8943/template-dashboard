@@ -1,0 +1,3 @@
+.chart-box {
+  @apply relative flex-[50%] rounded-lg border-dashed border-primary border-2 flex items-center justify-center w-full;
+}
