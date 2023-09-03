@@ -250,7 +250,7 @@ router.get("/pie-chart", [validator], async (req, res) => {
 });
 
 router.get("/fetch", [validator], async (req, res) => {
-  const { params, year, month, attributesv  } = req.query;
+  const { params, year, month, attributes } = req.query;
   const decrypted = JSON.parse(decrypt(params));
   const { events } = decrypted;
   const date = prepareDate(Number(year), Number(month));

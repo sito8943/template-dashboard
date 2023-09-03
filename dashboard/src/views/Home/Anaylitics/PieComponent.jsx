@@ -93,7 +93,7 @@ function PieComponent() {
   return (
     <div className="chart">
       <div className="flex items-center mb-1 justify-between w-full">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 pr-10">
           <select
             value={attribute}
             className="input primary !py-0 h-[30px]"
