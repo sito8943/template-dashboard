@@ -19,6 +19,9 @@ import LineChart from "../../../components/Charts/LineChart";
 // services
 import { fetchEvents, fetchTriggers } from "../../../services/analytics";
 
+// styles
+import "./chart.css";
+
 function LineComponent() {
   const { languageState } = useLanguage();
 
@@ -116,7 +119,7 @@ function LineComponent() {
   }, [eventsSelected]);
 
   return (
-    <div className="w-full  rounded-lg shadow bg-light-background2 dark:bg-dark-background2 p-4">
+    <div className="chart">
       <div className="flex justify-between mb-5 items-center">
         <div className="grid gap-4 grid-cols-2">{printEvents}</div>
 

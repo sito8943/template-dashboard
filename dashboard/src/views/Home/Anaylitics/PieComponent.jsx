@@ -12,6 +12,9 @@ import PieChart from "../../../components/Charts/PieChart";
 // services
 import { fetchAttribute } from "../../../services/analytics";
 
+// styles
+import "./chart.css";
+
 function PieComponent() {
   const { languageState } = useLanguage();
 
@@ -37,33 +40,40 @@ function PieComponent() {
   const [labels, setLabels] = useState([]);
   const [empty, setEmpty] = useState(false);
 
-  const localFetch = useCallback(async () => {
-    setLoading(true);
-    setEmpty(false);
-    try {
-      console.log(attribute);
-      const response = await fetchAttribute(year, month, attribute);
-      const data = await response.json();
-      const { colors, labels, series } = data;
-      if (!colors.length || !labels.length || !series.length) setEmpty(true);
-      setCounts(series);
-      setColors(colors);
-      setLabels(labels);
-    } catch (err) {
-      console.error(err);
-      if (String(err) === "AxiosError: Network Error")
-        showNotification("error", errors.notConnected);
-      else showNotification("error", String(err));
-    }
-    setLoading(false);
-  }, [year, month, attribute]);
+  const localFetch = useCallback(
+    async (options) => {
+      setLoading(true);
+      setEmpty(false);
+      try {
+        console.log(attribute);
+        const response = await fetchAttribute(
+          options.year || year,
+          options.month || month,
+          attribute
+        );
+        const data = await response.json();
+        const { colors, labels, series } = data;
+        if (!colors.length || !labels.length || !series.length) setEmpty(true);
+        setCounts(series);
+        setColors(colors);
+        setLabels(labels);
+      } catch (err) {
+        console.error(err);
+        if (String(err) === "AxiosError: Network Error")
+          showNotification("error", errors.notConnected);
+        else showNotification("error", String(err));
+      }
+      setLoading(false);
+    },
+    [year, month, attribute]
+  );
 
   useEffect(() => {
-    localFetch();
+    localFetch({});
   }, [attribute]);
 
   return (
-    <div className="w-full bg-light-background2 rounded-lg shadow dark:bg-dark-background2 p-4">
+    <div className="chart">
       <div className="flex items-center mb-1 justify-between w-full">
         <h3 className="text-xl font-bold leading-none">
           <select
@@ -87,7 +97,7 @@ function PieComponent() {
             value={month}
             onChange={(e) => {
               setMonth(Number(e.target.value));
-              localFetch();
+              localFetch({ month: Number(e.target.value) });
             }}
             className="input primary !py-0 h-[30px]"
           >
@@ -105,7 +115,7 @@ function PieComponent() {
             value={year}
             onChange={(e) => {
               setYear(Number(e.target.value));
-              localFetch();
+              localFetch({ year: Number(e.target.value) });
             }}
             className="input primary !py-0 h-[30px] w-[120px]"
             placeholder={languageState.texts.inputs.year}

@@ -173,7 +173,6 @@ router.get("/attribute", [validator], async (req, res) => {
     const colors = [];
     const labels = [];
     const rows = response.rows;
-    console.log(rows);
     let i = 0;
     rows.forEach((event) => {
       const att = event[attribute];
@@ -222,6 +221,7 @@ router.get("/fetch", [validator], async (req, res) => {
             operator: "=",
             value: event,
           };
+          if (events.length === 1) return { ...toReturn, logic: "AND" };
           if (i > 0 && i < events.length - 1)
             return {
               ...toReturn,
@@ -271,6 +271,7 @@ router.get("/fetch", [validator], async (req, res) => {
     categories.forEach((category, i) => {
       categories[i] = i + 1;
     });
+    console.log(resultObj);
     res.status(200).send({ series: Object.values(resultObj), categories });
   } catch (err) {
     console.error(err);
