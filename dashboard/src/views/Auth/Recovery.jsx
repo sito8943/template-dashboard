@@ -66,7 +66,7 @@ function Recovery() {
         <button
           type="submit"
           name="send-password-recovery"
-          className="button primary self-end"
+          className="button primary submit self-end"
           aria-label={languageState.texts.ariaLabels.recoverySend}
         >
           {buttons.send}

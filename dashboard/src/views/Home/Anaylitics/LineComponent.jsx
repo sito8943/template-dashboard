@@ -66,7 +66,9 @@ function LineComponent() {
     try {
       const response = await lineChart(year, month, {
         toFetch,
-        ids: targetSelected.filter((target) => target.active),
+        ids: targetSelected
+          .filter((target) => target.active)
+          .map((target) => target.id),
       });
       const { series, categories } = await response.json();
       setSeries(
@@ -77,7 +79,8 @@ function LineComponent() {
       );
       if (!series.length || !categories.length) setEmpty(true);
       else setEmpty(false);
-      setTargetSelected(series.map((item) => ({ ...item, active: true })));
+      if (!targetSelected.length)
+        setTargetSelected(series.map((item) => ({ ...item, active: true })));
       if (month)
         setCategories(
           categories.map(

@@ -228,7 +228,7 @@ function SignIn() {
             name="login"
             type="submit"
             aria-label={languageState.texts.ariaLabels.login}
-            className="button primary self-end hover:bg-pdark hover:border-pdark cursor-default"
+            className="button primary submit self-end hover:bg-pdark hover:border-pdark cursor-default"
           >
             {auth.signIn.submit}
           </button>
