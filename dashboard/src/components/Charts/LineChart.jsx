@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 
 function LineChart({ series, categories }) {
+  const [rChart, setRChart] = useState();
   useEffect(() => {
+    if (rChart) rChart?.destroy();
     // ApexCharts options and config
     let options = {
       chart: {
@@ -72,10 +73,15 @@ function LineChart({ series, categories }) {
         options
       );
       chart.render();
+      setRChart(chart);
     }
+
+    return () => {
+      if (rChart) rChart?.destroy();
+    };
   }, [series, categories]);
 
-  return <div id="line-chart"></div>;
+  return <div className="py-4" id="line-chart"></div>;
 }
 
 LineChart.defaultProps = {

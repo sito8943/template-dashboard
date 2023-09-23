@@ -48,13 +48,11 @@ export async function fetchEvents() {
  *
  * @param {number} year
  * @param {number} month
- * @param {number} day
- * @param {string[]} events
- * @param {boolean} attributes
+ * @param {object} params
  * @returns
  */
-export async function lineChart(year, month, events) {
-  const encrypted = encrypt({ events }, config.crypto);
+export async function lineChart(year, month, params) {
+  const encrypted = encrypt(params, config.crypto);
   const response = await fetch(
     `${config.apiUrl}analytics/line-chart?params=${encodeURIComponent(
       encrypted

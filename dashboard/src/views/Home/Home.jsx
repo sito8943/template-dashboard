@@ -34,7 +34,7 @@ function Home() {
   return (
     <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-col gap-5 relative">
       <h2>{languageState.texts.analytics.title}</h2>
-      {charts.map((chart) => (
+      {charts.map((chart, i) => (
         <ChartBox key={chart.id} onDelete={() => deleteChart(i)} />
       ))}
       <button

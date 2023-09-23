@@ -40,45 +40,60 @@ function LineComponent() {
   );
 
   const [eventList, setEventList] = useState([]);
-  const [eventsSelected, setEventsSelected] = useState([]);
+  const [targetSelected, setTargetSelected] = useState([]);
+
+  const toggleEventSelected = (i) => {
+    const newTargetSelected = [...targetSelected];
+    newTargetSelected[i].active = !newTargetSelected[i].active;
+    // @ts-ignore
+    setTargetSelected(newTargetSelected);
+    localFetch();
+  };
+
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(0);
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  const [empty, setEmpty] = useState(false);
+  const [empty, setEmpty] = useState(true);
 
   const colors = { red: "#FF0000", green: "#00FF00" };
 
-  const localFetch = useCallback(
-    async (list) => {
-      try {
-        setEmpty(false);
-        const response = await lineChart(year, month, list);
-        const { series, categories } = await response.json();
-        setSeries(
-          series.map((item) => ({ ...item, color: colors[item.color] }))
+  const [toFetch, setToFetch] = useState("events");
+
+  const localFetch = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await lineChart(year, month, {
+        toFetch,
+        ids: targetSelected.filter((target) => target.active),
+      });
+      const { series, categories } = await response.json();
+      setSeries(
+        series.map((item) => ({
+          ...item,
+          color: colors[item.color],
+        }))
+      );
+      if (!series.length || !categories.length) setEmpty(true);
+      else setEmpty(false);
+      setTargetSelected(series.map((item) => ({ ...item, active: true })));
+      if (month)
+        setCategories(
+          categories.map(
+            (category) =>
+              `${category} ${languageState.texts.analytics.reducedMonths[month]}`
+          )
         );
-        if (!series.length || !categories.length) setEmpty(true);
-        setEventsSelected(series);
-        if (month)
-          setCategories(
-            categories.map(
-              (category) =>
-                `${category} ${languageState.texts.analytics.reducedMonths[month]}`
-            )
-          );
-        else setCategories(languageState.texts.analytics.reducedMonths);
-      } catch (err) {
-        console.error(err);
-        if (String(err) === "AxiosError: Network Error")
-          showNotification("error", languageState.texts.errors.notConnected);
-        else showNotification("error", String(err));
-      }
-      setLoading(false);
-    },
-    [year, month, languageState]
-  );
+      else setCategories(languageState.texts.analytics.reducedMonths);
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", languageState.texts.errors.notConnected);
+      else showNotification("error", String(err));
+    }
+    setLoading(false);
+  }, [toFetch, year, month, languageState, targetSelected]);
 
   const localFetchEvents = async () => {
     setLoading(true);
@@ -99,6 +114,10 @@ function LineComponent() {
     localFetchEvents();
   }, []);
 
+  useEffect(() => {
+    localFetch();
+  }, [toFetch]);
+
   /**
    *
    * @param {number[]} array
@@ -112,33 +131,39 @@ function LineComponent() {
   }
 
   const printEvents = useMemo(() => {
-    return eventsSelected.map((event) => (
-      <div key={event.name}>
-        <h5 className="inline-flex items-center text-gray-500 dark:text-gray-400 leading-none font-normal mb-2">
-          {event.name}{" "}
-          <span className={`${event.color} ml-1 -mt-[5px] text-4xl`}>•</span>
-        </h5>
-        <p className="text-gray-900 dark:text-white text-2xl leading-none font-bold">
-          {event.data ? sumOfArray(event.data) : null}
-        </p>
-      </div>
+    return targetSelected.map((event, i) => (
+      <li key={event.name}>
+        <button
+          onClick={() => toggleEventSelected(i)}
+          name={`toggle-${event.name}`}
+          type="button"
+          className={`${
+            event.active
+              ? "bg-primary border-primary"
+              : "border-placeholder-dark hover:bg-primary hover:border-primary"
+          } !py-0 transition border-2 rounded-3xl button !pointer-default`}
+        >
+          <p className="inline-flex items-center leading-none font-normal">
+            {event.name}{" "}
+            <span className="text-sm ml-1">
+              ({event.data ? sumOfArray(event.data) : null})
+            </span>
+            <span className={`${event.color} ml-1 -mt-[5px] text-4xl`}>•</span>
+          </p>
+        </button>
+      </li>
     ));
-  }, [eventsSelected]);
-
-  const [events, setEvents] = useState("events");
+  }, [targetSelected]);
 
   return (
     <div className="chart">
       <div className="flex justify-between mb-5 items-center">
-        <div className="grid gap-4 grid-cols-2">{printEvents}</div>
-
-        <div className="p-3 flex gap-3 pr-10" aria-labelledby="dateRangeButton">
+        <div className="p-3 flex gap-3 pl-0" aria-labelledby="dateRangeButton">
           <select
-            value={events}
+            value={toFetch}
             className="input primary !py-0 h-[30px]"
             onChange={(e) => {
-              setEvents(e.target.value);
-              localFetch({ events: e.target.value });
+              setToFetch(e.target.value);
             }}
           >
             {Object.keys(languageState.texts.analytics.models).map((model) => (
@@ -181,7 +206,7 @@ function LineComponent() {
           )}
         </Fragment>
       )}
-
+      <ul className="flex flex-wrap gap-2">{printEvents}</ul>
       {/* <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
         <div className="pt-5">
           <Link to="/" className="button primary">

@@ -259,30 +259,37 @@ router.get("/pie-chart", [validator], async (req, res) => {
 });
 
 router.get("/line-chart", [validator], async (req, res) => {
-  const { params, year, month, attributes } = req.query;
+  const { params, year, month } = req.query;
   const decrypted = JSON.parse(decrypt(params));
-  const { events } = decrypted;
+  const { toFetch } = decrypted;
+  console.log(toFetch);
   const date = prepareDate(Number(year), Number(month));
   try {
+    let response = undefined
+    switch (toFetch) {
+      case "attributes":
+        break;
+      default: // events
+        response = await select(
+          ["basictrigger", "analytics"],
+          [],
+          [
+            {
+              attribute: "basictrigger.date",
+              operator: "<=",
+              value: Number(date),
+            },
+            {
+              attribute: "basictrigger.idEvent",
+              operator: "=",
+              value: "analytics.id",
+              logic: "AND",
+            },
+          ]
+        );
+        break;
+    }
     // fetching by day
-    const response = await select(
-      ["basictrigger", "analytics"],
-      [],
-      [
-        {
-          attribute: "basictrigger.date",
-          operator: "<=",
-          value: Number(date),
-        },
-        {
-          attribute: "basictrigger.idEvent",
-          operator: "=",
-          value: "analytics.id",
-          logic: "AND",
-        },
-        ...prepareEventQuery(events),
-      ]
-    );
     const rows = response.rows;
     // grouping by id
 
@@ -325,7 +332,7 @@ router.get("/line-chart", [validator], async (req, res) => {
   }
 });
 
-router.post("/trigger", async (req, res) => {});
+router.post("/trigger", async (req, res) => { });
 
 router.post("/all-of", async (req, res) => {
   const { params, year, month } = req.query;

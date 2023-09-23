@@ -47,15 +47,46 @@ h3 {
 }
 
 .icon-button {
-  @apply w-10 h-10 text-primary dark:text-primary rounded-full flex items-center justify-center text-xl transition hover:bg-pdark-hover;
+  @apply w-10 h-10 min-w-[40px] min-h-[40px] text-primary dark:text-primary rounded-full flex items-center justify-center text-xl transition hover:bg-pdark-hover;
 }
 
-.primary {
-  @apply border-2 border-primary bg-primary transition hover:bg-pdark text-white font-semibold;
+.secondary.submit {
+  @apply border-secondary bg-secondary hover:bg-sdark hover:border-sdark text-white;
 }
 
-.secondary {
-  @apply border-2 border-primary transition hover:bg-pdark dark:text-white;
+.primary.submit {
+  @apply border-primary bg-primary hover:bg-pdark hover:border-pdark text-white;
+}
+
+.submit {
+  @apply border-2;
+}
+
+.primary.input,
+.primary.outlined {
+  @apply bg-primary border-primary hover:bg-primary text-white;
+}
+.secondary.input,
+.secondary.outlined {
+  @apply border-secondary hover:bg-primary text-white;
+}
+.primary.link {
+  @apply hover:bg-primary text-white;
+}
+.secondary.link {
+  @apply hover:bg-secondary text-white;
+}
+
+.outlined {
+  @apply border-2;
+}
+
+button {
+  @apply transition duration-300 font-semibold;
+}
+
+.link {
+  @apply transition;
 }
 
 .input-control {
@@ -65,10 +96,6 @@ h3 {
 .input,
 .button {
   @apply px-5 py-2 rounded-3xl;
-}
-
-.button {
-  @apply cursor-pointer;
 }
 
 .input:disabled {
