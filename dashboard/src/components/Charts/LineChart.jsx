@@ -7,6 +7,9 @@ function LineChart({ series, categories }) {
     // ApexCharts options and config
     let options = {
       chart: {
+        zoom: {
+          enabled: false,
+        },
         height: "100%",
         maxWidth: "100%",
         type: "line",

@@ -47,7 +47,6 @@ function LineComponent() {
     newTargetSelected[i].active = !newTargetSelected[i].active;
     // @ts-ignore
     setTargetSelected(newTargetSelected);
-    localFetch();
   };
 
   const [year, setYear] = useState(new Date().getFullYear());
@@ -61,48 +60,59 @@ function LineComponent() {
 
   const [toFetch, setToFetch] = useState("events");
 
-  const localFetch = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await lineChart(year, month, {
-        toFetch,
-        ids: targetSelected
-          .filter((target) => target.active)
-          .map((target) => target.id),
-      });
-      const { series, categories } = await response.json();
-      setSeries(
-        series.map((item) => ({
-          ...item,
-          color: colors[item.color],
-        }))
-      );
-      if (!series.length || !categories.length) setEmpty(true);
-      else setEmpty(false);
-      if (!targetSelected.length)
-        setTargetSelected(series.map((item) => ({ ...item, active: true })));
-      if (month)
-        setCategories(
-          categories.map(
-            (category) =>
-              `${category} ${languageState.texts.analytics.reducedMonths[month]}`
-          )
+  const localFetch = useCallback(
+    async (options) => {
+      setLoading(true);
+      try {
+        const response = await lineChart(
+          options.year || year,
+          options.month || month,
+          {
+            toFetch: toFetch,
+            ids: targetSelected
+              .filter((target) => target.active)
+              .map((target) => target.id),
+          }
         );
-      else setCategories(languageState.texts.analytics.reducedMonths);
-    } catch (err) {
-      console.error(err);
-      if (String(err) === "AxiosError: Network Error")
-        showNotification("error", languageState.texts.errors.notConnected);
-      else showNotification("error", String(err));
-    }
-    setLoading(false);
-  }, [toFetch, year, month, languageState, targetSelected]);
+        const { series, categories } = await response.json();
+
+        setSeries(
+          series.map((item) => ({
+            ...item,
+            color: colors[item.color],
+          }))
+        );
+        if (!series.length || !categories.length) setEmpty(true);
+        else setEmpty(false);
+        // updating data
+        const newTargetSelected = [...targetSelected];
+        series.forEach((serial) => {
+          const indexOf = newTargetSelected.findIndex(
+            (target) => target.id === serial.id
+          );
+          if (indexOf > -1) newTargetSelected[indexOf].data = serial.data;
+        });
+        setTargetSelected(newTargetSelected);
+        console.log("month", month);
+        if (month) setCategories(categories.map((category) => `${category}`));
+        else setCategories(languageState.texts.analytics.reducedMonths);
+      } catch (err) {
+        console.error(err);
+        if (String(err) === "AxiosError: Network Error")
+          showNotification("error", languageState.texts.errors.notConnected);
+        else showNotification("error", String(err));
+      }
+      setLoading(false);
+    },
+    [toFetch, year, month, languageState, targetSelected]
+  );
 
   const localFetchEvents = async () => {
     setLoading(true);
     try {
       const response = await fetchEvents();
       const { list } = await response.json();
+      setTargetSelected(list.map((item) => ({ ...item, active: true })));
       setEventList(list);
     } catch (err) {
       console.error(err);
@@ -118,8 +128,8 @@ function LineComponent() {
   }, []);
 
   useEffect(() => {
-    localFetch();
-  }, [toFetch]);
+    if (targetSelected.length) localFetch({});
+  }, [toFetch, eventList, year, month]);
 
   /**
    *
@@ -165,9 +175,7 @@ function LineComponent() {
           <select
             value={toFetch}
             className="input primary !py-0 h-[30px]"
-            onChange={(e) => {
-              setToFetch(e.target.value);
-            }}
+            onChange={(e) => setToFetch(e.target.value)}
           >
             {Object.keys(languageState.texts.analytics.models).map((model) => (
               <option key={model} value={model}>
@@ -177,7 +185,9 @@ function LineComponent() {
           </select>
           <select
             value={month}
-            onChange={(e) => setMonth(Number(e.target.value))}
+            onChange={(e) => {
+              setMonth(Number(e.target.value));
+            }}
             className="input primary !py-0 h-[30px]"
           >
             <option value={0}>{languageState.texts.inputs.month}</option>
@@ -192,7 +202,9 @@ function LineComponent() {
             name="year"
             type="number"
             value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
+            onChange={(e) => {
+              setYear(Number(e.target.value));
+            }}
             className="input primary !py-0 h-[30px] w-[120px]"
             placeholder={languageState.texts.inputs.year}
           />

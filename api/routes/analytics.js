@@ -160,6 +160,7 @@ const prepareEventQuery = (events) =>
 router.get("/list", [validator], async (req, res) => {
   try {
     const allEvents = await select("analytics", []);
+
     const events = allEvents.rows;
     console.info(`${events.length} retrieved successfully`);
 
@@ -176,7 +177,7 @@ const prepareDate = (year, month) => {
     date.setFullYear(year);
     date.setMonth(11);
   }
-  if (month) date.setMonth(month - 1);
+  if (month) date.setMonth(month);
   return date.getTime();
 };
 
@@ -262,8 +263,32 @@ router.get("/line-chart", [validator], async (req, res) => {
   const { params, year, month } = req.query;
   const decrypted = JSON.parse(decrypt(params));
   const { toFetch, ids } = decrypted;
-  console.log(toFetch);
-  const date = prepareDate(Number(year), Number(month));
+
+
+  let monthQuery = []
+  if (Number(month)) {
+    const monthBefore = prepareDate(Number(year), Number(month) - 1);
+    const monthAfter = prepareDate(Number(year), Number(month) + 1);
+    monthQuery = [{
+      attribute: "basictrigger.date",
+      operator: "<",
+      value: Number(monthAfter),
+    },
+    {
+      attribute: "basictrigger.date",
+      operator: ">",
+      value: Number(monthBefore),
+      logic: "AND",
+    },]
+  }
+  else {
+    const date = prepareDate(Number(year), Number(month));
+    monthQuery = [{
+      attribute: "basictrigger.date",
+      operator: "<=",
+      value: Number(date),
+    }]
+  }
   try {
     let response = undefined
     switch (toFetch) {
@@ -274,11 +299,7 @@ router.get("/line-chart", [validator], async (req, res) => {
           ["basictrigger", "analytics"],
           [],
           [
-            {
-              attribute: "basictrigger.date",
-              operator: "<=",
-              value: Number(date),
-            },
+            ...monthQuery,
             {
               attribute: "basictrigger.idEvent",
               operator: "=",
@@ -304,6 +325,7 @@ router.get("/line-chart", [validator], async (req, res) => {
         Number(month),
         0
       ).getDate();
+      console.log(theYearMonthDate, year, month)
       categories = new Array(theYearMonthDate).fill(0);
     }
     rows.forEach((event) => {
