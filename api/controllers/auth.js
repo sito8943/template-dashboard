@@ -86,7 +86,11 @@ const login = async (user, password, remember, ip) => {
       value: data.id,
     });
     if (tokensResponse.rows.length)
-      return { status: 403, data: { error: "already logged" } };
+      await deleteDocuments("tokens", {
+        attribute: "idUser",
+        operator: "=",
+        value: data.id,
+      })
     // @ts-ignore
     if (data.pw.toLowerCase() === password.toLowerCase()) {
       // loading permissions
@@ -116,7 +120,7 @@ const login = async (user, password, remember, ip) => {
         /* It's encrypting the token */
         CryptoJS.AES.encrypt(
           `${user}[!]${data.id}[!]${ip}`,
-          config.crypto
+          config.crypto || ""
         ).toString();
 
       await update(
