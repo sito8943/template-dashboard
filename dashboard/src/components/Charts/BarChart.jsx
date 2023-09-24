@@ -66,7 +66,6 @@ function BarChart({ series, colors, categories }) {
         opacity: 1,
       },
     }; */
-    console.log(series);
     var options = {
       series: [
         {

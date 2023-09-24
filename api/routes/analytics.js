@@ -1,4 +1,5 @@
-var CryptoJS = require("crypto-js");
+// @ts-check
+
 
 const { select } = require("sito-node-mysql");
 
@@ -177,7 +178,7 @@ const prepareDate = (year, month) => {
     date.setFullYear(year);
     date.setMonth(11);
   }
-  if (month) date.setMonth(month);
+  if (month) date.setMonth(month - 1);
   return date.getTime();
 };
 
@@ -267,7 +268,7 @@ router.get("/line-chart", [validator], async (req, res) => {
 
   let monthQuery = []
   if (Number(month)) {
-    const monthBefore = prepareDate(Number(year), Number(month) - 1);
+    const monthBefore = prepareDate(Number(year), Number(month));
     const monthAfter = prepareDate(Number(year), Number(month) + 1);
     monthQuery = [{
       attribute: "basictrigger.date",
@@ -297,7 +298,7 @@ router.get("/line-chart", [validator], async (req, res) => {
       default: // events
         response = await select(
           ["basictrigger", "analytics"],
-          [],
+          ["basictrigger.date as triggerDate", "name", "slugName", "color", "basictrigger.idEvent as idEvent", "language", "country", "url", "referrer", "device"],
           [
             ...monthQuery,
             {
@@ -312,7 +313,7 @@ router.get("/line-chart", [validator], async (req, res) => {
         break;
     }
     // fetching by day
-    const rows = response.rows;
+    const rows = response?.rows;
     // grouping by id
 
     const resultObj = {};
@@ -325,7 +326,6 @@ router.get("/line-chart", [validator], async (req, res) => {
         Number(month),
         0
       ).getDate();
-      console.log(theYearMonthDate, year, month)
       categories = new Array(theYearMonthDate).fill(0);
     }
     rows.forEach((event) => {
@@ -338,16 +338,15 @@ router.get("/line-chart", [validator], async (req, res) => {
       // if not initialized creates copy of categories
       if (!resultObj[event.idEvent].data)
         resultObj[event.idEvent].data = [...categories];
-      const { date } = event;
-      const thatDate = new Date(date);
+      const { triggerDate } = event;
+      const thatDate = new Date(triggerDate);
       if (Number(year) && !Number(month))
         resultObj[event.idEvent].data[thatDate.getMonth()] += 1;
-      else resultObj[event.idEvent].data[thatDate.getDate()] += 1;
+      else resultObj[event.idEvent].data[thatDate.getDate() - 1] += 1;
     });
     categories.forEach((category, i) => {
       categories[i] = i + 1;
     });
-
     res.status(200).send({ series: Object.values(resultObj), categories });
   } catch (err) {
     console.error(err);

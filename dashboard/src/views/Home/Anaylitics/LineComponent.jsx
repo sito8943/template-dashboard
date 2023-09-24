@@ -93,7 +93,6 @@ function LineComponent() {
           if (indexOf > -1) newTargetSelected[indexOf].data = serial.data;
         });
         setTargetSelected(newTargetSelected);
-        console.log("month", month);
         if (month) setCategories(categories.map((category) => `${category}`));
         else setCategories(languageState.texts.analytics.reducedMonths);
       } catch (err) {
