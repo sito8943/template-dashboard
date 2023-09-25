@@ -50,10 +50,12 @@ h3 {
   @apply w-10 h-10 min-w-[40px] min-h-[40px] text-primary dark:text-primary rounded-full flex items-center justify-center text-xl transition hover:bg-pdark-hover;
 }
 
+.secondary.input,
 .secondary.submit {
   @apply border-secondary bg-secondary hover:bg-sdark hover:border-sdark text-white;
 }
 
+.primary.input,
 .primary.submit {
   @apply border-primary bg-primary hover:bg-pdark hover:border-pdark text-white;
 }
@@ -62,11 +64,10 @@ h3 {
   @apply border-2;
 }
 
-.primary.input,
 .primary.outlined {
-  @apply bg-primary border-primary hover:bg-primary text-white;
+  @apply border-primary hover:bg-primary text-white;
 }
-.secondary.input,
+
 .secondary.outlined {
   @apply border-secondary hover:bg-primary text-white;
 }
@@ -81,8 +82,13 @@ h3 {
   @apply border-2;
 }
 
+a,
 button {
-  @apply transition duration-300 font-semibold;
+  @apply transition duration-300;
+}
+
+button {
+  @apply font-semibold;
 }
 
 .link {

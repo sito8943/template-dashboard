@@ -17,21 +17,19 @@ function ModelNavigator({ collection }) {
     <nav className="flex gap-2 mt-5">
       <Link
         to={`/${collection}/list/`}
-        className={`small-button ${
+        className={`small-button primary ${
           location.pathname === `/${collection}/list` ||
           location.pathname === `/${collection}/list/`
-            ? "primary"
-            : "secondary"
+            ? "submit"
+            : "outlined"
         }`}
       >
         {buttons.list}
       </Link>
       <Link
         to={`/${collection}/insert`}
-        className={`small-button ${
-          location.pathname === `/${collection}/insert`
-            ? "primary"
-            : "secondary"
+        className={`small-button primary ${
+          location.pathname === `/${collection}/insert` ? "submit" : "outlined"
         }`}
       >
         {buttons.insert}

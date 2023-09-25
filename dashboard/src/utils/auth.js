@@ -18,8 +18,13 @@ export const getUserPermissions = () => {
 };
 
 export const getUserPhoto = () => {
-  const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
-  return data.photo;
+  try {
+    const data = JSON.parse(decrypt(localStorage.getItem(config.user)));
+    return data.photo;
+  } catch (err) {
+    console.error(err)
+  }
+  return undefined
 };
 
 export const getUserName = () => {
