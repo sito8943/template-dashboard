@@ -47,6 +47,7 @@ function LineComponent() {
     newTargetSelected[i].active = !newTargetSelected[i].active;
     // @ts-ignore
     setTargetSelected(newTargetSelected);
+    localFetch({ targetSelected: newTargetSelected });
   };
 
   const [year, setYear] = useState(new Date().getFullYear());
@@ -64,12 +65,13 @@ function LineComponent() {
     async (options) => {
       setLoading(true);
       try {
+        console.log(targetSelected);
         const response = await lineChart(
           options.year || year,
           options.month || month,
           {
             toFetch: toFetch,
-            ids: targetSelected
+            ids: (options.targetSelected || targetSelected)
               .filter((target) => target.active)
               .map((target) => target.id),
           }
