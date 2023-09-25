@@ -139,7 +139,7 @@ const allColors = [
 const prepareEventQuery = (events) =>
   events.map((event, i) => {
     const toReturn = {
-      attribute: "idEvent",
+      attribute: "basictrigger.idEvent",
       operator: "=",
       value: event,
     };
@@ -158,14 +158,33 @@ const prepareEventQuery = (events) =>
     };
   });
 
-router.get("/list", [validator], async (req, res) => {
+router.get("/events", [validator], async (req, res) => {
   try {
     const allEvents = await select("analytics", []);
 
     const events = allEvents.rows;
     console.info(`${events.length} retrieved successfully`);
-
     res.status(200).send({ list: events });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err });
+  }
+});
+
+router.get("/attributes", [validator], async (req, res) => {
+
+  try {
+    const attributesResponse = await select("basictrigger", []);
+
+    const attributes = attributesResponse.rows;
+    let result = []
+    if (attributes.length) {
+      Object.keys(attributes[0]).forEach((key, i) => {
+        result.push({ name: key, color: allColors[i] })
+      })
+      console.info(`${result.length} retrieved successfully`);
+    }
+    res.status(200).send({ list: result });
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: err });
@@ -294,11 +313,19 @@ router.get("/line-chart", [validator], async (req, res) => {
     let response = undefined
     switch (toFetch) {
       case "attributes":
+        response = await select(
+          ["basictrigger"],
+          ["basictrigger.date as triggerDate", "basictrigger.idEvent as id", "language", "country", "url", "referrer", "device"],
+          [
+            ...monthQuery,
+            ...prepareEventQuery(ids)
+          ]
+        );
         break;
       default: // events
         response = await select(
           ["basictrigger", "analytics"],
-          ["basictrigger.date as triggerDate", "name", "slugName", "color", "basictrigger.idEvent as idEvent", "language", "country", "url", "referrer", "device"],
+          ["basictrigger.date as triggerDate", "name", "slugName", "color", "basictrigger.idEvent as id", "language", "country", "url", "referrer", "device"],
           [
             ...monthQuery,
             {
@@ -328,21 +355,22 @@ router.get("/line-chart", [validator], async (req, res) => {
       ).getDate();
       categories = new Array(theYearMonthDate).fill(0);
     }
+    console.log(rows)
     rows.forEach((event) => {
-      if (!resultObj[event.idEvent])
-        resultObj[event.idEvent] = {
-          id: event.idEvent,
+      if (!resultObj[event.id])
+        resultObj[event.id] = {
+          id: event.id,
           name: event.name,
           color: event.color,
         };
       // if not initialized creates copy of categories
-      if (!resultObj[event.idEvent].data)
-        resultObj[event.idEvent].data = [...categories];
+      if (!resultObj[event.id].data)
+        resultObj[event.id].data = [...categories];
       const { triggerDate } = event;
       const thatDate = new Date(triggerDate);
       if (Number(year) && !Number(month))
-        resultObj[event.idEvent].data[thatDate.getMonth()] += 1;
-      else resultObj[event.idEvent].data[thatDate.getDate() - 1] += 1;
+        resultObj[event.id].data[thatDate.getMonth()] += 1;
+      else resultObj[event.id].data[thatDate.getDate() - 1] += 1;
     });
     categories.forEach((category, i) => {
       categories[i] = i + 1;

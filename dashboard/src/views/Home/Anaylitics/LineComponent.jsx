@@ -65,19 +65,19 @@ function LineComponent() {
     async (options) => {
       setLoading(true);
       try {
-        console.log(targetSelected);
+        console.log(options.targetSelected, targetSelected);
         const response = await lineChart(
           options.year || year,
           options.month || month,
           {
-            toFetch: toFetch,
+            toFetch: options.toFetch || toFetch,
             ids: (options.targetSelected || targetSelected)
               .filter((target) => target.active)
               .map((target) => target.id),
           }
         );
         const { series, categories } = await response.json();
-
+        console.log(series, categories);
         setSeries(
           series.map((item) => ({
             ...item,
@@ -87,7 +87,9 @@ function LineComponent() {
         if (!series.length || !categories.length) setEmpty(true);
         else setEmpty(false);
         // updating data
-        const newTargetSelected = [...targetSelected];
+        const newTargetSelected = [
+          ...(options.targetSelected || targetSelected),
+        ];
         series.forEach((serial) => {
           const indexOf = newTargetSelected.findIndex(
             (target) => target.id === serial.id
@@ -109,13 +111,15 @@ function LineComponent() {
     [toFetch, year, month, languageState, targetSelected]
   );
 
-  const localFetchEvents = async () => {
+  const localFetchEvents = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchEvents();
+      const response = await fetchEvents(toFetch);
       const { list } = await response.json();
-      setTargetSelected(list.map((item) => ({ ...item, active: true })));
+      const newTargetSelected = list.map((item) => ({ ...item, active: true }));
+      setTargetSelected(newTargetSelected);
       setEventList(list);
+      localFetch({ toFetch, targetSelected: newTargetSelected });
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -123,15 +127,15 @@ function LineComponent() {
       else showNotification("error", String(err));
     }
     setLoading(false);
-  };
+  }, [toFetch]);
 
   useEffect(() => {
     localFetchEvents();
-  }, []);
+  }, [toFetch]);
 
   useEffect(() => {
     if (targetSelected.length) localFetch({});
-  }, [toFetch, eventList, year, month]);
+  }, [year, month]);
 
   /**
    *
