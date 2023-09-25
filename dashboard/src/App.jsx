@@ -34,6 +34,9 @@ import { validateBasicKey } from "./services/auth";
 
 import config from "./config";
 
+// components
+import Loading from "./components/Loading/Loading";
+
 // lazy
 const Notification = loadable(() =>
   import("./components/Notification/Notification")
@@ -61,9 +64,9 @@ function App() {
   const fetch = async () => {
     try {
       const value = await validateBasicKey();
-      if (!value) {
-        logoutUser();
-      } else setUserState({ type: "logged-in", user: fromLocal() });
+      if (!value) logoutUser();
+      else setUserState({ type: "logged-in", user: fromLocal() });
+      setLoading(false);
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -111,8 +114,7 @@ function App() {
       console.error(err);
     }
 
-    if (userLogged()) fetch();
-    setLoading(false);
+    fetch();
   }, []);
 
   useEffect(() => {
@@ -143,21 +145,25 @@ function App() {
   return (
     <div className="w-full min-h-screen dark:bg-dark-background2 bg-light-background2 transition">
       <Notification />
-      <BrowserRouter>
-        <Routes>
-          <Route exact path="/auth" element={<Auth />}>
-            <Route index element={<SignIn />} />
-            <Route exact path="/auth/recovery" element={<Recovery />} />
-          </Route>
-          <Route exact path="/" element={<View />}>
-            <Route index element={<Home />} />
-            <Route exact path="/users/*" element={<Users />} />
-            <Route exact path="/settings/" element={<Settings />} />
-          </Route>
-          <Route exact path="/sign-out" element={<SignOut />} />
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      {!loading ? (
+        <BrowserRouter>
+          <Routes>
+            <Route exact path="/auth" element={<Auth />}>
+              <Route index element={<SignIn />} />
+              <Route exact path="/auth/recovery" element={<Recovery />} />
+            </Route>
+            <Route exact path="/" element={<View />}>
+              <Route index element={<Home />} />
+              <Route exact path="/users/*" element={<Users />} />
+              <Route exact path="/settings/" element={<Settings />} />
+            </Route>
+            <Route exact path="/sign-out" element={<SignOut />} />
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      ) : (
+        <Loading className="w-full h-screen fixed top-0 left-0 z-40" />
+      )}
     </div>
   );
 }

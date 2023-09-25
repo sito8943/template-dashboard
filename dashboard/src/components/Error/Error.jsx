@@ -25,9 +25,9 @@ const Error = (props) => {
       <p className="text-error perror">{text}</p>
       {onRetry ? (
         <button
+          name="reload"
           onClick={onRetry}
-          className="submit"
-          name={error.retry}
+          className="primary submit"
           aria-label={languageState.texts.ariaLabels.retry}
         >
           {error.retry}

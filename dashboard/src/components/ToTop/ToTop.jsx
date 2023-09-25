@@ -49,7 +49,7 @@ const ToTop = ({ parent, className }) => {
   return (
     <button
       type="button"
-      name={languageState.texts.ariaLabels.toTop}
+      name="to-top"
       aria-label={languageState.texts.ariaLabels.toTop}
       onClick={handleToTop}
       style={{

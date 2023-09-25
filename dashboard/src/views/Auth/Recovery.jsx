@@ -1,11 +1,10 @@
-import { useEffect, useCallback, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useCallback, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
-import { useUser } from "../../contexts/UserProvider";
 import { useLanguage } from "../../contexts/LanguageProvider";
 
 // components
@@ -30,14 +29,6 @@ function Recovery() {
   const handleEmail = useCallback((e) => {
     setEmail(e.target.value);
   }, []);
-
-  const navigate = useNavigate();
-
-  const { userState } = useUser();
-
-  useEffect(() => {
-    if (userState.user) navigate("/");
-  });
 
   return (
     <form

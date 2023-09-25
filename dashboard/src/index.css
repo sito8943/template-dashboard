@@ -24,7 +24,7 @@ input {
 }
 
 .main {
-  min-height: calc(100vh - 56px);
+  height: calc(100vh - 56px);
   @apply flex items-start justify-start;
 }
 

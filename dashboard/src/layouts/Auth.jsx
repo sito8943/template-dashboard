@@ -1,5 +1,8 @@
-import { useCallback } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { useEffect, useCallback } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+
+// contexts
+import { useUser } from "../contexts/UserProvider";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +15,15 @@ import { useLanguage } from "../contexts/LanguageProvider";
 import { utilsToggleTheme } from "../utils/utils.js";
 
 function Auth() {
+  const navigate = useNavigate();
+
+  const { userState } = useUser();
+
+  useEffect(() => {
+    console.log(userState);
+    if (userState.user) navigate("/");
+  }, [userState]);
+
   const { modeState, toggleModeState } = useMode();
 
   const { languageState } = useLanguage();

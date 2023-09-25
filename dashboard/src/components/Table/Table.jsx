@@ -95,9 +95,9 @@ function Table({
             ) : null}
             <button
               name="delete-row"
+              className="icon-button"
               aria-label={languageState.texts.ariaLabels.deleteRow}
               onClick={() => onDelete(row.id)}
-              className="icon-button"
             >
               <FontAwesomeIcon icon={faTrash} />
             </button>

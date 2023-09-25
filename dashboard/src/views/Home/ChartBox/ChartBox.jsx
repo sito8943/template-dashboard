@@ -5,9 +5,11 @@ import {
   faPieChart,
   faLineChart,
   faChartColumn,
-  faTrash,
   faCancel,
 } from "@fortawesome/free-solid-svg-icons";
+
+// contexts
+import { useLanguage } from "../../../contexts/LanguageProvider";
 
 // components
 import PieComponent from "../Anaylitics/PieComponent";
@@ -18,6 +20,8 @@ import BarComponent from "../Anaylitics/BarComponent";
 import "./style.css";
 
 function ChartBox({ onDelete }) {
+  const { languageState } = useLanguage();
+
   const [chart, setChart] = useState(0);
 
   const createPie = () => setChart(1);
@@ -28,13 +32,31 @@ function ChartBox({ onDelete }) {
     <div className={`appear chart-box ${chart === 0 ? "min-h-[320px]" : ""}`}>
       {chart === 0 ? (
         <Fragment>
-          <button onClick={createPie} type="button" className="icon-button">
+          <button
+            type="button"
+            onClick={createPie}
+            className="icon-button"
+            name="create-pie-chart"
+            aria-label={languageState.texts.ariaLabels.createPieChart}
+          >
             <FontAwesomeIcon icon={faPieChart} />
           </button>
-          <button onClick={createBar} type="button" className="icon-button">
+          <button
+            type="button"
+            onClick={createBar}
+            className="icon-button"
+            name="create-bar-chart"
+            aria-label={languageState.texts.ariaLabels.createBarChart}
+          >
             <FontAwesomeIcon icon={faChartColumn} />
           </button>
-          <button onClick={createLine} type="button" className="icon-button">
+          <button
+            type="button"
+            onClick={createLine}
+            className="icon-button"
+            name="create-line-chart"
+            aria-label={languageState.texts.ariaLabels.createLineChart}
+          >
             <FontAwesomeIcon icon={faLineChart} />
           </button>
         </Fragment>

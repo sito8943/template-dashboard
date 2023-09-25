@@ -147,6 +147,10 @@
       "security": { "title": "Seguridad" }
     },
     "ariaLabels": {
+      "createPieChart": "Crear gráfico pastel",
+      "createBarChart": "Crear gráfico de barras",
+      "createLineChart": "Crear gráfico de líneas",
+      "addChart": "Agregar gráfico",
       "toTop": "Ir al tope",
       "tableTab": "Acción",
       "login": "Iniciar sesión",

@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useEffect, useReducer, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // contexts
@@ -19,8 +18,6 @@ import { deleteModel } from "../../services/post";
 import { getUserName } from "../../utils/auth";
 
 function List({ collection, additionalQueries, visitable, notEditable }) {
-  const navigate = useNavigate();
-
   const { userState } = useUser();
   const { languageState } = useLanguage();
 
@@ -43,10 +40,6 @@ function List({ collection, additionalQueries, visitable, notEditable }) {
   );
 
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!userState.user) navigate("/auth/");
-  }, [useState]);
 
   const listReducer = (old, action) => {
     const { type } = action;

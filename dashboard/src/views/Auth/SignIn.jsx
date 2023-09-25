@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState, Fragment } from "react";
+import { useCallback, useMemo, useState, Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { createCookie } from "some-javascript-utils/browser";
@@ -68,16 +68,9 @@ function SignIn() {
 
   const navigate = useNavigate();
 
-  const { userState, setUserState } = useUser();
+  const { setUserState } = useUser();
 
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (userState.user) navigate("/");
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-  }, [userState]);
 
   const showNotification = useCallback(
     (ntype, message) =>

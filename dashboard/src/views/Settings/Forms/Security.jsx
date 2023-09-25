@@ -154,7 +154,7 @@ function Security() {
       <button
         type="submit"
         name="save-new-password"
-        className="primary button mt-2"
+        className="primary submit button mt-2"
         aria-label={languageState.texts.ariaLabels.saveNewPassword}
       >
         {buttons.save}

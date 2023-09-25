@@ -1,26 +1,17 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { v4 } from "uuid";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
-import { useUser } from "../../contexts/UserProvider";
 import { useLanguage } from "../../contexts/LanguageProvider";
 
 // components
 import ChartBox from "./ChartBox/ChartBox";
 
 function Home() {
-  const navigate = useNavigate();
-
-  const { userState } = useUser();
   const { languageState } = useLanguage();
-
-  useEffect(() => {
-    if (!userState.user) navigate("/auth/");
-  }, [userState]);
 
   const [charts, setCharts] = useState([{ id: v4() }]);
 
@@ -38,9 +29,11 @@ function Home() {
         <ChartBox key={chart.id} onDelete={() => deleteChart(i)} />
       ))}
       <button
-        className="chart-box appear !min-h-[120px]"
         type="button"
         onClick={addChartBox}
+        name="add-chart"
+        aria-label={languageState.texts.ariaLabels.addChart}
+        className="chart-box appear !min-h-[120px]"
       >
         <FontAwesomeIcon icon={faAdd} className="icon-button" />
       </button>

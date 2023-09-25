@@ -96,9 +96,9 @@ function Navbar() {
           </Link>
         ) : null}
         <button
+          onClick={openNotifications}
           name="notifications"
           className="icon-button relative"
-          onClick={openNotifications}
           aria-label={languageState.texts.ariaLabels.notifications}
         >
           {notifications.length ? <Badge /> : null}

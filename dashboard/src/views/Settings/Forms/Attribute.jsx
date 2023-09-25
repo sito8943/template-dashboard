@@ -129,7 +129,7 @@ function Attribute({ attribute }) {
       <button
         type="submit"
         name={`save-${attribute}`}
-        className="primary button mt-2"
+        className="primary button submit mt-2"
         aria-label={`${languageState.texts.ariaLabels.saveAttribute} ${attribute}`}
       >
         {buttons.save}

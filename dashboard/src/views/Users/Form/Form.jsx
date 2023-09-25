@@ -402,9 +402,9 @@ function Form() {
         <div className="mt-3">
           <button
             name="save"
-            aria-label={languageState.texts.ariaLabels.save}
             type="submit"
-            className="primary button"
+            className="primary button submit"
+            aria-label={languageState.texts.ariaLabels.save}
           >
             {buttons.save}
           </button>

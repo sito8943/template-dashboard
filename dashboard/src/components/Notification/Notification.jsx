@@ -79,8 +79,8 @@ export default function Notification() {
         >
           <button
             onClick={handleClose}
+            name="close-notification"
             className="absolute top-1 right-2"
-            name={languageState.texts.ariaLabels.closeNotification}
             aria-label={languageState.texts.ariaLabels.closeNotification}
           >
             <FontAwesomeIcon className="text-white" icon={faClose} />
