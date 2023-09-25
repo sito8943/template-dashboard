@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState } from "react";
+import { useEffect, useCallback, useMemo, useState, Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { createCookie } from "some-javascript-utils/browser";
@@ -154,7 +154,7 @@ function SignIn() {
   );
 
   return (
-    <>
+    <Fragment>
       {loading ? <Loading className="fixed-loading" /> : null}
       <form
         onSubmit={onSubmit}
@@ -234,7 +234,7 @@ function SignIn() {
           </button>
         </div>
       </form>
-    </>
+    </Fragment>
   );
 }
 

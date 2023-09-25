@@ -92,6 +92,7 @@ function LineComponent() {
           );
           if (indexOf > -1) newTargetSelected[indexOf].data = serial.data;
         });
+        // @ts-ignore
         setTargetSelected(newTargetSelected);
         if (month) setCategories(categories.map((category) => `${category}`));
         else setCategories(languageState.texts.analytics.reducedMonths);

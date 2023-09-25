@@ -1,5 +1,5 @@
 .main {
-  @apply flex flex-col gap-4 items-start justify-start p-5 w-[700px] transition shadow-xl shadow-dark-background mb-20;
+  @apply flex flex-col gap-4 items-start justify-start p-5 w-[500px] transition shadow-xl shadow-dark-background mb-20;
 }
 
 @media (max-width: 900px) {
