@@ -4,66 +4,33 @@ function LineChart({ series, categories }) {
   const [rChart, setRChart] = useState();
   useEffect(() => {
     if (rChart) rChart?.destroy();
-    // ApexCharts options and config
     let options = {
       chart: {
         zoom: {
           enabled: false,
         },
-        height: "100%",
+        height: 350,
         maxWidth: "100%",
         type: "line",
-        dropShadow: {
-          enabled: false,
-        },
-        toolbar: {
-          show: false,
-        },
       },
       tooltip: {
         enabled: true,
-        x: {
-          show: false,
-        },
       },
       dataLabels: {
         enabled: false,
       },
       stroke: {
-        width: 6,
+        width: 3,
         curve: "smooth",
       },
       grid: {
-        show: true,
-        strokeDashArray: 4,
-        padding: {
-          left: 2,
-          right: 2,
-          top: -26,
+        row: {
+          opacity: 0.5,
         },
       },
       series,
-      legend: {
-        show: false,
-      },
-
       xaxis: {
         categories,
-        labels: {
-          show: true,
-          style: {
-            cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400",
-          },
-        },
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
-      },
-      yaxis: {
-        show: false,
       },
     };
 

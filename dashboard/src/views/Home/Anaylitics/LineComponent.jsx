@@ -225,7 +225,6 @@ function LineComponent() {
           )}
         </Fragment>
       )}
-      <ul className="flex flex-wrap gap-2">{printChips}</ul>
     </div>
   );
 }
