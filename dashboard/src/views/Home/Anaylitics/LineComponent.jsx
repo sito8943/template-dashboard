@@ -124,7 +124,7 @@ function LineComponent() {
   }, []);
 
   useEffect(() => {
-    if (false) localFetch({});
+    fetch();
   }, [year, month]);
 
   /**
@@ -148,7 +148,10 @@ function LineComponent() {
           })}`}
         ></div>
         <p>
-          {element.name} <span className="text-sm text-placeholder-dark">{sumOfArray(element.data)}</span>
+          {element.name}{" "}
+          <span className="text-sm text-placeholder-dark">
+            {sumOfArray(element.data)}
+          </span>
         </p>
       </li>
     ));
