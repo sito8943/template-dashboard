@@ -1,86 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-function BarChart({ series, colors, categories }) {
-  // console.log(series, colors, categories);
+function BarChart({ series, categories }) {
+  const [rChart, setRChart] = useState();
 
   useEffect(() => {
-    /* const options = {
-      colors,
-      series,
-      chart: {
-        type: "bar",
-        height: "320px",
-        width: "100px",
-        toolbar: {
-          show: false,
-        },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: "70%",
-          borderRadiusApplication: "end",
-          borderRadius: 8, 
-        },
-      },
-      tooltip: {
-        shared: true,
-        intersect: false,
-        style: {},
-      },
-      states: {
-        hover: {
-          filter: {
-            type: "darken",
-            value: 1,
-          },
-        },
-      },
-      stroke: {
-        show: true,
-        width: 0,
-        colors: ["transparent"],
-      },
-      grid: {
-        show: false,
-        strokeDashArray: 4,
-        padding: {
-          left: 2,
-          right: 2,
-          top: -14,
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: true,
-      },
-      xaxis: {
-        floating: false,
-      },
-      yaxis: {
-        show: true,
-      },
-      fill: {
-        opacity: 1,
-      },
-    }; */
+    if (rChart) rChart?.destroy();
     var options = {
-      series: [
-        {
-          name: "Net Profit",
-          data: [0, 44, 55, 57, 56, 61, 58, 63, 60, 66, 0, 0],
-        },
-        {
-          name: "Revenue",
-          data: [76, 85, 101, 98, 87, 105, 91, 114, 94, 0, 0, 0],
-        },
-        {
-          name: "Free Cash Flow",
-          data: [35, 41, 36, 26, 45, 48, 52, 53, 41, 0, 0, 0],
-        },
-      ],
+      series,
       chart: {
         type: "bar",
         height: 350,
@@ -88,12 +14,16 @@ function BarChart({ series, colors, categories }) {
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: "55%",
+          columnWidth: "70%",
           endingShape: "rounded",
         },
       },
       dataLabels: {
-        enabled: false,
+        enabled: true,
+        formatter: function (val) {
+          return val;
+        },
+        offsetY: 20,
       },
       stroke: {
         show: true,
@@ -127,40 +57,21 @@ function BarChart({ series, colors, categories }) {
         options
       );
       chart.render();
+      setRChart(chart);
     }
-  }, []);
+    return () => {
+      if (rChart) rChart?.destroy();
+    };
+  }, [series, categories]);
 
   return <div id="column-chart"></div>;
 }
 
 BarChart.defaultProps = {
-  colors: ["#1A56DB", "#FDBA8C"],
   series: [
     {
-      name: "Organic",
-      color: "#1A56DB",
-      data: [
-        { x: "Mon", y: 231 },
-        { x: "Tue", y: 122 },
-        { x: "Wed", y: 63 },
-        { x: "Thu", y: 421 },
-        { x: "Fri", y: 122 },
-        { x: "Sat", y: 323 },
-        { x: "Sun", y: 111 },
-      ],
-    },
-    {
-      name: "Social media",
-      color: "#FDBA8C",
-      data: [
-        { x: "Mon", y: 232 },
-        { x: "Tue", y: 113 },
-        { x: "Wed", y: 341 },
-        { x: "Thu", y: 224 },
-        { x: "Fri", y: 522 },
-        { x: "Sat", y: 411 },
-        { x: "Sun", y: 243 },
-      ],
+      name: "Net Profit",
+      data: [0, 44, 55, 57, 56, 61, 58, 63, 60, 66, 0, 0],
     },
   ],
 };

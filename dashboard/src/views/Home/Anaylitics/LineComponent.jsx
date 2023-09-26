@@ -6,8 +6,6 @@ import React, {
   Fragment,
 } from "react";
 
-import { css } from "@emotion/css";
-
 // contexts
 import { useLanguage } from "../../../contexts/LanguageProvider";
 import { useNotification } from "../../../contexts/NotificationProvider";
@@ -128,36 +126,6 @@ function LineComponent() {
     fetch();
   }, [year, month, toFetch]);
 
-  /**
-   *
-   * @param {number[]} array
-   */
-  function sumOfArray(array) {
-    let sum = 0;
-    array.forEach((item) => {
-      sum += item;
-    });
-    return sum;
-  }
-
-  const printChips = useMemo(() => {
-    return series.map((element) => (
-      <li key={element.id} className="flex items-center gap-2">
-        <div
-          className={`w-2 h-2 mt-1 rounded-full ${css({
-            background: element.color,
-          })}`}
-        ></div>
-        <p>
-          {element.name}{" "}
-          <span className="text-sm text-placeholder-dark">
-            {sumOfArray(element.data)}
-          </span>
-        </p>
-      </li>
-    ));
-  }, [series]);
-
   return (
     <div className="chart">
       <div className="flex justify-between mb-5 items-center">
@@ -175,7 +143,7 @@ function LineComponent() {
           </select>
           {toFetch === "attributes" ? (
             <select
-              value={toFetch}
+              value={selectedAttribute}
               className="input primary !py-0 h-[30px]"
               onChange={(e) => setSelectedAttribute(e.target.value)}
             >

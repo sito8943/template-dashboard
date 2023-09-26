@@ -407,6 +407,132 @@ router.get("/line-chart", [validator], async (req, res) => {
   }
 });
 
+router.get("/bar-chart", [validator], async (req, res) => {
+  const { params, year, month } = req.query;
+  const decrypted = JSON.parse(decrypt(params));
+  const { toFetch, ids } = decrypted;
+
+  let monthQuery = []
+  if (Number(month)) {
+    const monthBefore = prepareDate(Number(year), Number(month));
+    const monthAfter = prepareDate(Number(year), Number(month) + 1);
+    monthQuery = [{
+      attribute: "basictrigger.date",
+      operator: "<",
+      value: Number(monthAfter),
+    },
+    {
+      attribute: "basictrigger.date",
+      operator: ">",
+      value: Number(monthBefore),
+      logic: "AND",
+    },]
+  }
+  else {
+    const date = prepareDate(Number(year), Number(month));
+    monthQuery = [{
+      attribute: "basictrigger.date",
+      operator: "<=",
+      value: Number(date),
+    }]
+  }
+  try {
+    let response = undefined
+    switch (toFetch) {
+      case "attributes":
+        response = await select(
+          ["basictrigger"],
+          ["basictrigger.date as triggerDate", "basictrigger.idEvent as id", ...ids],
+          [
+            ...monthQuery,
+          ]
+        );
+        break;
+      default: // events
+        response = await select(
+          ["basictrigger", "analytics"],
+          ["basictrigger.date as triggerDate", "name", "slugName", "color", "basictrigger.idEvent as id", "language", "country", "url", "referrer", "device"],
+          [
+            ...monthQuery,
+            {
+              attribute: "basictrigger.idEvent",
+              operator: "=",
+              value: "analytics.id",
+              logic: "AND",
+            },
+            ...prepareEventQuery(ids)
+          ]
+        );
+        break;
+    }
+    // fetching by day
+    const rows = response?.rows;
+    // grouping by id
+
+    const resultObj = {};
+    let categories = [];
+    // by year categories are 12 months
+    if (Number(year)) categories = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    if (Number(month)) {
+      const theYearMonthDate = new Date(
+        Number(year),
+        Number(month),
+        0
+      ).getDate();
+      categories = new Array(theYearMonthDate).fill(0);
+    }
+    switch (toFetch) {
+      case "attributes":
+        const [attribute] = ids
+        let colorCounter = 0;
+        rows.forEach((event) => {
+          if (!resultObj[event[attribute]]) {
+            resultObj[event[attribute]] = {
+              id: v4(),
+              name: event[attribute],
+            }
+            colorCounter += 1
+          }
+          // if not initialized creates copy of categories
+          if (!resultObj[event[attribute]].data)
+            resultObj[event[attribute]].data = [...categories];
+          const { triggerDate } = event;
+          const thatDate = new Date(triggerDate);
+          if (Number(year) && !Number(month))
+            resultObj[event[attribute]].data[thatDate.getMonth()] += 1;
+          else resultObj[event[attribute]].data[thatDate.getDate() - 1] += 1;
+        })
+        break;
+      default: // events
+        rows.forEach((event) => {
+          if (!resultObj[event.id])
+            resultObj[event.id] = {
+              id: event.id,
+              name: event.name,
+              color: event.color,
+            };
+          // if not initialized creates copy of categories
+          if (!resultObj[event.id].data)
+            resultObj[event.id].data = [...categories];
+          const { triggerDate } = event;
+          const thatDate = new Date(triggerDate);
+          if (Number(year) && !Number(month))
+            resultObj[event.id].data[thatDate.getMonth()] += 1;
+          else resultObj[event.id].data[thatDate.getDate() - 1] += 1;
+        });
+        break;
+    }
+
+    categories.forEach((category, i) => {
+      categories[i] = i + 1;
+    });
+    res.status(200).send({ series: Object.values(resultObj), categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: err });
+  }
+});
+
 router.post("/trigger", async (req, res) => { });
 
 router.post("/all-of", async (req, res) => {

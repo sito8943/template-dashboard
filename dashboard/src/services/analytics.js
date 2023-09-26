@@ -57,7 +57,6 @@ export async function fetchData(toFetch = "events") {
  * @returns
  */
 export async function lineChart(year, month, params) {
-  console.log(params)
   const encrypted = encrypt(params, config.crypto);
   const response = await fetch(
     `${config.apiUrl}analytics/line-chart?params=${encodeURIComponent(
@@ -79,15 +78,13 @@ export async function lineChart(year, month, params) {
  *
  * @param {number} year
  * @param {number} month
- * @param {number} day
- * @param {string[]} events
- * @param {boolean} attributes
+ * @param {object} params
  * @returns
  */
-export async function barChart(year, month, events) {
-  const encrypted = encrypt({ events }, config.crypto);
+export async function barChart(year, month, params) {
+  const encrypted = encrypt(params, config.crypto);
   const response = await fetch(
-    `${config.apiUrl}analytics/bar-chart?params=${encodeURIComponent(
+    `${config.apiUrl}analytics/line-chart?params=${encodeURIComponent(
       encrypted
     )}&year=${year}&month=${month}`,
     {

@@ -1,4 +1,3 @@
-// @ts-check
 import React, {
   useMemo,
   useEffect,
@@ -39,171 +38,140 @@ function BarComponent() {
     [setNotificationState]
   );
 
-  const [eventList, setEventList] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState();
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(0);
-  const [series, setSeries] = useState([]);
-  const [rColors, setColors] = useState([]);
 
+  // chart resources
+  const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [empty, setEmpty] = useState(false);
+
+  const [empty, setEmpty] = useState(true);
+
+  const [attributes, setAttributes] = useState([]);
+  const [eventList, setEventList] = useState([]);
+  const [selectedAttribute, setSelectedAttribute] = useState();
+  const [selectedEvent, setSelectedEvent] = useState();
+  const [toFetch, setToFetch] = useState("events");
 
   const colors = { red: "#FF0000", green: "#00FF00" };
 
-  const [total, setTotal] = useState(0);
-
-  const localFetchTriggers = useCallback(
+  const fetch = useCallback(
     async (options) => {
       setLoading(true);
-      if (selectedEvent) {
-        try {
-          setEmpty(false);
-          const response = await barChart(
-            options.year || year,
-            options.month || month,
-            [selectedEvent.id]
-          );
-          const { series, categories } = await response.json();
-          const newColors = [];
-          let newTotal = 0;
-          setSeries(
-            series.map((item) => {
-              item.data.forEach((num) => {
-                newTotal += num;
-              });
-              newColors.push(colors[item.color]);
-              item.color = colors[item.color];
-              delete item.id;
-              return { ...item };
-            })
-          );
-          setTotal(newTotal);
-          if (!series.length || !categories.length) setEmpty(true);
-          setSeries(series);
-          if (month)
-            setCategories(
-              categories.map(
-                (category) =>
-                  `${category} ${languageState.texts.analytics.reducedMonths[month]}`
-              )
-            );
-          else setCategories(languageState.texts.analytics.reducedMonths);
-          // @ts-ignore
-          setColors(newColors);
-        } catch (err) {
-          console.error(err);
-          if (String(err) === "AxiosError: Network Error")
-            showNotification("error", languageState.texts.errors.notConnected);
-          else showNotification("error", String(err));
-        }
+      try {
+        const ids = toFetch === "attributes" ? [selectedAttribute] : [];
+        const response = await barChart(year, month, {
+          toFetch,
+          ids,
+        });
+        const { series, categories } = await response.json();
+        setSeries(
+          series.map((item) => ({
+            ...item,
+            color: colors[item.color],
+          }))
+        );
+        if (!series.length || !categories.length) setEmpty(true);
+        else setEmpty(false);
+        if (month) setCategories(categories.map((category) => `${category}`));
+        else setCategories(languageState.texts.analytics.reducedMonths);
+      } catch (err) {
+        console.error(err);
+        if (String(err) === "AxiosError: Network Error")
+          showNotification("error", languageState.texts.errors.notConnected);
+        else showNotification("error", String(err));
       }
       setLoading(false);
     },
-    [year, month, selectedEvent, languageState]
+    [toFetch, year, month, languageState]
   );
 
-  const localFetchEvents = async () => {
+  const fetchAttributes = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchData();
+      const response = await fetchData("attributes");
       const { list } = await response.json();
-      setEventList(list);
-      setSelectedEvent(list[0]);
+      setAttributes(list);
+      setSelectedAttribute(list[0].name);
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
         showNotification("error", languageState.texts.errors.notConnected);
       else showNotification("error", String(err));
     }
-  };
+    setLoading(false);
+  }, [toFetch]);
+
+  const fetchEvents = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchData(toFetch);
+      const { list } = await response.json();
+      setEventList(list);
+      setSelectedEvent(0);
+      fetch();
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", languageState.texts.errors.notConnected);
+      else showNotification("error", String(err));
+    }
+    setLoading(false);
+  }, [toFetch]);
 
   useEffect(() => {
-    localFetchEvents();
+    fetchEvents();
+    fetchAttributes();
   }, []);
 
   useEffect(() => {
-    localFetchTriggers({});
-  }, [selectedEvent]);
-
-  /**
-   *
-   * @param {number[]} array
-   */
-  function sumOfArray(array) {
-    let sum = 0;
-    array.forEach((item) => {
-      sum += item;
-    });
-    return sum;
-  }
-
-  function formatNumber(number) {
-    if (number >= 1e12) {
-      return (number / 1e12).toFixed(1) + "B";
-    } else if (number >= 1e9) {
-      return (number / 1e9).toFixed(1) + "M";
-    } else if (number >= 1e6) {
-      return (number / 1e6).toFixed(1) + "M";
-    } else if (number >= 1e3) {
-      return (number / 1e3).toFixed(1) + "k";
-    } else {
-      return number.toString();
-    }
-  }
+    fetch();
+  }, [year, month, toFetch]);
 
   return (
     <div className="chart">
-      <div className="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center">
-          <div>
-            <h5 className="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
-              {total}
-            </h5>
-            <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              {selectedEvent?.name}
-            </p>
-          </div>
-        </div>
-        <div>
+      <div className="flex justify-between mb-5 items-center">
+        <div className="p-3 flex gap-3 pl-0" aria-labelledby="dateRangeButton">
           <select
-            value={selectedEvent}
+            value={toFetch}
             className="input primary !py-0 h-[30px]"
-            onChange={(e) => {
-              setSelectedEvent(eventList[Number(e.target.value)]);
-            }}
+            onChange={(e) => setToFetch(e.target.value)}
           >
-            {eventList.map((event, i) => (
-              <option key={event.id} value={i}>
-                {event.name}
+            {Object.keys(languageState.texts.analytics.models).map((model) => (
+              <option key={model} value={model}>
+                {languageState.texts.analytics.models[model]}
               </option>
             ))}
           </select>
-        </div>
-      </div>
-      {loading ? (
-        <Loading className="absolute top-0 left-0 w-full h-full bg-light-background dark:bg-dark-background" />
-      ) : (
-        <Fragment>
-          {!empty ? (
-            <BarChart
-              series={series}
-              colors={rColors}
-              categories={categories}
-            />
+          {toFetch === "attributes" ? (
+            <select
+              value={selectedAttribute}
+              className="input primary !py-0 h-[30px]"
+              onChange={(e) => setSelectedAttribute(e.target.value)}
+            >
+              {attributes.map((attribute) => (
+                <option key={attribute} value={attribute}>
+                  {languageState.texts.analytics.attributes[attribute.name]}
+                </option>
+              ))}
+            </select>
           ) : (
-            <Empty />
+            <select
+              value={selectedEvent}
+              className="input primary !py-0 h-[30px]"
+              onChange={(e) => setSelectedEvent(e.target.value)}
+            >
+              {eventList.map((event, i) => (
+                <option key={event.id} value={i}>
+                  {event.name}
+                </option>
+              ))}
+            </select>
           )}
-        </Fragment>
-      )}
-
-      <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
-        <div className="flex justify-end gap-3 items-center pt-5">
           <select
             value={month}
             onChange={(e) => {
               setMonth(Number(e.target.value));
-              localFetchTriggers({ month: Number(e.target.value) });
             }}
             className="input primary !py-0 h-[30px]"
           >
@@ -221,13 +189,26 @@ function BarComponent() {
             value={year}
             onChange={(e) => {
               setYear(Number(e.target.value));
-              localFetchTriggers({ month: Number(e.target.value) });
             }}
             className="input primary !py-0 h-[30px] w-[120px]"
             placeholder={languageState.texts.inputs.year}
           />
         </div>
       </div>
+      {loading ? (
+        <Loading className="absolute top-0 left-0 w-full h-full bg-light-background dark:bg-dark-background" />
+      ) : (
+        <Fragment>
+          {!empty ? (
+            <BarChart
+              /*  series={series} */
+              categories={categories}
+            />
+          ) : (
+            <Empty />
+          )}
+        </Fragment>
+      )}
     </div>
   );
 }

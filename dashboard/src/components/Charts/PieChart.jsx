@@ -7,9 +7,10 @@ export default function PieChart({ colors, labels, series }) {
     return count;
   }, [series]);
 
-  const [rChart, setChart] = useState();
+  const [rChart, setRChart] = useState();
 
   useEffect(() => {
+    if (rChart) rChart?.destroy();
     let options = {
       series,
       colors,
@@ -17,9 +18,12 @@ export default function PieChart({ colors, labels, series }) {
         height: 420,
         width: "100%",
         type: "pie",
+        toolbar: {
+          show: true,
+        },
       },
       stroke: {
-        colors: ["gray"],
+        colors: ["#00000000"],
         lineCap: "",
       },
       plotOptions: {
@@ -71,11 +75,10 @@ export default function PieChart({ colors, labels, series }) {
         options
       );
       chart.render();
-
-      // setChart(chart);
+      setRChart(chart);
     }
     return () => {
-      // if (rChart) rChart.destroy();
+      if (rChart) rChart?.destroy();
     };
   }, [series, colors, labels]);
 
