@@ -70,7 +70,7 @@ function SignIn() {
 
   const { setUserState } = useUser();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const showNotification = useCallback(
     (ntype, message) =>

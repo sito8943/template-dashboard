@@ -20,7 +20,6 @@ function Auth() {
   const { userState } = useUser();
 
   useEffect(() => {
-    console.log(userState);
     if (userState.user) navigate("/");
   }, [userState]);
 

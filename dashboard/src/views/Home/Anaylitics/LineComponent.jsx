@@ -1,4 +1,3 @@
-// @ts-check
 import React, {
   useMemo,
   useEffect,
@@ -6,6 +5,8 @@ import React, {
   useState,
   Fragment,
 } from "react";
+
+import { css } from "@emotion/css";
 
 // contexts
 import { useLanguage } from "../../../contexts/LanguageProvider";
@@ -17,7 +18,7 @@ import Loading from "../../../components/Loading/Loading";
 import LineChart from "../../../components/Charts/LineChart";
 
 // services
-import { fetchEvents, lineChart } from "../../../services/analytics";
+import { fetchData, lineChart } from "../../../services/analytics";
 
 // styles
 import "./chart.css";
@@ -39,45 +40,32 @@ function LineComponent() {
     [setNotificationState]
   );
 
-  const [eventList, setEventList] = useState([]);
-  const [targetSelected, setTargetSelected] = useState([]);
-
-  const toggleEventSelected = (i) => {
-    const newTargetSelected = [...targetSelected];
-    newTargetSelected[i].active = !newTargetSelected[i].active;
-    // @ts-ignore
-    setTargetSelected(newTargetSelected);
-    localFetch({ targetSelected: newTargetSelected });
-  };
-
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(0);
+
+  // chart resources
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const [empty, setEmpty] = useState(true);
 
-  const colors = { red: "#FF0000", green: "#00FF00" };
-
+  const [attributes, setAttributes] = useState([]);
+  const [eventList, setEventList] = useState([]);
+  const [selectedAttribute, setSelectedAttribute] = useState();
   const [toFetch, setToFetch] = useState("events");
 
-  const localFetch = useCallback(
+  const colors = { red: "#FF0000", green: "#00FF00" };
+
+  const fetch = useCallback(
     async (options) => {
       setLoading(true);
       try {
-        console.log(options.targetSelected, targetSelected);
-        const response = await lineChart(
-          options.year || year,
-          options.month || month,
-          {
-            toFetch: options.toFetch || toFetch,
-            ids: (options.targetSelected || targetSelected)
-              .filter((target) => target.active)
-              .map((target) => target.id),
-          }
-        );
+        const ids = [];
+        const response = await lineChart(year, month, {
+          toFetch,
+          ids,
+        });
         const { series, categories } = await response.json();
-        console.log(series, categories);
         setSeries(
           series.map((item) => ({
             ...item,
@@ -86,18 +74,6 @@ function LineComponent() {
         );
         if (!series.length || !categories.length) setEmpty(true);
         else setEmpty(false);
-        // updating data
-        const newTargetSelected = [
-          ...(options.targetSelected || targetSelected),
-        ];
-        series.forEach((serial) => {
-          const indexOf = newTargetSelected.findIndex(
-            (target) => target.id === serial.id
-          );
-          if (indexOf > -1) newTargetSelected[indexOf].data = serial.data;
-        });
-        // @ts-ignore
-        setTargetSelected(newTargetSelected);
         if (month) setCategories(categories.map((category) => `${category}`));
         else setCategories(languageState.texts.analytics.reducedMonths);
       } catch (err) {
@@ -108,18 +84,31 @@ function LineComponent() {
       }
       setLoading(false);
     },
-    [toFetch, year, month, languageState, targetSelected]
+    [toFetch, year, month, languageState]
   );
 
-  const localFetchEvents = useCallback(async () => {
+  const fetchAttributes = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchEvents(toFetch);
+      const response = await fetchData("attributes");
       const { list } = await response.json();
-      const newTargetSelected = list.map((item) => ({ ...item, active: true }));
-      setTargetSelected(newTargetSelected);
+      setAttributes(list);
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", languageState.texts.errors.notConnected);
+      else showNotification("error", String(err));
+    }
+    setLoading(false);
+  }, [toFetch]);
+
+  const fetchEvents = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchData(toFetch);
+      const { list } = await response.json();
       setEventList(list);
-      localFetch({ toFetch, targetSelected: newTargetSelected });
+      fetch();
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -130,11 +119,12 @@ function LineComponent() {
   }, [toFetch]);
 
   useEffect(() => {
-    localFetchEvents();
-  }, [toFetch]);
+    fetchEvents();
+    fetchAttributes();
+  }, []);
 
   useEffect(() => {
-    if (targetSelected.length) localFetch({});
+    if (false) localFetch({});
   }, [year, month]);
 
   /**
@@ -149,30 +139,20 @@ function LineComponent() {
     return sum;
   }
 
-  const printEvents = useMemo(() => {
-    return targetSelected.map((event, i) => (
-      <li key={event.name}>
-        <button
-          onClick={() => toggleEventSelected(i)}
-          name={`toggle-${event.name}`}
-          type="button"
-          className={`${
-            event.active
-              ? "bg-primary border-primary"
-              : "border-placeholder-dark hover:bg-primary hover:border-primary"
-          } !py-0 transition border-2 rounded-3xl button !pointer-default`}
-        >
-          <p className="inline-flex items-center leading-none font-normal">
-            {event.name}{" "}
-            <span className="text-sm ml-1">
-              ({event.data ? sumOfArray(event.data) : null})
-            </span>
-            <span className={`${event.color} ml-1 -mt-[5px] text-4xl`}>•</span>
-          </p>
-        </button>
+  const printChips = useMemo(() => {
+    return series.map((element) => (
+      <li key={element.id} className="flex items-center gap-2">
+        <div
+          className={`w-2 h-2 mt-1 rounded-full ${css({
+            background: element.color,
+          })}`}
+        ></div>
+        <p>
+          {element.name} <span className="text-sm text-placeholder-dark">{sumOfArray(element.data)}</span>
+        </p>
       </li>
     ));
-  }, [targetSelected]);
+  }, [series]);
 
   return (
     <div className="chart">
@@ -189,6 +169,21 @@ function LineComponent() {
               </option>
             ))}
           </select>
+          {toFetch === "attributes" ? (
+            <select
+              value={toFetch}
+              className="input primary !py-0 h-[30px]"
+              onChange={(e) => setToFetch(e.target.value)}
+            >
+              {Object.keys(languageState.texts.analytics.models).map(
+                (model) => (
+                  <option key={model} value={model}>
+                    {languageState.texts.analytics.models[model]}
+                  </option>
+                )
+              )}
+            </select>
+          ) : null}
           <select
             value={month}
             onChange={(e) => {
@@ -227,15 +222,7 @@ function LineComponent() {
           )}
         </Fragment>
       )}
-      <ul className="flex flex-wrap gap-2">{printEvents}</ul>
-      {/* <div className="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-2.5">
-        <div className="pt-5">
-          <Link to="/" className="button primary">
-            <FontAwesomeIcon icon={faFile} className="mr-2" />
-            {languageState.texts.analytics.actions.fullReport}
-          </Link>
-        </div>
-      </div> */}
+      <ul className="flex flex-wrap gap-2">{printChips}</ul>
     </div>
   );
 }

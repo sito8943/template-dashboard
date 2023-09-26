@@ -37,7 +37,7 @@ export async function pieChart(year, month, attribute, event) {
  * @param {string} toFetch 
  * @returns 
  */
-export async function fetchEvents(toFetch) {
+export async function fetchData(toFetch = "events") {
   const response = await fetch(`${config.apiUrl}analytics/${toFetch}`, {
     method: "GET",
     headers: {
@@ -57,6 +57,7 @@ export async function fetchEvents(toFetch) {
  * @returns
  */
 export async function lineChart(year, month, params) {
+  console.log(params)
   const encrypted = encrypt(params, config.crypto);
   const response = await fetch(
     `${config.apiUrl}analytics/line-chart?params=${encodeURIComponent(

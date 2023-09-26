@@ -113,8 +113,8 @@ function App() {
     } catch (err) {
       console.error(err);
     }
-
-    fetch();
+    if (userLogged()) fetch();
+    else setLoading(false);
   }, []);
 
   useEffect(() => {

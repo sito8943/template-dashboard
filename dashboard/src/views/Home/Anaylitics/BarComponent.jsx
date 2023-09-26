@@ -17,7 +17,7 @@ import Loading from "../../../components/Loading/Loading";
 import BarChart from "../../../components/Charts/BarChart";
 
 // services
-import { fetchEvents, barChart } from "../../../services/analytics";
+import { fetchData, barChart } from "../../../services/analytics";
 
 // styles
 import "./chart.css";
@@ -106,7 +106,7 @@ function BarComponent() {
   const localFetchEvents = async () => {
     setLoading(true);
     try {
-      const response = await fetchEvents();
+      const response = await fetchData();
       const { list } = await response.json();
       setEventList(list);
       setSelectedEvent(list[0]);

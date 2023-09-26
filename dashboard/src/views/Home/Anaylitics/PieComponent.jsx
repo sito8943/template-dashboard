@@ -10,7 +10,7 @@ import Loading from "../../../components/Loading/Loading";
 import PieChart from "../../../components/Charts/PieChart";
 
 // services
-import { pieChart, fetchEvents } from "../../../services/analytics";
+import { pieChart, fetchData } from "../../../services/analytics";
 
 // styles
 import "./chart.css";
@@ -46,7 +46,7 @@ function PieComponent() {
   const localFetchEvents = async () => {
     setLoading(true);
     try {
-      const response = await fetchEvents();
+      const response = await fetchData();
       const { list } = await response.json();
       setEventList(list);
       localFetch({});

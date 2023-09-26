@@ -179,7 +179,7 @@ router.get("/attributes", [validator], async (req, res) => {
     const attributes = attributesResponse.rows;
     let result = []
     if (attributes.length) {
-      Object.keys(attributes[0]).forEach((key, i) => {
+      Object.keys(attributes[0]).filter((key) => key !== "date" && key !== "id" && key !== "idEvent").forEach((key, i) => {
         result.push({ name: key, color: allColors[i] })
       })
       console.info(`${result.length} retrieved successfully`);
@@ -284,7 +284,6 @@ router.get("/line-chart", [validator], async (req, res) => {
   const decrypted = JSON.parse(decrypt(params));
   const { toFetch, ids } = decrypted;
 
-
   let monthQuery = []
   if (Number(month)) {
     const monthBefore = prepareDate(Number(year), Number(month));
@@ -315,10 +314,9 @@ router.get("/line-chart", [validator], async (req, res) => {
       case "attributes":
         response = await select(
           ["basictrigger"],
-          ["basictrigger.date as triggerDate", "basictrigger.idEvent as id", "language", "country", "url", "referrer", "device"],
+          ["basictrigger.date as triggerDate", "basictrigger.idEvent as id", ...ids],
           [
             ...monthQuery,
-            ...prepareEventQuery(ids)
           ]
         );
         break;
@@ -355,26 +353,35 @@ router.get("/line-chart", [validator], async (req, res) => {
       ).getDate();
       categories = new Array(theYearMonthDate).fill(0);
     }
-    console.log(rows)
-    rows.forEach((event) => {
-      if (!resultObj[event.id])
-        resultObj[event.id] = {
-          id: event.id,
-          name: event.name,
-          color: event.color,
-        };
-      // if not initialized creates copy of categories
-      if (!resultObj[event.id].data)
-        resultObj[event.id].data = [...categories];
-      const { triggerDate } = event;
-      const thatDate = new Date(triggerDate);
-      if (Number(year) && !Number(month))
-        resultObj[event.id].data[thatDate.getMonth()] += 1;
-      else resultObj[event.id].data[thatDate.getDate() - 1] += 1;
-    });
+    switch (toFetch) {
+      case "attributes":
+        console.log(rows)
+        break;
+      default: // events
+        rows.forEach((event) => {
+          if (!resultObj[event.id])
+            resultObj[event.id] = {
+              id: event.id,
+              name: event.name,
+              color: event.color,
+            };
+          // if not initialized creates copy of categories
+          if (!resultObj[event.id].data)
+            resultObj[event.id].data = [...categories];
+          const { triggerDate } = event;
+          const thatDate = new Date(triggerDate);
+          if (Number(year) && !Number(month))
+            resultObj[event.id].data[thatDate.getMonth()] += 1;
+          else resultObj[event.id].data[thatDate.getDate() - 1] += 1;
+        });
+        break;
+    }
+
     categories.forEach((category, i) => {
       categories[i] = i + 1;
     });
+    console.log(resultObj)
+    console.log(categories)
     res.status(200).send({ series: Object.values(resultObj), categories });
   } catch (err) {
     console.error(err);
