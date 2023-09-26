@@ -12,6 +12,7 @@ const config = require("../config");
 // utils
 const { decrypt } = require("../utils/crypto");
 const { validator, headers } = require("../utils/secure");
+const { v4 } = require("uuid");
 
 const allColors = [
   "#FF0000",
@@ -355,7 +356,26 @@ router.get("/line-chart", [validator], async (req, res) => {
     }
     switch (toFetch) {
       case "attributes":
-        console.log(rows)
+        const [attribute] = ids
+        let colorCounter = 0;
+        rows.forEach((event) => {
+          if (!resultObj[event[attribute]]) {
+            resultObj[event[attribute]] = {
+              id: v4(),
+              name: event[attribute],
+              color: allColors[colorCounter],
+            }
+            colorCounter += 1
+          }
+          // if not initialized creates copy of categories
+          if (!resultObj[event[attribute]].data)
+            resultObj[event[attribute]].data = [...categories];
+          const { triggerDate } = event;
+          const thatDate = new Date(triggerDate);
+          if (Number(year) && !Number(month))
+            resultObj[event[attribute]].data[thatDate.getMonth()] += 1;
+          else resultObj[event[attribute]].data[thatDate.getDate() - 1] += 1;
+        })
         break;
       default: // events
         rows.forEach((event) => {

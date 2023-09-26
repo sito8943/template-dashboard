@@ -60,7 +60,7 @@ function LineComponent() {
     async (options) => {
       setLoading(true);
       try {
-        const ids = [];
+        const ids = toFetch === "attributes" ? [selectedAttribute] : [];
         const response = await lineChart(year, month, {
           toFetch,
           ids,
@@ -93,6 +93,7 @@ function LineComponent() {
       const response = await fetchData("attributes");
       const { list } = await response.json();
       setAttributes(list);
+      setSelectedAttribute(list[0].name);
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -125,7 +126,7 @@ function LineComponent() {
 
   useEffect(() => {
     fetch();
-  }, [year, month]);
+  }, [year, month, toFetch]);
 
   /**
    *
@@ -176,15 +177,13 @@ function LineComponent() {
             <select
               value={toFetch}
               className="input primary !py-0 h-[30px]"
-              onChange={(e) => setToFetch(e.target.value)}
+              onChange={(e) => setSelectedAttribute(e.target.value)}
             >
-              {Object.keys(languageState.texts.analytics.models).map(
-                (model) => (
-                  <option key={model} value={model}>
-                    {languageState.texts.analytics.models[model]}
-                  </option>
-                )
-              )}
+              {attributes.map((attribute) => (
+                <option key={attribute} value={attribute}>
+                  {languageState.texts.analytics.attributes[attribute.name]}
+                </option>
+              ))}
             </select>
           ) : null}
           <select
