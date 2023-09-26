@@ -400,8 +400,6 @@ router.get("/line-chart", [validator], async (req, res) => {
     categories.forEach((category, i) => {
       categories[i] = i + 1;
     });
-    console.log(resultObj)
-    console.log(categories)
     res.status(200).send({ series: Object.values(resultObj), categories });
   } catch (err) {
     console.error(err);
