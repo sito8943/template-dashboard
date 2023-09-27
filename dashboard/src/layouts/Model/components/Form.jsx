@@ -45,7 +45,6 @@ function Form() {
     [languageState]
   );
 
-  const [photo, setPhoto] = useState("");
   const [file, setFile] = useState("");
   const [fileName, setFileName] = useState("");
 
@@ -118,7 +117,7 @@ function Form() {
 
   const onUploadFile = useCallback(
     (e) => {
-      const { files } = e.target;
+      const { files, id } = e.target;
       if (files[0].size < 1e7) {
         const file = files[0];
         setFile(file);
@@ -126,38 +125,43 @@ function Form() {
         const newReader = new FileReader();
         newReader.onload = async (e) => {
           const content = e.target.result;
-          setPhoto(content);
+          setInputValue({ type: "set", id, value: content });
         };
         newReader.readAsDataURL(files[0]);
       } else {
         showNotification("error", errors.fileToBig);
       }
     },
-    [errors, showNotification]
+    [errors, showNotification, inputValue]
   );
 
   const [loading, setLoading] = useState(true);
 
-  const saveUser = useCallback(
+  const onSubmit = useCallback(
     async (e) => {
       setHelperTexts({ type: "clear" });
       e.preventDefault();
-      setLoading(true);
+
       // validating require values
-      Object.keys(languageState.texts[collection].inputs).forEach((input) => {
+      let requiredError = false;
+      Object.values(languageState.texts[collection].inputs).forEach((input) => {
         if (!inputValue[input.id] || !inputValue[input.id].length) {
-          if ((input.requiredOnEdit && id) || (input.required && !id)) {
+          console.log(id, input.required, input.requiredOnEdit);
+          if (
+            (input.requiredOnEdit && id && id !== "insert") ||
+            (input.required && (!id || id === "insert"))
+          ) {
             setHelperTexts({
               type: "set",
               id: input.id,
               value: errors[`${input.id}Required`],
             });
-            setLoading(false);
-            return;
+            requiredError = true;
           }
         }
       });
-
+      if (requiredError) return;
+      setLoading(true);
       try {
         // parse data
         const toSaveData = { ...inputValue };
@@ -170,7 +174,7 @@ function Form() {
             toSaveData[key] = Number(toSaveData[key]);
         });
         const result = await saveModel(collection, {
-          id,
+          id: !id || id === "insert" ? undefined : id,
           ...toSaveData,
         });
         const data = await result.data;
@@ -200,7 +204,7 @@ function Form() {
       }
       setLoading(false);
     },
-    [id, errors, messages, showNotification, photo, inputValue]
+    [id, errors, messages, showNotification, inputValue]
   );
 
   const remoteFetch = useCallback(
@@ -243,6 +247,7 @@ function Form() {
           case "number":
             setInputValue({ type: "set", id: input.id, value: 0 });
             break;
+          case "password":
           case "text":
           case "email":
             setInputValue({ type: "set", id: input.id, value: "" });
@@ -262,20 +267,42 @@ function Form() {
     fetch();
   }, [id, collection]);
 
-  const getPhoto = useCallback(() => {
-    if (!photo.length) return noProduct;
-    if (photo.length && fileName.length) return photo;
+  const getPhoto = useCallback(
+    (id) => {
+      if (!inputValue[id]?.length) return noProduct;
+      if (inputValue[id]?.length && fileName.length) return inputValue[id];
 
-    return photo.length && !fileName.length
-      ? `${config.apiPhoto}${photo}`
-      : noProduct;
-  }, [photo, fileName]);
+      return inputValue[id].length && !fileName.length
+        ? `${config.apiPhoto}${inputValue[id]}`
+        : noProduct;
+    },
+    [inputValue, fileName]
+  );
 
   const inputsMemo = useMemo(() => {
     if (!loading)
       return Object.values(languageState.texts[collection].inputs).map(
         (input) => (
           <Fragment key={input.id}>
+            {input.type === "photo" ? (
+              <div className="flex gap-5 items-center justify-start">
+                <LazyImage
+                  className="h-[150px] w-[150px] my-3 rounded-full"
+                  src={getPhoto(input.id)}
+                  alt={`${collection} image`}
+                />
+                <label className="primary submit rounded-3xl w-[180px] h-[45px] flex items-center justify-center text-center relative">
+                  {buttons.uploadPhoto}
+                  <input
+                    id={input.id}
+                    type="file"
+                    accept="image/*"
+                    className="absolute"
+                    onChange={onUploadFile}
+                  />
+                </label>
+              </div>
+            ) : null}
             {input.type === "text" ||
             input.type === "email" ||
             input.type === "number" ? (
@@ -288,8 +315,7 @@ function Form() {
                   value: inputValue[input.id],
                   onChange: onInputChange,
                   type: "text",
-                  disabled:
-                    input.requiredOnEdit && id !== undefined && id !== "insert",
+                  disabled: input.requiredOnEdit && id && id !== "insert",
                 }}
                 helperText={helperTexts[input.id]}
               />
@@ -333,23 +359,7 @@ function Form() {
       {loading ? (
         <Loading className="w-full h-full absolute top-0 left-0 dark:bg-dark-background bg-light-background z-20" />
       ) : null}
-      <form onSubmit={saveUser} className="w-[80%] mt-5 flex flex-col gap-5">
-        <div className="flex gap-5 items-center justify-start">
-          <LazyImage
-            className="h-[150px] w-[150px] my-3 rounded-full"
-            src={getPhoto()}
-            alt="product image"
-          />
-          <label className="primary submit rounded-3xl w-[180px] h-[45px] flex items-center justify-center text-center relative">
-            {buttons.uploadPhoto}
-            <input
-              onChange={onUploadFile}
-              type="file"
-              accept="image/*"
-              className="absolute"
-            />
-          </label>
-        </div>
+      <form onSubmit={onSubmit} className="w-[80%] mt-5 flex flex-col gap-5">
         {!loading ? inputsMemo : null}
         <div className="mt-3">
           <button

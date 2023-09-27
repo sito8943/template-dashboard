@@ -108,6 +108,10 @@
         "name": "Nombre"
       },
       "inputs": {
+        "photo": {
+          "id": "photo",
+          "type": "photo"
+        },
         "user": {
           "id": "user",
           "type": "text",
@@ -131,8 +135,8 @@
           "collection": "userTypes",
           "required": true
         },
-        "password": {
-          "id": "password",
+        "pw": {
+          "id": "pw",
           "type": "password",
           "encrypted": true,
           "required": true,
@@ -142,6 +146,7 @@
           "id": "rPassword",
           "type": "password",
           "required": true,
+          "encrypted": true,
           "requiredOnEdit": false
         }
       },
@@ -229,7 +234,7 @@
       "email3rdRequired": "Debes introducir un email",
       "emailInvalid": "Debes introducir un correo válido",
       "emailUsed": "Ya existe un usuario con ese correo",
-      "passwordRequired": "Debes introducir tu contraseña",
+      "pwRequired": "Debes introducir tu contraseña",
       "passwordsAreNotEqual": "Las contraseñas no coinciden",
       "wrongCredentials": "Usuario o contraseña incorrecta",
       "invalidPrice": "Precio inválido",
@@ -242,7 +247,7 @@
       "name": "ej: Jose Pedro Rodriguez",
       "email": "ej: user@gmail.com",
       "userType": "ej: Admin",
-      "password": "ej: ******",
+      "pw": "ej: ******",
       "rPassword": "ej: ******"
     },
     "labels": {
@@ -254,7 +259,7 @@
       "email": "Correo Electrónico",
       "name": "Nombre y apellidos",
       "user": "Usuario",
-      "password": "Contraseña",
+      "pw": "Contraseña",
       "rPassword": "Confirmar Contraseña"
     },
     "auth": {

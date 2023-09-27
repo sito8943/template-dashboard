@@ -49,9 +49,9 @@ class Controller {
    * @param {object} data
    */
   async create(user, data) {
-    // if it has password and rPassword check if they are equal
-    if (data.password && data.rPassword) {
-      if (data.password !== data.rPassword)
+    // if it has password (pw) and rPassword check if they are equal
+    if (data.pw && data.rPassword) {
+      if (data.pw !== data.rPassword)
         return { message: "passwords are not equal" };
       delete data.rPassword
     }
@@ -80,6 +80,7 @@ class Controller {
       slugName,
     };
     if (!this.noDate) toInsert.date = new Date().getTime();
+
     if (toInsert.photo) {
       try {
         const encoded = Buffer.from(
@@ -97,7 +98,7 @@ class Controller {
       }
     }
     const id = await insert(this.collection, attributes, toInsert);
-    await insert("logs", ["idUser", "date", "operation", "observation"], {
+    await insert("logs", ["id", "idUser", "date", "operation", "observation"], {
       idUser: rows[0].id,
       date: new Date().getTime(),
       operation: `created ${this.collection}`,
@@ -112,6 +113,12 @@ class Controller {
    * @param {object} query
    */
   async update(user, data, query) {
+    // if it has password and rPassword check if they are equal
+    if (data.password && data.rPassword) {
+      if (data.password !== data.rPassword)
+        return { message: "passwords are not equal" };
+      delete data.rPassword
+    }
     if (!query) assert(data.id !== undefined, "Data must have a string id");
 
     const { rows } = await select("users", ["id", "user"], {
