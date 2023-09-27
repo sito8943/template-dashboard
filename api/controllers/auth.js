@@ -106,7 +106,7 @@ const login = async (user, password, remember, ip) => {
           {
             attribute: "rolespermissions.idRole",
             operator: "=",
-            value: data.type,
+            value: data.userType,
             logic: "AND",
           },
         ]

@@ -49,6 +49,12 @@ class Controller {
    * @param {object} data
    */
   async create(user, data) {
+    // if it has password and rPassword check if they are equal
+    if (data.password && data.rPassword) {
+      if (data.password !== data.rPassword)
+        return { message: "passwords are not equal" };
+      delete data.rPassword
+    }
     // security name check
     {
       const { rows } = await select(this.collection, ["name"], {
@@ -59,7 +65,6 @@ class Controller {
       if (rows.length > 0) return { message: "name taken" };
     }
     // security user check
-
     const { rows } = await select("users", ["id", "user"], {
       attribute: "user",
       operator: "=",
@@ -68,7 +73,7 @@ class Controller {
     assert(rows.length > 0, "the user shall exist");
 
     const attributes = ["id", ...Object.keys(data), "slugName"];
-    const slugName = toSlug(data.name);
+    const slugName = toSlug(data.user || data.title || data.name);
     if (!this.noDate) attributes.push("date");
     const toInsert = {
       ...data,

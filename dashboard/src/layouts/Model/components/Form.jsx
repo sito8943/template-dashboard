@@ -1,12 +1,13 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useReducer,
+  Fragment,
+} from "react";
 import { useParams } from "react-router-dom";
 import md5 from "md5";
-
-import { parseQueries } from "some-javascript-utils/browser";
-
-// font awesome
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLockOpen, faLock } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
 import { useLanguage } from "../../../contexts/LanguageProvider";
@@ -20,13 +21,11 @@ import Loading from "../../../components/Loading/Loading";
 import LazyImage from "../../../components/LazyImage/LazyImage";
 import SelectInput from "../../../components/SelectInput/SelectInput";
 import SimpleInput from "../../../components/SimpleInput/SimpleInput";
+import PasswordInput from "./PasswordInput/PasswordInput";
 
 // services
 import { fetchList } from "../../../services/get";
 import { saveModel } from "../../../services/post";
-
-// utils
-import { toSlug } from "../../../utils/parser";
 
 // config
 import config from "../../../config";
@@ -36,72 +35,74 @@ function Form() {
 
   const { languageState } = useLanguage();
 
-  const { inputs, users, auth, buttons, errors, messages } = useMemo(
+  const { labels, buttons, errors, messages } = useMemo(
     () => ({
-      auth: languageState.texts.auth,
+      labels: languageState.texts.labels,
       errors: languageState.texts.errors,
       messages: languageState.texts.messages,
       buttons: languageState.texts.buttons,
-      users: languageState.texts.users,
-      inputs: languageState.texts.inputs,
     }),
     [languageState]
   );
-
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordHelperText, setPasswordHelperText] = useState("");
-
-  const handlePassword = useCallback((e) => setPassword(e.target.value), []);
-
-  const toggleShowPassword = useCallback(() => {
-    setShowPassword(!showPassword);
-  }, [showPassword]);
-
-  const [rPassword, setRPassword] = useState("");
-  const [showRPassword, setShowRPassword] = useState(false);
-  const [rPasswordHelperText, setRPasswordHelperText] = useState("");
-
-  const handleRPassword = useCallback((e) => setRPassword(e.target.value), []);
-
-  const toggleShowRPassword = useCallback(() => {
-    setShowRPassword(!showRPassword);
-  }, [showRPassword]);
-
-  const [name, setName] = useState("");
-  const [nameHelperText, setNameHelperText] = useState("");
-
-  const handleName = useCallback((e) => {
-    setName(e.target.value);
-  }, []);
-
-  const [user, setUser] = useState("");
-  const [userHelperText, setUserHelperText] = useState("");
-
-  const handleUser = useCallback((e) => {
-    setUser(toSlug(e.target.value));
-  }, []);
-
-  const [email, setEmail] = useState("");
-  const [emailHelperText, setEmailHelperText] = useState("");
-
-  const handleEmail = useCallback((e) => {
-    setEmail(e.target.value);
-  }, []);
 
   const [photo, setPhoto] = useState("");
   const [file, setFile] = useState("");
   const [fileName, setFileName] = useState("");
 
-  const [userType, setUserType] = useState("");
-  const [userTypes, setUserTypes] = useState([]);
+  const [helperTexts, setHelperTexts] = useReducer((oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      case "clear":
+        return {};
+      case "set": {
+        const { id, value } = action;
+        oldState[id] = value;
+        return { ...oldState };
+      }
+      default:
+        return oldState;
+    }
+  }, {});
 
-  const onUserTypesSelect = useCallback(
-    (e) => {
-      setUserType(userTypes[e.target.value].id);
-    },
-    [userTypes]
-  );
+  const [remotes, setRemotes] = useReducer((oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      case "set": {
+        const { id, list } = action;
+        oldState[id] = list;
+        return { ...oldState };
+      }
+      default:
+        return oldState;
+    }
+  }, {});
+
+  const onRemoteSelect = (e) => {
+    const { id, value } = e.target;
+    setInputValue({ type: "set", id, value });
+  };
+
+  const [inputValue, setInputValue] = useReducer((oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      case "init": {
+        const { data } = action;
+        return data;
+      }
+      case "set": {
+        const { id, value } = action;
+        oldState[id] = value;
+        return { ...oldState };
+      }
+      default:
+        return oldState;
+    }
+  }, {});
+
+  const onInputChange = (e) => {
+    const { id, value } = e.target;
+    setInputValue({ type: "set", id, value });
+  };
 
   const { setNotificationState } = useNotification();
 
@@ -139,68 +140,55 @@ function Form() {
 
   const saveUser = useCallback(
     async (e) => {
-      setNameHelperText("");
+      setHelperTexts({ type: "clear" });
       e.preventDefault();
       setLoading(true);
-      if (!user.length) {
-        document.getElementById("user")?.focus();
-        setUserHelperText(errors.user3rdRequired);
-        setLoading(false);
-        return;
-      }
-      if (!name.length) {
-        document.getElementById("name")?.focus();
-        setNameHelperText(errors.nameRequired);
-        setLoading(false);
-        return;
-      }
-      if (!email.length) {
-        document.getElementById("email")?.focus();
-        setEmailHelperText(errors.email3rdRequired);
-        setLoading(false);
-        return;
-      }
-      if (!password.length && !id.length) {
-        document.getElementById("password")?.focus();
-        setPasswordHelperText(errors.passwordRequired);
-        setLoading(false);
-        return;
-      }
-      if (password !== rPassword && !id.length) {
-        document.getElementById("rPassword")?.focus();
-        setRPasswordHelperText(errors.passwordsNotEqual);
-        setLoading(false);
-        return;
-      }
+      // validating require values
+      Object.keys(languageState.texts[collection].inputs).forEach((input) => {
+        if (!inputValue[input.id] || !inputValue[input.id].length) {
+          if ((input.requiredOnEdit && id) || (input.required && !id)) {
+            setHelperTexts({
+              type: "set",
+              id: input.id,
+              value: errors[`${input.id}Required`],
+            });
+            setLoading(false);
+            return;
+          }
+        }
+      });
+
       try {
+        // parse data
+        const toSaveData = { ...inputValue };
+        Object.keys(toSaveData).forEach((key) => {
+          if (!languageState.texts[collection].inputs[key])
+            delete toSaveData[key];
+          if (languageState.texts[collection].inputs[key].encrypted)
+            toSaveData[key] = md5(toSaveData[key]);
+          if (languageState.texts[collection].inputs[key].type === "number")
+            toSaveData[key] = Number(toSaveData[key]);
+        });
         const result = await saveModel(collection, {
           id,
-          user,
-          email,
-          name,
-          pw: !id.length ? md5(password) : undefined,
-          photo,
-          type: userType,
+          ...toSaveData,
         });
         const data = await result.data;
         switch (data.message) {
+          case "passwords are not equal":
+            showNotification("error", errors.passwordsAreNotEqual);
+            break;
           case "name taken":
             showNotification(
               "error",
               errors.nameTaken.replace(
                 "[model]",
-                languageState.texts.users.name
+                languageState.texts[collection].name
               )
             );
             break;
           default:
-            setId("");
-            setUser("");
-            setName("");
-            setEmail("");
-            setPassword("");
-            setRPassword("");
-            setPhoto("");
+            if (!id) setInputValue({ type: "set", data: {} });
             showNotification("success", messages.saved);
             break;
         }
@@ -212,38 +200,31 @@ function Form() {
       }
       setLoading(false);
     },
-    [
-      id,
-      errors,
-      messages,
-      showNotification,
-      name,
-      user,
-      email,
-      password,
-      rPassword,
-      photo,
-      userType,
-    ]
+    [id, errors, messages, showNotification, photo, inputValue]
   );
 
-  const fetchUserTypes = useCallback(async () => {
-    try {
-      const response = await fetchList("userTypes", 0, ["id", "name"]);
-      const data = await response.data;
-      setUserTypes(data.list);
-      if (userType === "") setUserType(data.list[0].id);
-    } catch (err) {
-      console.error(err);
-      if (String(err) === "AxiosError: Network Error")
-        showNotification("error", errors.notConnected);
-      else showNotification("error", errors.couldNotLoadUserTypes);
-    }
-  }, [userType]);
-
-  const fetch = useCallback(
-    async (id) => {
+  const remoteFetch = useCallback(
+    async (input) => {
       try {
+        const response = await fetchList(input.collection, 0, ["id", "name"]);
+        const data = await response.data;
+        setRemotes({ type: "set", id: input.id, list: data.list });
+        if (input.required)
+          setInputValue({ type: "set", id: input.id, value: data.list[0].id });
+      } catch (err) {
+        console.error(err);
+        if (String(err) === "AxiosError: Network Error")
+          showNotification("error", errors.notConnected);
+        else showNotification("error", errors.couldNotLoadUserTypes);
+      }
+    },
+    [inputValue]
+  );
+
+  const fetch = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (id && id !== "insert") {
         const response = await fetchList(collection, 0, [], {
           attribute: "id",
           operator: "=",
@@ -252,26 +233,33 @@ function Form() {
 
         const { list } = await response.data;
         const [data] = list;
-        setUser(data.user);
-        setName(data.name);
-        setEmail(data.email);
-        setPhoto(data.photo);
-        setUserType(data.type);
-      } catch (err) {
-        console.error(err);
-        if (String(err) === "AxiosError: Network Error")
-          showNotification("error", errors.notConnected);
-        else showNotification("error", String(err));
+        setInputValue({ type: init, data });
       }
-      setLoading(false);
-    },
-    [errors, showNotification]
-  );
+      for (const input of Object.values(
+        languageState.texts[collection].inputs
+      )) {
+        if (input.remote) await remoteFetch(input);
+        switch (input.type) {
+          case "number":
+            setInputValue({ type: "set", id: input.id, value: 0 });
+            break;
+          case "text":
+          case "email":
+            setInputValue({ type: "set", id: input.id, value: "" });
+            break;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", errors.notConnected);
+      else showNotification("error", String(err));
+    }
+    setLoading(false);
+  }, [id, errors, showNotification, languageState]);
 
   useEffect(() => {
-    fetchUserTypes();
-    if (id) fetch(id);
-    else setLoading(false);
+    fetch();
   }, [id, collection]);
 
   const getPhoto = useCallback(() => {
@@ -282,6 +270,63 @@ function Form() {
       ? `${config.apiPhoto}${photo}`
       : noProduct;
   }, [photo, fileName]);
+
+  const inputsMemo = useMemo(() => {
+    if (!loading)
+      return Object.values(languageState.texts[collection].inputs).map(
+        (input) => (
+          <Fragment key={input.id}>
+            {input.type === "text" ||
+            input.type === "email" ||
+            input.type === "number" ? (
+              <SimpleInput
+                id={input.id}
+                className="input-control"
+                label={labels[input.id]}
+                inputProps={{
+                  className: "input primary w-full",
+                  value: inputValue[input.id],
+                  onChange: onInputChange,
+                  type: "text",
+                  disabled:
+                    input.requiredOnEdit && id !== undefined && id !== "insert",
+                }}
+                helperText={helperTexts[input.id]}
+              />
+            ) : null}
+            {input.type === "password" ? (
+              <PasswordInput
+                id={input.id}
+                label={labels[input.id]}
+                helperText={helperTexts[input.id]}
+                value={inputValue[input.id]}
+                onChange={onInputChange}
+              />
+            ) : null}
+            {input.type === "select" && input.remote ? (
+              <SelectInput
+                id={input.id}
+                className="input-control"
+                label={labels[input.id]}
+                inputProps={{
+                  onChange: onRemoteSelect,
+                  className: "input primary !pr-5 w-full",
+                }}
+                options={remotes[input.id]}
+              />
+            ) : null}
+          </Fragment>
+        )
+      );
+  }, [
+    loading,
+    collection,
+    languageState,
+    inputValue,
+    remotes,
+    helperTexts,
+    labels,
+  ]);
 
   return (
     <section className="relative">
@@ -305,105 +350,7 @@ function Form() {
             />
           </label>
         </div>
-
-        <SimpleInput
-          id="user"
-          className="input-control"
-          label={auth.labels.user}
-          inputProps={{
-            className: "input primary w-full",
-            value: user,
-            onChange: handleUser,
-            type: "text",
-            disabled: id.length,
-          }}
-          helperText={userHelperText}
-        />
-        <SimpleInput
-          id="name"
-          className="input-control"
-          label={users.labels.name}
-          inputProps={{
-            className: "input primary w-full",
-            value: name,
-            onChange: handleName,
-            type: "text",
-          }}
-          helperText={nameHelperText}
-        />
-        <SimpleInput
-          id="email"
-          className="input-control"
-          label={users.labels.email}
-          inputProps={{
-            className: "input primary w-full",
-            value: email,
-            onChange: handleEmail,
-            type: "text",
-          }}
-          helperText={emailHelperText}
-        />
-        <SelectInput
-          id="type"
-          className="input-control"
-          label={inputs.userType}
-          inputProps={{
-            onChange: onUserTypesSelect,
-            className: "input primary !pr-5 w-full",
-          }}
-          options={userTypes}
-        />
-        <SimpleInput
-          id="password"
-          className="input-control"
-          label={auth.labels.password}
-          inputProps={{
-            className: "input primary !pl-8 w-full",
-            value: password,
-            onChange: handlePassword,
-            type: !showPassword ? "password" : "string",
-          }}
-          leftIcon={
-            <button
-              tabIndex={-1}
-              type="button"
-              name="toggle-see-password"
-              onClick={toggleShowPassword}
-              aria-label={languageState.texts.ariaLabels.toggleShowPassword}
-            >
-              <FontAwesomeIcon
-                name="toggle-see-password"
-                icon={showPassword ? faLockOpen : faLock}
-                aria-label={languageState.texts.ariaLabels.toggleShowPassword}
-                className="absolute text-white top-[50%] -translate-y-[50%] left-3"
-              />
-            </button>
-          }
-          helperText={passwordHelperText}
-        />
-        <SimpleInput
-          id="rPassword"
-          className="input-control"
-          label={auth.labels.rPassword}
-          inputProps={{
-            className: "input primary !pl-8 w-full",
-            value: rPassword,
-            onChange: handleRPassword,
-            type: !showRPassword ? "password" : "string",
-          }}
-          leftIcon={
-            <button tabIndex={-1} type="button" onClick={toggleShowRPassword}>
-              <FontAwesomeIcon
-                name="toggle-see-password"
-                icon={showRPassword ? faLockOpen : faLock}
-                aria-label={languageState.texts.ariaLabels.toggleShowPassword}
-                className="absolute text-white top-[50%] -translate-y-[50%] left-3"
-              />
-            </button>
-          }
-          helperText={rPasswordHelperText}
-        />
-
+        {!loading ? inputsMemo : null}
         <div className="mt-3">
           <button
             name="save"

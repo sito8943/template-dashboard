@@ -107,6 +107,44 @@
         "photo": "Imagen",
         "name": "Nombre"
       },
+      "inputs": {
+        "user": {
+          "id": "user",
+          "type": "text",
+          "required": true,
+          "disabledIfModifying": true
+        },
+        "name": {
+          "id": "name",
+          "type": "text",
+          "required": true
+        },
+        "email": {
+          "id": "email",
+          "type": "email",
+          "required": true
+        },
+        "userType": {
+          "id": "userType",
+          "type": "select",
+          "remote": true,
+          "collection": "userTypes",
+          "required": true
+        },
+        "password": {
+          "id": "password",
+          "type": "password",
+          "encrypted": true,
+          "required": true,
+          "requiredOnEdit": false
+        },
+        "rPassword": {
+          "id": "rPassword",
+          "type": "password",
+          "required": true,
+          "requiredOnEdit": false
+        }
+      },
       "tabs": [
         {
           "label": "En línea",
@@ -199,14 +237,25 @@
       "couldNotLoadUserTypes": "No se pudieron cargar los tipos de usuarios",
       "existSession": "Ya hay una sesión abierta con esta cuenta"
     },
-    "inputs": {
+    "placeholders": {
+      "user": "ej: user2020",
+      "name": "ej: Jose Pedro Rodriguez",
+      "email": "ej: user@gmail.com",
+      "userType": "ej: Admin",
+      "password": "ej: ******",
+      "rPassword": "ej: ******"
+    },
+    "labels": {
       "month": "Mes",
       "year": "Año",
       "startDate": "Fecha inicial",
       "endDate": "Fecha final",
       "userType": "Tipo de usuario",
-      "name": "Nombre y Apellidos",
-      "email": "Correo Electrónico"
+      "email": "Correo Electrónico",
+      "name": "Nombre y apellidos",
+      "user": "Usuario",
+      "password": "Contraseña",
+      "rPassword": "Confirmar Contraseña"
     },
     "auth": {
       "recovery": {
@@ -216,12 +265,9 @@
       },
 
       "labels": {
-        "user": "Usuario",
         "photo": "Foto de perfil",
         "email": "Introduce tu email para enviarte la confirmación",
-        "password": "Contraseña",
-        "remember": "Mantener sesión abierta",
-        "rPassword": "Repetir contraseña"
+        "remember": "Mantener sesión abierta"
       },
       "signIn": {
         "submit": "Entrar",

@@ -95,7 +95,7 @@ button {
 }
 
 button {
-  @apply font-semibold;
+  @apply font-semibold cursor-default;
 }
 
 .link {
@@ -108,9 +108,8 @@ button {
 
 .input,
 button.submit,
-button.outlined,
-.button {
-  @apply px-5 py-1 rounded-3xl cursor-default;
+button.outlined {
+  @apply px-5 py-1 rounded-3xl;
 }
 
 .input:disabled {
