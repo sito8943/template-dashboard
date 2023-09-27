@@ -45,8 +45,8 @@ function Form() {
     [languageState]
   );
 
-  const [file, setFile] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [tFiles, setFiles] = useState({});
+  const [fileNames, setFileNames] = useState({});
 
   const [helperTexts, setHelperTexts] = useReducer((oldState, action) => {
     const { type } = action;
@@ -120,8 +120,11 @@ function Form() {
       const { files, id } = e.target;
       if (files[0].size < 1e7) {
         const file = files[0];
-        setFile(file);
-        setFileName(files[0].type);
+        tFiles[id] = file;
+
+        setFiles({ ...tFiles });
+        fileNames[id] = files[0].type;
+        setFileNames({ ...fileNames });
         const newReader = new FileReader();
         newReader.onload = async (e) => {
           const content = e.target.result;
@@ -132,7 +135,7 @@ function Form() {
         showNotification("error", errors.fileToBig);
       }
     },
-    [errors, showNotification, inputValue]
+    [errors, showNotification, inputValue, tFiles, fileNames]
   );
 
   const [loading, setLoading] = useState(true);
@@ -270,13 +273,13 @@ function Form() {
   const getPhoto = useCallback(
     (id) => {
       if (!inputValue[id]?.length) return noProduct;
-      if (inputValue[id]?.length && fileName.length) return inputValue[id];
+      if (inputValue[id]?.length && fileNames[id].length) return inputValue[id];
 
-      return inputValue[id].length && !fileName.length
+      return inputValue[id].length && !fileNames[id].length
         ? `${config.apiPhoto}${inputValue[id]}`
         : noProduct;
     },
-    [inputValue, fileName]
+    [inputValue, fileNames]
   );
 
   const inputsMemo = useMemo(() => {
