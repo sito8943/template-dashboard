@@ -43,7 +43,7 @@ label {
 }
 
 h2 {
-  @apply text-4xl font-extrabold;
+  @apply font-extrabold;
 }
 
 h3 {

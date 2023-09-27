@@ -81,7 +81,7 @@ function Navbar() {
 
   return (
     <header className="px-2 py-2 flex items-center justify-between">
-      <Link className={`${styles.navbarTitle}`} to="/">
+      <Link className="text-4xl md:text-2xl" to="/">
         <h2>Template Dashboard</h2>
       </Link>
       <nav>{printLinks()}</nav>
