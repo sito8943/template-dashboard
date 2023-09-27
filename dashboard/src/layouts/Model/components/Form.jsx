@@ -105,15 +105,12 @@ function Form() {
 
   const { setNotificationState } = useNotification();
 
-  const showNotification = useCallback(
-    (ntype, message) =>
-      setNotificationState({
-        type: "set",
-        ntype,
-        message,
-      }),
-    [setNotificationState]
-  );
+  const showNotification = (ntype, message) =>
+    setNotificationState({
+      type: "set",
+      ntype,
+      message,
+    });
 
   const onUploadFile = useCallback(
     (e) => {
@@ -140,95 +137,89 @@ function Form() {
 
   const [loading, setLoading] = useState(true);
 
-  const onSubmit = useCallback(
-    async (e) => {
-      setHelperTexts({ type: "clear" });
-      e.preventDefault();
+  const onSubmit = async (e) => {
+    setHelperTexts({ type: "clear" });
+    e.preventDefault();
 
-      // validating require values
-      let requiredError = false;
-      Object.values(languageState.texts[collection].inputs).forEach((input) => {
-        if (!inputValue[input.id] || !inputValue[input.id].length) {
-          console.log(id, input.required, input.requiredOnEdit);
-          if (
-            (input.requiredOnEdit && id && id !== "insert") ||
-            (input.required && (!id || id === "insert"))
-          ) {
-            setHelperTexts({
-              type: "set",
-              id: input.id,
-              value: errors[`${input.id}Required`],
-            });
-            requiredError = true;
-          }
+    // validating require values
+    let requiredError = false;
+    Object.values(languageState.texts[collection].inputs).forEach((input) => {
+      if (!inputValue[input.id] || !inputValue[input.id].length) {
+        console.log(id, input.required, input.requiredOnEdit);
+        if (
+          (input.requiredOnEdit && id && id !== "insert") ||
+          (input.required && (!id || id === "insert"))
+        ) {
+          setHelperTexts({
+            type: "set",
+            id: input.id,
+            value: errors[`${input.id}Required`],
+          });
+          requiredError = true;
         }
+      }
+    });
+    if (requiredError) return;
+    setLoading(true);
+    try {
+      // parse data
+      const toSaveData = { ...inputValue };
+      Object.keys(toSaveData).forEach((key) => {
+        if (!languageState.texts[collection].inputs[key])
+          delete toSaveData[key];
+        if (languageState.texts[collection].inputs[key].encrypted)
+          toSaveData[key] = md5(toSaveData[key]);
+        if (languageState.texts[collection].inputs[key].type === "number")
+          toSaveData[key] = Number(toSaveData[key]);
       });
-      if (requiredError) return;
-      setLoading(true);
-      try {
-        // parse data
-        const toSaveData = { ...inputValue };
-        Object.keys(toSaveData).forEach((key) => {
-          if (!languageState.texts[collection].inputs[key])
-            delete toSaveData[key];
-          if (languageState.texts[collection].inputs[key].encrypted)
-            toSaveData[key] = md5(toSaveData[key]);
-          if (languageState.texts[collection].inputs[key].type === "number")
-            toSaveData[key] = Number(toSaveData[key]);
-        });
-        const result = await saveModel(collection, {
-          id: !id || id === "insert" ? undefined : id,
-          ...toSaveData,
-        });
-        const data = await result.data;
-        switch (data.message) {
-          case "passwords are not equal":
-            showNotification("error", errors.passwordsAreNotEqual);
-            break;
-          case "name taken":
-            showNotification(
-              "error",
-              errors.nameTaken.replace(
-                "[model]",
-                languageState.texts[collection].name
-              )
-            );
-            break;
-          default:
-            if (!id) setInputValue({ type: "set", data: {} });
-            showNotification("success", messages.saved);
-            break;
-        }
-      } catch (err) {
-        console.error(err);
-        if (String(err) === "AxiosError: Network Error")
-          showNotification("error", errors.notConnected);
-        else showNotification("error", String(err));
+      const result = await saveModel(collection, {
+        id: !id || id === "insert" ? undefined : id,
+        ...toSaveData,
+      });
+      const data = await result.data;
+      switch (data.message) {
+        case "passwords are not equal":
+          showNotification("error", errors.passwordsAreNotEqual);
+          break;
+        case "name taken":
+          showNotification(
+            "error",
+            errors.nameTaken.replace(
+              "[model]",
+              languageState.texts[collection].name
+            )
+          );
+          break;
+        default:
+          if (!id) setInputValue({ type: "set", data: {} });
+          showNotification("success", messages.saved);
+          break;
       }
-      setLoading(false);
-    },
-    [id, errors, messages, showNotification, inputValue]
-  );
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", errors.notConnected);
+      else showNotification("error", String(err));
+    }
+    setLoading(false);
+  };
 
-  const remoteFetch = useCallback(
-    async (input) => {
-      try {
-        const response = await fetchList(input.collection, 0, ["id", "name"]);
-        const data = await response.data;
-        setRemotes({ type: "set", id: input.id, list: data.list });
-        if (input.required)
-          setInputValue({ type: "set", id: input.id, value: data.list[0].id });
-      } catch (err) {
-        console.error(err);
-        if (String(err) === "AxiosError: Network Error")
-          showNotification("error", errors.notConnected);
-        else showNotification("error", errors.couldNotLoadUserTypes);
-      }
-    },
-    [inputValue]
-  );
+  const remoteFetch = async (input) => {
+    try {
+      const response = await fetchList(input.collection, 0, ["id", "name"]);
+      const data = await response.data;
+      setRemotes({ type: "set", id: input.id, list: data.list });
+      if (input.required)
+        setInputValue({ type: "set", id: input.id, value: data.list[0].id });
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", errors.notConnected);
+      else showNotification("error", errors.couldNotLoadUserTypes);
+    }
+  };
 
-  const fetch = useCallback(async () => {
+  const fetch = async () => {
     setLoading(true);
     try {
       if (id && id !== "insert") {
@@ -264,7 +255,7 @@ function Form() {
       else showNotification("error", String(err));
     }
     setLoading(false);
-  }, [id, errors, showNotification, languageState]);
+  };
 
   useEffect(() => {
     fetch();
