@@ -12,25 +12,26 @@ const Error = (props) => {
   const { onRetry, text } = props;
   const { languageState } = useLanguage();
 
-  const error = useMemo(() => {
-    return languageState.texts.error;
-  }, [languageState]);
+  const { buttons, errors, ariaLabels } = useMemo(
+    () => languageState.texts,
+    [languageState]
+  );
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-10">
-      <h3 className="font-bold text-error text-2xl">
+    <div className="w-full h-full flex flex-col items-center justify-center gap-3 min-h-[300px]">
+      <h3 className="font-bold error text-2xl">
         <FontAwesomeIcon icon={faCircleExclamation} className="mr-1" />
-        {error.title}
+        {errors.wrong}
       </h3>
-      <p className="text-error perror">{text}</p>
+      <p className="error">{text}</p>
       {onRetry ? (
         <button
           name="reload"
           onClick={onRetry}
           className="primary submit"
-          aria-label={languageState.texts.ariaLabels.retry}
+          aria-label={ariaLabels.retry}
         >
-          {error.retry}
+          {buttons.reload}
         </button>
       ) : null}
     </div>

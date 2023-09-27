@@ -38,6 +38,10 @@ label {
   @apply dark:text-white text-dark-background2;
 }
 
+.error {
+  @apply text-error dark:text-error;
+}
+
 h2 {
   @apply text-4xl font-extrabold;
 }
@@ -100,8 +104,8 @@ button {
 }
 
 .input,
-.button {
-  @apply px-5 py-2 rounded-3xl;
+button {
+  @apply px-5 py-1 rounded-3xl cursor-default;
 }
 
 .input:disabled {

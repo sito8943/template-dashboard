@@ -66,7 +66,7 @@
         },
         {
           "id": "users",
-          "to": "/users/list/",
+          "to": "/users/",
           "label": "Usuarios"
         },
         {
@@ -94,10 +94,14 @@
       "send": "Enviar",
       "logout": "Cerrar sesión",
       "list": "Lista",
-      "insert": "Insertar"
+      "insert": "Insertar",
+      "reload": "Recargar"
     },
     "users": {
       "name": "Usuario",
+      "noEditable": false,
+      "additionalQueries": {},
+      "visitable": false,
       "labels": {
         "email": "Email",
         "photo": "Imagen",
@@ -172,6 +176,7 @@
       "saved": "Guardado correctamente"
     },
     "errors": {
+      "wrong": "Algo ha salido mal",
       "noResults": "No hay datos",
       "fileToBig": "Fichero muy grande",
       "accountAlreadyOpened": "Ya hay una sesión activa con esta cuenta ",

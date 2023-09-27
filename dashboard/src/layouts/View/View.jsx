@@ -2,12 +2,13 @@ import { useState, useEffect, Fragment } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 // contexts
-import { useUser } from "../contexts/UserProvider";
+import { useUser } from "../../contexts/UserProvider";
 
 // components
-import Sidebar from "../components/Sidebar/Sidebar";
-import Footer from "../components/Footer/Footer";
-import Navbar from "../components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Footer from "./components/Footer/Footer";
+import Navbar from "./components/Navbar/Navbar";
+import Handler from "../../components/Error/Handler";
 
 function View() {
   const navigate = useNavigate();
@@ -21,9 +22,12 @@ function View() {
   return (
     <Fragment>
       <Navbar />
+
       <div className="main">
         <Sidebar />
-        <Outlet />
+        <Handler>
+          <Outlet />
+        </Handler>
       </div>
       <Footer />
     </Fragment>

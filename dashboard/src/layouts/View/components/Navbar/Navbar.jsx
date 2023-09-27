@@ -12,20 +12,20 @@ import {
 import { faBell as faEmptyBell } from "@fortawesome/free-regular-svg-icons";
 
 // contexts
-import { useUser } from "../../contexts/UserProvider";
-import { useMode } from "../../contexts/ModeProvider";
-import { useLanguage } from "../../contexts/LanguageProvider";
+import { useUser } from "../../../../contexts/UserProvider";
+import { useMode } from "../../../../contexts/ModeProvider";
+import { useLanguage } from "../../../../contexts/LanguageProvider";
 
 // components
-import Badge from "../Badge/Badge";
-import LazyImage from "../LazyImage/LazyImage";
+import Badge from "../../../../components/Badge/Badge";
+import LazyImage from "../../../../components/LazyImage/LazyImage";
 
 // services
-import { fetchNotifications } from "../../services/users";
+import { fetchNotifications } from "../../../../services/users";
 
 // utils
-import { utilsToggleTheme } from "../../utils/utils.js";
-import { getUserPhoto, getUserName } from "../../utils/auth";
+import { utilsToggleTheme } from "../../../../utils/utils.js";
+import { getUserPhoto, getUserName } from "../../../../utils/auth";
 
 // styles
 import styles from "./styles.module.css";

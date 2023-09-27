@@ -13,11 +13,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
-import { useUser } from "../../contexts/UserProvider";
-import { useLanguage } from "../../contexts/LanguageProvider";
+import { useUser } from "../../../../contexts/UserProvider";
+import { useLanguage } from "../../../../contexts/LanguageProvider";
 
 // utils
-import { getUserPermissions } from "../../utils/auth";
+import { getUserPermissions } from "../../../../utils/auth";
 
 // styles
 import styles from "./styles.module.css";

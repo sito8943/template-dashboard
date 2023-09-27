@@ -8,8 +8,9 @@ import io from "socket.io-client";
 import { getUserLanguage } from "some-javascript-utils/browser";
 
 // layouts
-import View from "./layouts/View";
 import Auth from "./layouts/Auth";
+import View from "./layouts/View/View";
+import Model from "./layouts/Model/Model";
 
 // views
 import NotFound from "./views/NotFound/NotFound";
@@ -17,7 +18,6 @@ import Settings from "./views/Settings/Settings";
 import Recovery from "./views/Auth/Recovery";
 import SignOut from "./views/Auth/SignOut";
 import SignIn from "./views/Auth/SignIn";
-import Users from "./views/Users/Users";
 import Home from "./views/Home/Home";
 
 // contexts
@@ -35,6 +35,8 @@ import { validateBasicKey } from "./services/auth";
 import config from "./config";
 
 // components
+import List from "./layouts/Model/components/List";
+import Form from "./layouts/Model/components/Form";
 import Loading from "./components/Loading/Loading";
 
 // lazy
@@ -154,7 +156,10 @@ function App() {
             </Route>
             <Route exact path="/" element={<View />}>
               <Route index element={<Home />} />
-              <Route exact path="/users/*" element={<Users />} />
+              <Route path="/:collection/" element={<Model />}>
+                <Route index element={<List />} />
+                <Route path="/:collection/:id" element={<Form />} />
+              </Route>
               <Route exact path="/settings/" element={<Settings />} />
             </Route>
             <Route exact path="/sign-out" element={<SignOut />} />

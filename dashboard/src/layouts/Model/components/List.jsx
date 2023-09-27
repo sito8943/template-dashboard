@@ -1,24 +1,26 @@
 import { useMemo, useCallback, useEffect, useReducer, useState } from "react";
+import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // contexts
-import { useUser } from "../../contexts/UserProvider";
-import { useLanguage } from "../../contexts/LanguageProvider";
-import { useNotification } from "../../contexts/NotificationProvider";
+import { useUser } from "../../../contexts/UserProvider";
+import { useLanguage } from "../../../contexts/LanguageProvider";
+import { useNotification } from "../../../contexts/NotificationProvider";
 
 // services
-import { fetchList, fetchListGET } from "../../services/get";
+import { fetchList, fetchListGET } from "../../../services/get";
 
 // components
-import Table from "../Table/Table";
-import Loading from "../Loading/Loading";
+import Table from "../../../components/Table/Table";
+import Loading from "../../../components/Loading/Loading";
 
 // utils
-import { deleteModel } from "../../services/post";
-import { getUserName } from "../../utils/auth";
+import { deleteModel } from "../../../services/post";
+import { getUserName } from "../../../utils/auth";
 
-function List({ collection, additionalQueries, visitable, notEditable }) {
+function List() {
   const { userState } = useUser();
+  const { collection } = useParams();
   const { languageState } = useLanguage();
 
   const { errors } = useMemo(() => {
@@ -87,7 +89,7 @@ function List({ collection, additionalQueries, visitable, notEditable }) {
     try {
       const parsedQuery = parseQueries(
         languageState.texts[collection].query,
-        additionalQueries
+        languageState.texts[collection].additionalQueries
       );
       let response;
       if (collection !== "events" && collection !== "projects")
@@ -116,19 +118,12 @@ function List({ collection, additionalQueries, visitable, notEditable }) {
       else showNotification("error", String(err));
     }
     setLoading(false);
-  }, [
-    languageState,
-    collection,
-    additionalQueries,
-    page,
-    errors,
-    showNotification,
-  ]);
+  }, [languageState, collection, page, errors, showNotification]);
 
   useEffect(() => {
     if (!page) setList({ type: "reset" });
     fetch();
-  }, [page, additionalQueries]);
+  }, [page]);
 
   const onDelete = useCallback(
     async (id) => {
@@ -157,8 +152,8 @@ function List({ collection, additionalQueries, visitable, notEditable }) {
           headers={languageState.texts[collection].headers}
           collection={collection}
           onDelete={onDelete}
-          visitable={visitable}
-          notEditable={notEditable}
+          visitable={languageState.texts[collection].visitable}
+          notEditable={languageState.texts[collection].notEditable}
         />
       )}
     </article>
@@ -167,12 +162,10 @@ function List({ collection, additionalQueries, visitable, notEditable }) {
 
 List.propTypes = {
   collection: PropTypes.string.isRequired,
-  additionalQueries: PropTypes.object,
 };
 
 List.defaultProps = {
   collection: "",
-  additionalQueries: {},
 };
 
 export default List;

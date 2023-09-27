@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // contexts
-import { useLanguage } from "../../contexts/LanguageProvider";
+import { useLanguage } from "../../../contexts/LanguageProvider";
 
 function ModelNavigator({ collection }) {
   const { languageState } = useLanguage();
@@ -16,10 +16,10 @@ function ModelNavigator({ collection }) {
   return (
     <nav className="flex gap-2 mt-5">
       <Link
-        to={`/${collection}/list/`}
+        to={`/${collection}/`}
         className={`small-button primary ${
-          location.pathname === `/${collection}/list` ||
-          location.pathname === `/${collection}/list/`
+          location.pathname === `/${collection}/` ||
+          location.pathname === `/${collection}`
             ? "submit"
             : "outlined"
         }`}
