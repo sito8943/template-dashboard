@@ -104,7 +104,8 @@ button {
 }
 
 .input,
-button {
+button.submit,
+.button {
   @apply px-5 py-1 rounded-3xl cursor-default;
 }
 

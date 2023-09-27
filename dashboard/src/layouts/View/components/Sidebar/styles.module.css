@@ -1,12 +1,12 @@
 .sidebar {
-  @apply w-[350px];
+  @apply min-w-[250px];
 }
 
 .header {
   @apply mt-[15px];
 }
 
-@media (max-width: 650px) {
+@media (max-width: 900px) {
   .header {
     @apply h-0 mt-0;
   }
@@ -17,6 +17,6 @@
   }
 
   .sidebar {
-    @apply w-[36px];
+    @apply min-w-[36px];
   }
 }

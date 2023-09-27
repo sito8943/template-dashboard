@@ -82,7 +82,7 @@ function Navbar() {
   return (
     <header className="px-2 py-2 flex items-center justify-between">
       <Link className="text-4xl md:text-2xl" to="/">
-        <h2>Template Dashboard</h2>
+        <h2>{languageState.texts.navbarTitle}</h2>
       </Link>
       <nav>{printLinks()}</nav>
       <div className="flex gap2 items-center">

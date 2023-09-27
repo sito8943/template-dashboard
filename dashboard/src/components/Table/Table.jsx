@@ -72,7 +72,7 @@ function Table({
             {!notEditable ? (
               <Link
                 name="edit-row"
-                to={`/${collection}/?id=${row.id}`}
+                to={`/${collection}/${row.id}`}
                 className="icon-button"
                 aria-label={languageState.texts.ariaLabels.editRow}
               >

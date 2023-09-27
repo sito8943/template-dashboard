@@ -143,7 +143,7 @@ function List() {
   );
 
   return (
-    <article className="mt-5">
+    <section className="mt-5">
       {loading ? (
         <Loading />
       ) : (
@@ -156,7 +156,7 @@ function List() {
           notEditable={languageState.texts[collection].notEditable}
         />
       )}
-    </article>
+    </section>
   );
 }
 

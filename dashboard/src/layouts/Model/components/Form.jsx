@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import md5 from "md5";
 
 import { parseQueries } from "some-javascript-utils/browser";
@@ -32,9 +32,7 @@ import { toSlug } from "../../../utils/parser";
 import config from "../../../config";
 
 function Form() {
-  const location = useLocation();
-
-  const [id, setId] = useState("");
+  const { id, collection } = useParams();
 
   const { languageState } = useLanguage();
 
@@ -175,8 +173,8 @@ function Form() {
         return;
       }
       try {
-        const result = await saveModel("users", {
-          id: id.length ? id : undefined,
+        const result = await saveModel(collection, {
+          id,
           user,
           email,
           name,
@@ -246,7 +244,7 @@ function Form() {
   const fetch = useCallback(
     async (id) => {
       try {
-        const response = await fetchList("users", 0, [], {
+        const response = await fetchList(collection, 0, [], {
           attribute: "id",
           operator: "=",
           value: id,
@@ -272,13 +270,9 @@ function Form() {
 
   useEffect(() => {
     fetchUserTypes();
-    const { search } = location;
-    const params = parseQueries(search);
-    if (params.id) {
-      setId(params.id);
-      fetch(params.id);
-    } else setLoading(false);
-  }, [location]);
+    if (id) fetch(id);
+    else setLoading(false);
+  }, [id, collection]);
 
   const getPhoto = useCallback(() => {
     if (!photo.length) return noProduct;
@@ -290,23 +284,28 @@ function Form() {
   }, [photo, fileName]);
 
   return (
-    <article className="relative">
+    <section className="relative">
       {loading ? (
         <Loading className="w-full h-full absolute top-0 left-0 dark:bg-dark-background bg-light-background z-20" />
       ) : null}
-      <form onSubmit={saveUser} className="w-[80%] mt-5">
+      <form onSubmit={saveUser} className="w-[80%] mt-5 flex flex-col gap-5">
         <div className="flex gap-5 items-center justify-start">
-          <label htmlFor="photo">{users.labels.photo}</label>
-          <label className="primary button w-[150px] h-[45px] text-center">
+          <LazyImage
+            className="h-[150px] w-[150px] my-3 rounded-full"
+            src={getPhoto()}
+            alt="product image"
+          />
+          <label className="primary submit rounded-3xl w-[180px] h-[45px] flex items-center justify-center text-center relative">
             {buttons.uploadPhoto}
-            <input onChange={onUploadFile} type="file" accept="image/*" />
+            <input
+              onChange={onUploadFile}
+              type="file"
+              accept="image/*"
+              className="absolute"
+            />
           </label>
         </div>
-        <LazyImage
-          className="h-[150px] w-[150px] my-3 rounded-full"
-          src={getPhoto()}
-          alt="product image"
-        />
+
         <SimpleInput
           id="user"
           className="input-control"
@@ -365,7 +364,13 @@ function Form() {
             type: !showPassword ? "password" : "string",
           }}
           leftIcon={
-            <button tabIndex={-1} type="button" onClick={toggleShowPassword}>
+            <button
+              tabIndex={-1}
+              type="button"
+              name="toggle-see-password"
+              onClick={toggleShowPassword}
+              aria-label={languageState.texts.ariaLabels.toggleShowPassword}
+            >
               <FontAwesomeIcon
                 name="toggle-see-password"
                 icon={showPassword ? faLockOpen : faLock}
@@ -410,7 +415,7 @@ function Form() {
           </button>
         </div>
       </form>
-    </article>
+    </section>
   );
 }
 
