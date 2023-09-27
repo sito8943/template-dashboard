@@ -527,8 +527,6 @@ router.get("/bar-chart", [validator], async (req, res) => {
     categories.forEach((category, i) => {
       categories[i] = i + 1;
     });
-    console.log(toFetch, ids)
-    console.log(resultObj)
     res.status(200).send({ series: Object.values(resultObj), categories });
   } catch (err) {
     console.error(err);
