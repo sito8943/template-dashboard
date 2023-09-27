@@ -231,7 +231,8 @@ function Form() {
 
         const { list } = await response.data;
         const [data] = list;
-        setInputValue({ type: init, data });
+        console.log(data);
+        setInputValue({ type: "init", data });
       }
       for (const input of Object.values(
         languageState.texts[collection].inputs
@@ -263,6 +264,7 @@ function Form() {
 
   const getPhoto = useCallback(
     (id) => {
+      console.log(inputValue, fileNames);
       if (!inputValue[id]?.length) return noProduct;
       if (inputValue[id]?.length && fileNames[id].length) return inputValue[id];
 
