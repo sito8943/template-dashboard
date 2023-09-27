@@ -24,8 +24,11 @@ input {
 }
 
 .main {
-  min-height: calc(100vh - 56px);
   @apply flex items-start justify-start;
+}
+
+.main-model {
+  height: calc(100vh - 56px);
 }
 
 a,
@@ -105,6 +108,7 @@ button {
 
 .input,
 button.submit,
+button.outlined,
 .button {
   @apply px-5 py-1 rounded-3xl cursor-default;
 }
