@@ -84,7 +84,7 @@ export async function lineChart(year, month, params) {
 export async function barChart(year, month, params) {
   const encrypted = encrypt(params, config.crypto);
   const response = await fetch(
-    `${config.apiUrl}analytics/line-chart?params=${encodeURIComponent(
+    `${config.apiUrl}analytics/bar-chart?params=${encodeURIComponent(
       encrypted
     )}&year=${year}&month=${month}`,
     {

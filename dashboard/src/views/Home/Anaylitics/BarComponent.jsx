@@ -59,7 +59,10 @@ function BarComponent() {
     async (options) => {
       setLoading(true);
       try {
-        const ids = toFetch === "attributes" ? [selectedAttribute] : [];
+        const ids =
+          toFetch === "attributes"
+            ? [attributes[selectedAttribute].name]
+            : [eventList[selectedEvent].id];
         const response = await barChart(year, month, {
           toFetch,
           ids,
@@ -83,7 +86,7 @@ function BarComponent() {
       }
       setLoading(false);
     },
-    [toFetch, year, month, languageState]
+    [toFetch, year, month, languageState, selectedAttribute, selectedEvent]
   );
 
   const fetchAttributes = useCallback(async () => {
@@ -92,7 +95,7 @@ function BarComponent() {
       const response = await fetchData("attributes");
       const { list } = await response.json();
       setAttributes(list);
-      setSelectedAttribute(list[0].name);
+      setSelectedAttribute(0);
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -109,7 +112,6 @@ function BarComponent() {
       const { list } = await response.json();
       setEventList(list);
       setSelectedEvent(0);
-      fetch();
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -125,8 +127,8 @@ function BarComponent() {
   }, []);
 
   useEffect(() => {
-    fetch();
-  }, [year, month, toFetch]);
+    if (selectedAttribute !== undefined || selectedEvent !== undefined) fetch();
+  }, [year, month, toFetch, selectedAttribute, selectedEvent]);
 
   return (
     <div className="chart">
@@ -147,7 +149,7 @@ function BarComponent() {
             <select
               value={selectedAttribute}
               className="input primary !py-0 h-[30px]"
-              onChange={(e) => setSelectedAttribute(e.target.value)}
+              onChange={(e) => setSelectedAttribute(Number(e.target.value))}
             >
               {attributes.map((attribute) => (
                 <option key={attribute} value={attribute}>
@@ -159,7 +161,7 @@ function BarComponent() {
             <select
               value={selectedEvent}
               className="input primary !py-0 h-[30px]"
-              onChange={(e) => setSelectedEvent(e.target.value)}
+              onChange={(e) => setSelectedEvent(Number(e.target.value))}
             >
               {eventList.map((event, i) => (
                 <option key={event.id} value={i}>
@@ -200,10 +202,7 @@ function BarComponent() {
       ) : (
         <Fragment>
           {!empty ? (
-            <BarChart
-              /*  series={series} */
-              categories={categories}
-            />
+            <BarChart series={series} categories={categories} />
           ) : (
             <Empty />
           )}
