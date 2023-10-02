@@ -32,7 +32,7 @@ function SelectInput({
           {options && options.length ? (
             <Fragment>
               {options.map((option, i) => (
-                <option value={i} key={option.id}>
+                <option value={option.id} key={option.id}>
                   {option.name}
                 </option>
               ))}

@@ -27,6 +27,9 @@ import PasswordInput from "./PasswordInput/PasswordInput";
 import { fetchList } from "../../../services/get";
 import { saveModel } from "../../../services/post";
 
+// utils
+import { toSlug } from "../../../utils/parser";
+
 // config
 import config from "../../../config";
 
@@ -63,24 +66,6 @@ function Form() {
     }
   }, {});
 
-  const [remotes, setRemotes] = useReducer((oldState, action) => {
-    const { type } = action;
-    switch (type) {
-      case "set": {
-        const { id, list } = action;
-        oldState[id] = list;
-        return { ...oldState };
-      }
-      default:
-        return oldState;
-    }
-  }, {});
-
-  const onRemoteSelect = (e) => {
-    const { id, value } = e.target;
-    setInputValue({ type: "set", id, value });
-  };
-
   const [inputValue, setInputValue] = useReducer((oldState, action) => {
     const { type } = action;
     switch (type) {
@@ -98,7 +83,44 @@ function Form() {
     }
   }, {});
 
-  const onInputChange = (e) => {
+  const onInputChange = useCallback(
+    (e) => {
+      const { id, value } = e.target;
+      const transformation =
+        languageState.texts[collection].inputs[id].transformation;
+      let parsedValue = value;
+      if (transformation)
+        switch (transformation) {
+          default: // slug case
+            parsedValue = toSlug(value);
+            break;
+        }
+      setInputValue({ type: "set", id, value: parsedValue });
+    },
+    [collection]
+  );
+
+  const [remotes, setRemotes] = useReducer((oldState, action) => {
+    const { type } = action;
+    switch (type) {
+      case "set": {
+        const { id, list, toSet, required } = action;
+        oldState[id] = list;
+        if (required)
+          setInputValue({
+            type: "set",
+            id,
+            value: toSet,
+          });
+
+        return { ...oldState };
+      }
+      default:
+        return oldState;
+    }
+  }, {});
+
+  const onRemoteSelect = (e) => {
     const { id, value } = e.target;
     setInputValue({ type: "set", id, value });
   };
@@ -145,7 +167,6 @@ function Form() {
     let requiredError = false;
     Object.values(languageState.texts[collection].inputs).forEach((input) => {
       if (!inputValue[input.id] || !inputValue[input.id].length) {
-        console.log(id, input.required, input.requiredOnEdit);
         if (
           (input.requiredOnEdit && id && id !== "insert") ||
           (input.required && (!id || id === "insert"))
@@ -165,12 +186,17 @@ function Form() {
       // parse data
       const toSaveData = { ...inputValue };
       Object.keys(toSaveData).forEach((key) => {
-        if (!languageState.texts[collection].inputs[key])
+        if (toSaveData[key] && toSaveData[key].length) {
+          if (!languageState.texts[collection].inputs[key])
+            delete toSaveData[key];
+          if (languageState.texts[collection].inputs[key].encrypted)
+            toSaveData[key] = md5(toSaveData[key]);
+          if (languageState.texts[collection].inputs[key].type === "number")
+            toSaveData[key] = Number(toSaveData[key]);
+        }
+        if (id && (!toSaveData[key] || !toSaveData[key].length)) {
           delete toSaveData[key];
-        if (languageState.texts[collection].inputs[key].encrypted)
-          toSaveData[key] = md5(toSaveData[key]);
-        if (languageState.texts[collection].inputs[key].type === "number")
-          toSaveData[key] = Number(toSaveData[key]);
+        }
       });
       const result = await saveModel(collection, {
         id: !id || id === "insert" ? undefined : id,
@@ -204,13 +230,18 @@ function Form() {
     setLoading(false);
   };
 
-  const remoteFetch = async (input) => {
+  const remoteFetch = async (input, already = undefined) => {
     try {
       const response = await fetchList(input.collection, 0, ["id", "name"]);
       const data = await response.data;
-      setRemotes({ type: "set", id: input.id, list: data.list });
-      if (input.required)
-        setInputValue({ type: "set", id: input.id, value: data.list[0].id });
+
+      setRemotes({
+        type: "set",
+        id: input.id,
+        list: data.list,
+        toSet: already || data.list[0].id,
+        required: input.required,
+      });
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -222,6 +253,7 @@ function Form() {
   const fetch = async () => {
     setLoading(true);
     try {
+      let data = undefined;
       if (id && id !== "insert") {
         const response = await fetchList(collection, 0, [], {
           attribute: "id",
@@ -230,22 +262,38 @@ function Form() {
         });
 
         const { list } = await response.data;
-        const [data] = list;
-        console.log(data);
-        setInputValue({ type: "init", data });
+        data = list[0];
       }
       for (const input of Object.values(
         languageState.texts[collection].inputs
       )) {
-        if (input.remote) await remoteFetch(input);
+        if (input.remote) {
+          await remoteFetch(input, data ? data[input.id] : undefined);
+        }
         switch (input.type) {
+          case "photo":
+            if (data && data[input.id])
+              setInputValue({
+                type: "set",
+                id: input.id,
+                value: data[input.id],
+              });
+            break;
           case "number":
-            setInputValue({ type: "set", id: input.id, value: 0 });
+            setInputValue({
+              type: "set",
+              id: input.id,
+              value: data && data[input.id] ? data[input.id] : 0,
+            });
             break;
           case "password":
           case "text":
           case "email":
-            setInputValue({ type: "set", id: input.id, value: "" });
+            setInputValue({
+              type: "set",
+              id: input.id,
+              value: data && data[input.id] ? data[input.id] : "",
+            });
             break;
         }
       }
@@ -264,11 +312,11 @@ function Form() {
 
   const getPhoto = useCallback(
     (id) => {
-      console.log(inputValue, fileNames);
       if (!inputValue[id]?.length) return noProduct;
-      if (inputValue[id]?.length && fileNames[id].length) return inputValue[id];
+      if (inputValue[id]?.length && fileNames[id] && fileNames[id].length)
+        return inputValue[id];
 
-      return inputValue[id].length && !fileNames[id].length
+      return inputValue[id].length && (!fileNames[id] || !fileNames[id].length)
         ? `${config.apiPhoto}${inputValue[id]}`
         : noProduct;
     },
@@ -283,7 +331,7 @@ function Form() {
             {input.type === "photo" ? (
               <div className="flex gap-5 items-center justify-start">
                 <LazyImage
-                  className="h-[150px] w-[150px] my-3 rounded-full"
+                  className="h-[150px] w-[150px] my-3 rounded-full object-cover"
                   src={getPhoto(input.id)}
                   alt={`${collection} image`}
                 />
@@ -332,6 +380,7 @@ function Form() {
                 label={labels[input.id]}
                 inputProps={{
                   onChange: onRemoteSelect,
+                  value: inputValue[input.id],
                   className: "input primary !pr-5 w-full",
                 }}
                 options={remotes[input.id]}

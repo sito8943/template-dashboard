@@ -116,6 +116,7 @@
           "id": "user",
           "type": "text",
           "required": true,
+          "transformation": "slugCase",
           "disabledIfModifying": true
         },
         "name": {

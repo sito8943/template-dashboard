@@ -70,7 +70,7 @@ const signOut = async (user, ip) => {
 const login = async (user, password, remember, ip) => {
   const { rows } = await select(
     "users",
-    ["id", "pw", "user", "photo", "state", "type"],
+    ["id", "pw", "user", "photo", "state", "userType"],
     [
       { attribute: "user", operator: "=", value: user },
       { attribute: "email", operator: "=", value: user, logic: "OR" },
@@ -90,7 +90,7 @@ const login = async (user, password, remember, ip) => {
         attribute: "idUser",
         operator: "=",
         value: data.id,
-      })
+      });
     // @ts-ignore
     if (data.pw.toLowerCase() === password.toLowerCase()) {
       // loading permissions

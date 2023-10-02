@@ -41,7 +41,18 @@ class Controller {
       end,
       orderBy
     );
-    return { list: data.rows };
+    // ignoring private attributes
+    const parsedRows = [];
+    data.rows.forEach((item) => {
+      const keys = Object.keys(item);
+      const parsedItem = {};
+      keys.forEach((key) => {
+        if (Controller.privateAttributes.indexOf(key) < 0)
+          parsedItem[key] = item[key];
+      });
+      parsedRows.push(parsedItem);
+    });
+    return { list: parsedRows };
   }
 
   /**
@@ -53,7 +64,7 @@ class Controller {
     if (data.pw && data.rPassword) {
       if (data.pw !== data.rPassword)
         return { message: "passwords are not equal" };
-      delete data.rPassword
+      delete data.rPassword;
     }
     // security name check
     {
@@ -113,11 +124,11 @@ class Controller {
    * @param {object} query
    */
   async update(user, data, query) {
-    // if it has password and rPassword check if they are equal
-    if (data.password && data.rPassword) {
-      if (data.password !== data.rPassword)
+    // if it has password (pw) and rPassword check if they are equal
+    if (data.pw && data.rPassword) {
+      if (data.pw !== data.rPassword)
         return { message: "passwords are not equal" };
-      delete data.rPassword
+      delete data.rPassword;
     }
     if (!query) assert(data.id !== undefined, "Data must have a string id");
 
@@ -142,6 +153,7 @@ class Controller {
           operator: "=",
         });
         const resultObj = oldData.rows[0];
+
         if (resultObj.photo !== data.photo) {
           if (resultObj.photo && resultObj.photo.length) {
             // deleting old photo if they are the same
@@ -244,5 +256,7 @@ class Controller {
     return { message: "ok" };
   }
 }
+
+Controller.privateAttributes = ["password", "pw"];
 
 module.exports = Controller;

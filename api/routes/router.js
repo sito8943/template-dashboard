@@ -77,15 +77,17 @@ class Router {
                 "base64"
               );
               const extension = data.photo.split(";")[0].split("/")[1];
-              fs.writeFileSync(
-                `./public/images/${this.collection}/${
+              if (extension !== "images") {
+                fs.writeFileSync(
+                  `./public/images/${this.collection}/${
+                    data.id || query.value
+                  }-photo.${extension}`,
+                  encoded
+                );
+                data.photo = `/images/${this.collection}/${
                   data.id || query.value
-                }-photo.${extension}`,
-                encoded
-              );
-              data.photo = `/images/${this.collection}/${
-                data.id || query.value
-              }-photo.${extension}`;
+                }-photo.${extension}`;
+              }
             } catch (err) {
               console.error(err);
             }

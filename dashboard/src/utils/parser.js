@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * string
+ * @param {string} string
  */
 export const toSlug = (string) => {
   const accents = ["á", "é", "í", "ó", "ú", "ü", "ñ"];
@@ -13,7 +13,7 @@ export const toSlug = (string) => {
     if (parsedStrings.indexOf(accent) > -1)
       parsedStrings = parsedStrings.replaceAll(accent, vocals[i]);
   });
-  return parsedStrings.replace(/  +/g, ' ').replace(/ +/g, "-");
+  return parsedStrings.replace(/  +/g, " ").replace(/ +/g, "-");
 };
 
 /**
