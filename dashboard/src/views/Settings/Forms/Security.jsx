@@ -33,15 +33,10 @@ function Security() {
     [setNotificationState]
   );
 
-  const { security, errors, buttons, auth, messages } = useMemo(() => {
-    return {
-      auth: languageState.texts.auth,
-      buttons: languageState.texts.buttons,
-      security: languageState.texts.settings.security,
-      messages: languageState.texts.messages,
-      errors: languageState.texts.errors,
-    };
-  }, [languageState]);
+  const { settings, errors, buttons, labels, messages } = useMemo(
+    () => languageState.texts,
+    [languageState]
+  );
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -105,12 +100,12 @@ function Security() {
         <Loading className="w-full h-full absolute top-0 left-0 dark:bg-dark-background bg-light-background z-20" />
       ) : null}
       <div className="flex items-center gap-2 mb-5">
-        <h3>{security.title}</h3>
+        <h3>{settings.security.title}</h3>
       </div>
       <SimpleInput
         id="password"
         className="input-control"
-        label={auth.labels.password}
+        label={labels.pw}
         inputProps={{
           className: "input primary !pl-8 w-full",
           value: password,
@@ -132,7 +127,7 @@ function Security() {
       <SimpleInput
         id="rPassword"
         className="input-control"
-        label={auth.labels.rPassword}
+        label={labels.rPassword}
         inputProps={{
           className: "input primary !pl-8 w-full",
           value: rPassword,
