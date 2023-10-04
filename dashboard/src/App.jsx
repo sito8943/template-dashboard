@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import loadable from "@loadable/component";
 
 import io from "socket.io-client";
@@ -18,6 +18,7 @@ import Settings from "./views/Settings/Settings";
 import Recovery from "./views/Auth/Recovery";
 import SignOut from "./views/Auth/SignOut";
 import SignIn from "./views/Auth/SignIn";
+import Pages from "./views/Pages/Pages";
 import Home from "./views/Home/Home";
 
 // contexts
@@ -156,6 +157,17 @@ function App() {
             </Route>
             <Route exact path="/" element={<View />}>
               <Route index element={<Home />} />
+              <Route
+                exact
+                path="/pages/"
+                element={
+                  <main>
+                    <Outlet />
+                  </main>
+                }
+              >
+                <Route index element={<Pages />} />
+              </Route>
               <Route path="/:collection/" element={<Model />}>
                 <Route index element={<List />} />
                 <Route path="/:collection/:id" element={<Form />} />

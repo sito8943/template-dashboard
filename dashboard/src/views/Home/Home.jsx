@@ -24,7 +24,7 @@ function Home() {
 
   return (
     <main className="main-model dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 flex flex-col gap-5 relative overflow-auto">
-      <h2>{languageState.texts.analytics.title}</h2>
+      <h2 className="text-4xl">{languageState.texts.analytics.title}</h2>
       {charts.map((chart, i) => (
         <ChartBox key={chart.id} onDelete={() => deleteChart(i)} />
       ))}

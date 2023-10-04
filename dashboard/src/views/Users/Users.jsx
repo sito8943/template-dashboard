@@ -22,10 +22,9 @@ function Users() {
 
   return (
     <main className="dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto">
-      <h2>{users.title}</h2>
+      <h2 className="text-4xl">{users.title}</h2>
       <ModelNavigator collection="users" />
-      {location.pathname === "/users/" ||
-      location.pathname === "/users" ? (
+      {location.pathname === "/users/" || location.pathname === "/users" ? (
         <List collection="users" />
       ) : (
         <Form />

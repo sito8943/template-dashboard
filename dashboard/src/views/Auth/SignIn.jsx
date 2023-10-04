@@ -153,7 +153,7 @@ function SignIn() {
         onSubmit={onSubmit}
         className={`entrance bg-light-background dark:bg-dark-background ${styles.main}`}
       >
-        <h2>{auth.signIn.title}</h2>
+        <h2 className="text-4xl">{auth.signIn.title}</h2>
         <SimpleInput
           id="user"
           className="input-control"

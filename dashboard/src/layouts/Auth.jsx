@@ -41,7 +41,7 @@ function Auth() {
           name="home-link"
           aria-label={languageState.texts.ariaLabels.homeLink}
         >
-          <h2>Template Dashboard</h2>
+          <h1 className="text-3xl">Template Dashboard</h1>
         </Link>
         <button
           name="toggle-theme"

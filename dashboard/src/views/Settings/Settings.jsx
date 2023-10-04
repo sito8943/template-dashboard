@@ -15,7 +15,7 @@ function Settings() {
 
   return (
     <main className="main-model dark:bg-dark-background bg-light-background w-full rounded-s-xl h-full p-5 relative overflow-auto flex flex-col gap-10">
-      <h2>{settings.title}</h2>
+      <h2 className="text-4xl">{settings.title}</h2>
       <Photo />
       <Attribute attribute="email" />
       <Security />

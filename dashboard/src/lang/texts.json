@@ -65,6 +65,11 @@
           "label": "Inicio"
         },
         {
+          "id": "pages",
+          "to": "/pages",
+          "label": "Páginas"
+        },
+        {
           "id": "users",
           "to": "/users/",
           "label": "Usuarios"
@@ -85,6 +90,9 @@
     },
     "nav": {
       "links": []
+    },
+    "pages": {
+      "title": "Páginas"
     },
     "buttons": {
       "goHome": "Ir al Inicio",
@@ -217,6 +225,7 @@
       "recoverySend": "Enviar solicitud de recuperacion de contraseña"
     },
     "messages": {
+      "deletedSuccessful": "Eliminado correctamente",
       "saved": "Guardado correctamente"
     },
     "errors": {

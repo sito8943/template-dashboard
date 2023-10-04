@@ -3,9 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCalendar,
-  faIndustry,
-  faProjectDiagram,
+  faTextHeight,
+  faFileText,
   faHome,
   faUser,
   faGear,
@@ -33,10 +32,8 @@ function Sidebar() {
     () => ({
       home: faHome,
       users: faUser,
+      pages: faFileText,
       settings: faGear,
-      mipymes: faIndustry,
-      projects: faProjectDiagram,
-      events: faCalendar,
       logout: faArrowRightFromBracket,
     }),
     []

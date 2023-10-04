@@ -34,7 +34,7 @@ function Recovery() {
     <form
       className={`entrance dark:bg-dark-background bg-light-background2 ${styles.main}`}
     >
-      <h2>{auth.recoveryTitle}</h2>
+      <h2 className="text-4xl">{auth.recoveryTitle}</h2>
       <SimpleInput
         id="email"
         className="input-control"

@@ -23,11 +23,10 @@ function List() {
   const { collection } = useParams();
   const { languageState } = useLanguage();
 
-  const { errors } = useMemo(() => {
-    return {
-      errors: languageState.texts.errors,
-    };
-  }, [languageState]);
+  const { errors, messages } = useMemo(
+    () => languageState.texts,
+    [languageState]
+  );
 
   const { setNotificationState } = useNotification();
 
@@ -132,6 +131,7 @@ function List() {
           await deleteModel(collection, id);
         else await deleteModel("posts", id);
         setList({ type: "remove", id });
+        showNotification("success", messages.deletedSuccessful);
       } catch (err) {
         console.error(err);
         if (String(err) === "AxiosError: Network Error")
@@ -139,7 +139,7 @@ function List() {
         else showNotification("error", String(err));
       }
     },
-    [collection, errors, showNotification]
+    [collection, messages, errors, showNotification]
   );
 
   return (
