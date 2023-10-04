@@ -45,7 +45,7 @@ function Pages() {
 
   return (
     <section className="w-full">
-      <h2 className="text-4xl">{pages.title}</h2>
+      <h2>{pages.title}</h2>
       <table className="w-full">
         <thead>
           <tr>

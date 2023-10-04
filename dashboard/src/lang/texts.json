@@ -97,6 +97,13 @@
         "visits": "Visitas",
         "rebounds": "Rebotes"
       },
+      "home": {
+        "title": "Página Inicial",
+        "hero": {
+          "title": "Inicio",
+          "description": "Potenciar productos seleccionados"
+        }
+      },
       "pages": [
         {
           "url": "/",

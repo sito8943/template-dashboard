@@ -38,6 +38,7 @@ p,
 h1,
 h2,
 h3,
+h4,
 label {
   @apply dark:text-white text-dark-background2;
 }
@@ -51,8 +52,16 @@ h2 {
   @apply font-extrabold;
 }
 
+h2 {
+  @apply text-4xl;
+}
+
 h3 {
-  @apply text-2xl font-extrabold;
+  @apply text-2xl font-semibold;
+}
+
+h4 {
+  @apply text-xl;
 }
 
 .icon-button {
