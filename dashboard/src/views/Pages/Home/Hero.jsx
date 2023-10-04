@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Tippy from "@tippyjs/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +15,19 @@ function Hero() {
     [languageState]
   );
 
+  const [products, setProducts] = useState([]);
+  const [types, setTypes] = useState([]);
+
+  const fetch = useCallback(() => {}, []);
+
+  useEffect(() => {
+    // load all products and group by types
+    fetch();
+  }, []);
+
+  const printProducts = useMemo(() => {}, [products]);
+  const printTypes = useMemo(() => {}, []);
+
   return (
     <article id="hero">
       <h3>
@@ -24,8 +37,9 @@ function Hero() {
             <FontAwesomeIcon icon={faInfoCircle} />
           </Tippy>
         </span>
-        
       </h3>
+      <div className="flex gap-2">{printTypes}</div>
+      <div className="flex gap-2">{printProducts}</div>
     </article>
   );
 }
