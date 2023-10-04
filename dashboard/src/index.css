@@ -35,6 +35,7 @@ a,
 th,
 td,
 p,
+h1,
 h2,
 h3,
 label {
@@ -45,6 +46,7 @@ label {
   @apply text-error dark:text-error;
 }
 
+h1,
 h2 {
   @apply font-extrabold;
 }

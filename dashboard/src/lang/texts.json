@@ -92,7 +92,19 @@
       "links": []
     },
     "pages": {
-      "title": "Páginas"
+      "title": "Páginas",
+      "columns": {
+        "visits": "Visitas",
+        "rebounds": "Rebotes"
+      },
+      "pages": [
+        {
+          "url": "/",
+          "id": "home",
+          "title": "Página Inicial",
+          "editLink": "home"
+        }
+      ]
     },
     "buttons": {
       "goHome": "Ir al Inicio",

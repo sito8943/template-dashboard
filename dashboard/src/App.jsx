@@ -20,6 +20,7 @@ import SignOut from "./views/Auth/SignOut";
 import SignIn from "./views/Auth/SignIn";
 import Pages from "./views/Pages/Pages";
 import Home from "./views/Home/Home";
+import HomePage from "./views/Pages/HomePage";
 
 // contexts
 import { useMode } from "./contexts/ModeProvider";
@@ -161,11 +162,13 @@ function App() {
                 exact
                 path="/pages/"
                 element={
-                  <main>
+                  <main className="main-model bg-light-background dark:bg-dark-background w-full rounded-s-xl h-full p-5 relative overflow-auto">
                     <Outlet />
                   </main>
                 }
               >
+                <Route index element={<Pages />} />
+                <Route exact path="/pages/home/" element={<HomePage />} />
                 <Route index element={<Pages />} />
               </Route>
               <Route path="/:collection/" element={<Model />}>
