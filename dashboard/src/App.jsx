@@ -49,7 +49,7 @@ const Notification = loadable(() =>
 function App() {
   const { setModeState } = useMode();
 
-  const { setLanguageState } = useLanguage();
+  const { languageState, setLanguageState } = useLanguage();
   const { setNotificationState } = useNotification();
   const { userState, setUserState } = useUser();
 

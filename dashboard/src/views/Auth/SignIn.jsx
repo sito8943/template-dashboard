@@ -34,12 +34,10 @@ function SignIn() {
   const { languageState } = useLanguage();
   const { setNotificationState } = useNotification();
 
-  const { auth, errors } = useMemo(() => {
-    return {
-      auth: languageState.texts.auth,
-      errors: languageState.texts.errors,
-    };
-  }, [languageState]);
+  const { auth, labels, errors } = useMemo(
+    () => languageState.texts,
+    [languageState]
+  );
 
   const [user, setUser] = useState("");
   const [userHelperText, setUserHelperText] = useState("");
@@ -157,7 +155,7 @@ function SignIn() {
         <SimpleInput
           id="user"
           className="input-control"
-          label={auth.labels.user}
+          label={labels.user}
           inputProps={{
             className: "input primary !pl-8 w-full",
             value: user,
@@ -175,7 +173,7 @@ function SignIn() {
         <SimpleInput
           id="password"
           className="input-control"
-          label={auth.labels.password}
+          label={labels.pw}
           inputProps={{
             className: "input primary !pl-8 w-full",
             value: password,
