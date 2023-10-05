@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getAuth } from "../auth/auth";
 import config from "../config";
 
@@ -14,11 +13,12 @@ import { getUserName } from "../utils/auth";
  * @returns
  */
 export const validateBasicKey = async (type) => {
-  const response = await axios.post(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}auth/${type === "admin" ? "is-admin" : "validate"}`,
-    { user: getUserName() },
     {
+      method: "POST",
+      body: JSON.stringify({ user: getUserName() }),
       headers: {
         ...getAuth,
         Authorization: `Bearer ${getCookie(config.basicKey)}`,
@@ -37,11 +37,12 @@ export const validateBasicKey = async (type) => {
  * @returns The response from the server.
  */
 export const login = async (user, password, remember) => {
-  const response = await axios.post(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}auth/login`,
-    { user, password: md5(password), remember },
     {
+      method: "POST",
+      body: JSON.stringify({ user, password: md5(password), remember }),
       headers: getAuth,
     }
   );
@@ -54,11 +55,12 @@ export const login = async (user, password, remember) => {
  * @param {string} user
  */
 export const signOutUser = async (user) => {
-  const response = await axios.post(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}auth/sign-out`,
-    { user },
     {
+      method: "POST",
+      body: JSON.stringify({ user }),
       headers: {
         ...getAuth,
         Authorization: `Bearer ${getCookie(config.basicKey)}`,
@@ -75,23 +77,21 @@ export const signOutUser = async (user) => {
  * @returns The response from the server.
  */
 export const passwordRecovery = async (email) => {
-  const response = await axios.post(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}user/password-reset`,
-    { email },
-    {
-      headers: getAuth,
-    }
+    { method: "POST", body: JSON.stringify({ email }), headers: getAuth }
   );
   return response;
 };
 
 export const saveInfo = async (attributes, values) => {
-  const response = await axios.post(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}users/save-info`,
-    { user: getUserName(), attributes, values },
     {
+      method: "POST",
+      body: JSON.stringify({ user: getUserName(), attributes, values }),
       headers: {
         ...getAuth,
         Authorization: `Bearer ${getCookie(config.basicKey)}`,
@@ -102,11 +102,12 @@ export const saveInfo = async (attributes, values) => {
 };
 
 export const loadInfo = async (attributes) => {
-  const response = await axios.post(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}users/load-info`,
-    { user: getUserName(), attributes },
     {
+      method: "POST",
+      body: JSON.stringify({ user: getUserName(), attributes }),
       headers: {
         ...getAuth,
         Authorization: `Bearer ${getCookie(config.basicKey)}`,

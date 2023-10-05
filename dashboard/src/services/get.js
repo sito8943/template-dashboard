@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getAuth } from "../auth/auth";
 import config from "../config";
 
@@ -16,16 +15,20 @@ import { getUserName } from "../utils/auth";
  * @returns
  */
 export async function fetchList(collection, page, attributes, query) {
-  const response = await axios.post(
-    `${config.apiUrl}${collection}/list`,
-    { user: getUserName(), collection, page, attributes, query },
-    {
-      headers: {
-        ...getAuth,
-        Authorization: `Bearer ${getCookie(config.basicKey)}`,
-      },
-    }
-  );
+  const response = await fetch(`${config.apiUrl}${collection}/list`, {
+    method: "POST",
+    body: JSON.stringify({
+      user: getUserName(),
+      collection,
+      page,
+      attributes,
+      query,
+    }),
+    headers: {
+      ...getAuth,
+      Authorization: `Bearer ${getCookie(config.basicKey)}`,
+    },
+  });
   return response;
 }
 

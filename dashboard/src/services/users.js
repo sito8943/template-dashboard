@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getCookie } from "some-javascript-utils/browser";
 
 // auth
@@ -11,7 +10,7 @@ import { getUserName } from "../utils/auth";
 import config from "../config";
 
 export const fetchNotifications = async () => {
-  const response = await axios.get(
+  const response = await fetch(
     // @ts-ignore
     `${config.apiUrl}users/notifications?user=${getUserName()}`,
     {

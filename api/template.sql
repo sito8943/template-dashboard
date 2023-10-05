@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2023 at 07:16 PM
+-- Generation Time: Oct 05, 2023 at 08:46 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -82,6 +82,18 @@ CREATE TABLE `errors` (
   `date` bigint(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `errors`
+--
+
+INSERT INTO `errors` (`id`, `error`, `user`, `date`) VALUES
+('8d2fcc13-3072-4711-8cbc-dc097a026a4a', 'error saving element of socialMedia, user: developer', 'developer', 1696531070940),
+('bea779ca-611c-470f-b55c-494ff5b684b5', 'error saving element of socialMedia, user: developer', 'developer', 1696531031474),
+('c87682ba-1dac-4686-8353-00a57e849cd1', 'error saving element of socialMedia, user: developer', 'developer', 1696531138278),
+('f475298e-ff1e-4f21-a16e-f920b602153e', 'error saving element of socialMedia, user: developer', 'developer', 1696531106454),
+('f7ffcce8-3f3b-44a4-bcbb-66d508a4cf75', 'error listing elements of socialMedia, user: developer', 'developer', 1696529880633),
+('fde5b280-904b-49ad-8b6d-74ab08855278', 'error saving element of socialMedia, user: developer', 'developer', 1696531239115);
+
 -- --------------------------------------------------------
 
 --
@@ -118,10 +130,18 @@ CREATE TABLE `logs` (
 
 INSERT INTO `logs` (`id`, `idUser`, `operation`, `date`, `observation`) VALUES
 ('1059e9f2-562c-4318-8667-baaee7709df7', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1696446374676, 'sign out'),
+('2f5f3475-71dd-42a0-8b0c-a4301e414a41', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-out', 1696526635007, 'sign out'),
+('42e46fcb-64a5-4eea-9a0c-d40ae2c99ab1', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1696527109413, 'sign out'),
+('43244666-8684-4b9a-b361-1297b942bb2a', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-in', 1696527051130, 'sign out'),
+('443737bb-91bd-4209-aa81-38cb89b8220b', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'delete socialMedia', 1696531481393, '61d5bb2f-57df-47cd-9925-64b33534ced8'),
 ('45ec20af-8b07-460d-8879-cef34bc774f0', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1696446367507, 'sign out'),
 ('5bde1c3e-1b86-4a36-b84f-6f8760cb72e9', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'delete users', 1696446253617, '9643f053-c17f-4b6f-960d-6eb3c2fe0d9a'),
+('712232f4-ea38-4f5a-a958-16abeaf12afc', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-out', 1696527044958, 'sign out'),
 ('bc6b3ac1-3551-4946-b5ec-11aacf352ee5', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1696516940135, 'sign out'),
-('c1d6b378-24a6-49a0-9ee7-05e841599c54', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-out', 1696457360378, 'sign out');
+('c1c72676-8fc8-477f-91c3-d881bd203de0', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1696526649748, 'sign out'),
+('c1d6b378-24a6-49a0-9ee7-05e841599c54', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-out', 1696457360378, 'sign out'),
+('c95c5907-8155-4d77-9eaf-455a84dd4d3b', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1696527119535, 'sign out'),
+('c9a05433-7252-4cf2-b38e-901a23d50313', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'created socialMedia', 1696531280165, '61d5bb2f-57df-47cd-9925-64b33534ced8');
 
 -- --------------------------------------------------------
 
@@ -157,7 +177,8 @@ CREATE TABLE `permissions` (
 
 INSERT INTO `permissions` (`id`, `operation`, `date`) VALUES
 ('2085af4c-4745-11ee-aa57-6c02e0b9ae9e', 'users', 1693407267899),
-('8234cc86-62e8-11ee-b5f0-6c02e0b9ae9e', 'pages', 1696446121633);
+('8234cc86-62e8-11ee-b5f0-6c02e0b9ae9e', 'pages', 1696446121633),
+('8b5001f5-63a3-11ee-a1e6-6c02e0b9ae9e', 'socialMedia', 1696526443882);
 
 -- --------------------------------------------------------
 
@@ -206,8 +227,26 @@ CREATE TABLE `rolespermissions` (
 --
 
 INSERT INTO `rolespermissions` (`id`, `idRole`, `idPermission`, `date`) VALUES
+('9aa72fc0-63a3-11ee-a1e6-6c02e0b9ae9e', 2, '8b5001f5-63a3-11ee-a1e6-6c02e0b9ae9e', 1696526443882),
 ('a1a66d79-4745-11ee-aa57-6c02e0b9ae9e', 1, '2085af4c-4745-11ee-aa57-6c02e0b9ae9e', 1693407267899),
 ('c4299a2c-62e8-11ee-b5f0-6c02e0b9ae9e', 2, '8234cc86-62e8-11ee-b5f0-6c02e0b9ae9e', 1696446229711);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `socialmedia`
+--
+
+CREATE TABLE `socialmedia` (
+  `id` varchar(36) NOT NULL,
+  `profileName` text NOT NULL,
+  `url` text NOT NULL,
+  `date` bigint(16) NOT NULL,
+  `user` varchar(36) NOT NULL,
+  `socialUser` text NOT NULL,
+  `socialPassword` text NOT NULL,
+  `slugName` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -228,7 +267,7 @@ CREATE TABLE `tokens` (
 --
 
 INSERT INTO `tokens` (`id`, `idUser`, `start`, `end`, `token`) VALUES
-('d197b63a-04d5-49ca-8bbd-8839f4c57cf3', '60cf833f-61ef-4619-bf17-1d55596bbf17', 1696603340138, 1696603340138, 'U2FsdGVkX1++LhXtgQB3hm+9X2RxKtDgKpDhRYMAeQz7F49Vq6UzCUFb+RobMV53929iOwPZQXPPa/fkuMowxI5iJtU4kHSAL7VtIuL4SXS1J7xNZ/SnNoQfJAPLtuyF');
+('c489eb89-dbdc-4bfa-8708-6f01849e222d', '60cf833f-61ef-4619-bf17-1d55596bbf17', 1696613519538, 1696613519538, 'U2FsdGVkX1+kku868LU1x35GWu0aGB5jYGuoNuWz2p98YWyqkxHFEkzMTIAoXxLzAE518YUupvmHWE52f0rmrK6SvWS+UK4LDg11VlsJUZzznmKxAxDN3N0PbjGU3k0d');
 
 -- --------------------------------------------------------
 
@@ -256,8 +295,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `user`, `name`, `email`, `userType`, `pw`, `status`, `state`, `lastOnline`, `date`, `photo`, `slugName`) VALUES
-('60cf833f-61ef-4619-bf17-1d55596bbf17', 'developer', 'Developer Comunicador', 'developer@gmail.com', 2, '25d55ad283aa400af464c76d713c07ad', 1, 0, 1696526160214, 1693411735331, '/images/users/60cf833f-61ef-4619-bf17-1d55596bbf17-photo.png', 'developer-comunicador'),
-('bb2be934-4203-4c94-bc9f-f89290858b01', 'sito8943', 'Carlos Andrés Mora González', 'sito8943@gmail.com', 1, '25d55ad283aa400af464c76d713c07ad', 0, 0, 1696450680568, 1691803729141, '/images/users/sito8943-photo.jpeg', 'sito8943');
+('60cf833f-61ef-4619-bf17-1d55596bbf17', 'developer', 'Developer Comunicador', 'developer@gmail.com', 2, '25d55ad283aa400af464c76d713c07ad', 1, 0, 1696531560373, 1693411735331, '/images/users/60cf833f-61ef-4619-bf17-1d55596bbf17-photo.png', 'developer-comunicador'),
+('bb2be934-4203-4c94-bc9f-f89290858b01', 'sito8943', 'Carlos Andrés Mora González', 'sito8943@gmail.com', 1, '25d55ad283aa400af464c76d713c07ad', 0, 0, 1696527360951, 1691803729141, '/images/users/sito8943-photo.jpeg', 'sito8943');
 
 -- --------------------------------------------------------
 
@@ -354,6 +393,13 @@ ALTER TABLE `rolespermissions`
   ADD KEY `idRolePermission` (`idRole`);
 
 --
+-- Indexes for table `socialmedia`
+--
+ALTER TABLE `socialmedia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userSocialMedia` (`user`);
+
+--
 -- Indexes for table `tokens`
 --
 ALTER TABLE `tokens`
@@ -420,6 +466,12 @@ ALTER TABLE `recovery`
 ALTER TABLE `rolespermissions`
   ADD CONSTRAINT `idPermissionRole` FOREIGN KEY (`idPermission`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `idRolePermission` FOREIGN KEY (`idRole`) REFERENCES `usertypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `socialmedia`
+--
+ALTER TABLE `socialmedia`
+  ADD CONSTRAINT `userSocialMedia` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tokens`

@@ -33,9 +33,9 @@ export async function pieChart(year, month, attribute, event) {
 }
 
 /**
- * 
- * @param {string} toFetch 
- * @returns 
+ *
+ * @param {string} toFetch
+ * @returns
  */
 export async function fetchData(toFetch = "events") {
   const response = await fetch(`${config.apiUrl}analytics/${toFetch}`, {
