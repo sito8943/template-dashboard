@@ -67,7 +67,8 @@ class Controller {
       delete data.rPassword;
     }
     // security name check
-    {
+
+    if (data.name) {
       const { rows } = await select(this.collection, ["name"], {
         attribute: "name",
         operator: "=",
@@ -75,6 +76,7 @@ class Controller {
       });
       if (rows.length > 0) return { message: "name taken" };
     }
+
     // security user check
     const { rows } = await select("users", ["id", "user"], {
       attribute: "user",
@@ -82,9 +84,12 @@ class Controller {
       value: user,
     });
     assert(rows.length > 0, "the user shall exist");
-
+    if (!data.user) data.user = rows[0].id;
     const attributes = ["id", ...Object.keys(data), "slugName"];
-    const slugName = toSlug(data.user || data.title || data.name);
+    const slugName = toSlug(
+      data.title || data.name || data.profileName || data.user
+    );
+
     if (!this.noDate) attributes.push("date");
     const toInsert = {
       ...data,

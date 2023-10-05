@@ -86,9 +86,12 @@ function Table({
                 rel="noreferrer"
                 className="icon-button"
                 aria-label={languageState.texts.ariaLabels.preview}
-                href={`${config.webUrl}/${collection}/${toSlug(
-                  row.title || row.name
-                )}`}
+                href={
+                  row.url ||
+                  `${config.webUrl}/${collection}/${toSlug(
+                    row.title || row.name || row.profileName || row.user
+                  )}`
+                }
               >
                 <FontAwesomeIcon icon={faEye} />
               </a>

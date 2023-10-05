@@ -151,11 +151,39 @@
       "reload": "Recargar"
     },
     "socialMedia": {
+      "name": "Red Social",
+      "noEditable": false,
+      "visitable": true,
+      "query": [],
+      "inputs": {
+        "profileName": {
+          "id": "profileName",
+          "type": "text",
+          "required": true
+        },
+        "url": {
+          "id": "url",
+          "type": "text",
+          "required": true,
+          "icon": "socialMedia"
+        },
+        "socialUser": {
+          "id": "socialUser",
+          "type": "text",
+          "required": true,
+          "transformation": "slugCase"
+        },
+        "socialPassword": {
+          "id": "socialPassword",
+          "type": "text",
+          "required": true
+        }
+      },
+      "additionalQueries": {},
       "title": "Redes sociales",
       "headers": [
-        { "id": "icon", "label": "Ícono" },
+        { "id": "profileName", "label": "Nombre de perfil" },
         { "id": "socialUser", "label": "Usuario" },
-        { "id": "name", "label": "Name" },
         { "id": "url", "label": "URL" }
       ]
     },
@@ -317,7 +345,12 @@
       "userType": "Tipo de usuario",
       "email": "Correo Electrónico",
       "name": "Nombre y apellidos",
+      "url": "Dirección URL",
+      "profileName": "Nombre del perfil",
       "user": "Usuario",
+      "icon": "Ícono",
+      "socialUser": "Administrador principal",
+      "socialPassword": "Contraseña",
       "pw": "Contraseña",
       "rPassword": "Confirmar Contraseña"
     },

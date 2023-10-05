@@ -9,6 +9,8 @@ import {
 import { useParams } from "react-router-dom";
 import md5 from "md5";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 // contexts
 import { useLanguage } from "../../../contexts/LanguageProvider";
 import { useNotification } from "../../../contexts/NotificationProvider";
@@ -17,17 +19,18 @@ import { useNotification } from "../../../contexts/NotificationProvider";
 import noProduct from "../../../assets/images/no-product.jpg";
 
 // components
+import PasswordInput from "./PasswordInput/PasswordInput";
 import Loading from "../../../components/Loading/Loading";
 import LazyImage from "../../../components/LazyImage/LazyImage";
 import SelectInput from "../../../components/SelectInput/SelectInput";
 import SimpleInput from "../../../components/SimpleInput/SimpleInput";
-import PasswordInput from "./PasswordInput/PasswordInput";
 
 // services
 import { fetchList } from "../../../services/get";
 import { saveModel } from "../../../services/post";
 
 // utils
+import { parseIcon } from "../utils";
 import { toSlug } from "../../../utils/parser";
 
 // config
@@ -354,8 +357,18 @@ function Form() {
                 id={input.id}
                 className="input-control"
                 label={labels[input.id]}
+                leftIcon={
+                  input.icon ? (
+                    <FontAwesomeIcon
+                      className="absolute text-white top-[50%] -translate-y-[50%] left-3"
+                      icon={parseIcon(input.icon, inputValue[input.id])}
+                    />
+                  ) : null
+                }
                 inputProps={{
-                  className: "input primary w-full",
+                  className: `input primary ${
+                    input.icon ? "!pl-8" : ""
+                  } w-full`,
                   value: inputValue[input.id],
                   onChange: onInputChange,
                   type: "text",
