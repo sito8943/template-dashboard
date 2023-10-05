@@ -1,6 +1,6 @@
 {
   "name": "template-dashboard",
-  "version": "0.10.4",
+  "version": "0.11.7",
   "type": "module",
   "scripts": {
     "dev": "vite",

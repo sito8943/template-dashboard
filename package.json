@@ -1,9 +1,9 @@
 {
+  "version": "0.11.7",
   "scripts": {
     "start": "concurrently \"cd ./api && npm run dev \" \"cd ./dashboard && npm run dev \""
   },
   "dependencies": {
     "concurrently": "^8.2.1"
-    
   }
 }
