@@ -118,7 +118,9 @@
         },
         "contactUs": {
           "title": "Contáctenos",
-          "description": "Formulario de contacto"
+          "description": "Formulario de contacto",
+          "photo": "Imagen de la sección",
+          "showSocialMedia": "Mostrar redes sociales"
         },
         "features": {
           "title": "Ofertas",

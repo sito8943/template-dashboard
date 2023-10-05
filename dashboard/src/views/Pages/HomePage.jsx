@@ -12,6 +12,9 @@ import ClientSays from "./Home/ClientSays";
 import ContactUs from "./Home/ContactUs";
 import Footer from "./Home/Footer";
 
+// styles
+import "./styles.css";
+
 function HomePage() {
   const { languageState } = useLanguage();
 

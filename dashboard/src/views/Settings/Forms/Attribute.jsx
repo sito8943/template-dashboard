@@ -90,7 +90,7 @@ function Attribute({ attribute }) {
         operator: "=",
         value: getUserName(),
       });
-      const { list } = await response.data;
+      const { list } = await response.json();
       const data = list[0];
       setOldAttribute(data[attribute]);
       setAttributeV(data[attribute]);

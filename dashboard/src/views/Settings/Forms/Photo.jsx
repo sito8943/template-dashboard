@@ -63,7 +63,7 @@ function Photo({ model }) {
           operator: "=",
           value: getUserName(),
         });
-      const { list } = await response.data;
+      const { list } = await response.json();
       const data = list[0];
       if (!model)
         setUserState({

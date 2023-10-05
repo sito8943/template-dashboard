@@ -107,7 +107,7 @@ function List() {
           languageState.texts.serverNames[collection]
         );
       }
-      const { data } = response;
+      const data = await response.json();
       const remoteList = data.list;
       setList({ type: "add", newList: remoteList });
     } catch (err) {

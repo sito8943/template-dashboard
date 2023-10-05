@@ -236,7 +236,7 @@ function Form() {
   const remoteFetch = async (input, already = undefined) => {
     try {
       const response = await fetchList(input.collection, 0, ["id", "name"]);
-      const data = await response.data;
+      const data = await response.json();
 
       setRemotes({
         type: "set",
@@ -264,7 +264,7 @@ function Form() {
           value: id,
         });
 
-        const { list } = await response.data;
+        const { list } = await response.json();
         data = list[0];
       }
       for (const input of Object.values(

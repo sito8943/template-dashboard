@@ -39,7 +39,7 @@ export async function fetchList(collection, page, attributes, query) {
  * @returns
  */
 export async function fetchListGET(page, type) {
-  const response = await axios.get(
+  const response = await fetch(
     `${
       config.apiUrl
     }posts/fetch?type=${type}&page=${page}&user?${getUserName()}`,
@@ -62,15 +62,19 @@ export async function fetchListGET(page, type) {
  * @returns
  */
 export async function fetchUnionList(collections, page, attributes, query) {
-  const response = await axios.post(
-    `${config.apiUrl}${collections[0]}/union-list`,
-    { user: getUserName(), collections, page, attributes, query },
-    {
-      headers: {
-        ...getAuth,
-        Authorization: `Bearer ${getCookie(config.basicKey)}`,
-      },
-    }
-  );
+  const response = await fetch(`${config.apiUrl}${collections[0]}/union-list`, {
+    method: "POST",
+    body: JSON.stringify({
+      user: getUserName(),
+      collections,
+      page,
+      attributes,
+      query,
+    }),
+    headers: {
+      ...getAuth,
+      Authorization: `Bearer ${getCookie(config.basicKey)}`,
+    },
+  });
   return response;
 }
