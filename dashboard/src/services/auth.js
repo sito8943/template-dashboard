@@ -25,7 +25,7 @@ export const validateBasicKey = async (type) => {
       },
     }
   );
-  const data = await response.data;
+  const data = await response.json();
   if (data.data.user) return data.data.user;
   return false;
 };
@@ -46,7 +46,7 @@ export const login = async (user, password, remember) => {
       headers: getAuth,
     }
   );
-  const data = await response.data;
+  const data = await response.json();
   return data;
 };
 
@@ -67,7 +67,7 @@ export const signOutUser = async (user) => {
       },
     }
   );
-  return await response.data;
+  return await response.json();
 };
 
 /**
@@ -98,7 +98,7 @@ export const saveInfo = async (attributes, values) => {
       },
     }
   );
-  return await response.data;
+  return await response.json();
 };
 
 export const loadInfo = async (attributes) => {
@@ -114,5 +114,5 @@ export const loadInfo = async (attributes) => {
       },
     }
   );
-  return await response.data;
+  return await response.json();
 };

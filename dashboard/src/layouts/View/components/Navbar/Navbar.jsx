@@ -56,7 +56,7 @@ function Navbar() {
   const localFetchNotifications = useCallback(async () => {
     try {
       const remoteNotifications = await fetchNotifications();
-      const { list } = await remoteNotifications.data;
+      const { list } = await remoteNotifications.json();
     } catch (err) {
       console.error(err);
     }
