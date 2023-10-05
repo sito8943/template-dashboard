@@ -3,12 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faTextHeight,
   faFileText,
   faHome,
   faUser,
   faGear,
   faArrowRightFromBracket,
+  faNetworkWired,
+  faEarthAmerica,
 } from "@fortawesome/free-solid-svg-icons";
 
 // contexts
@@ -34,6 +35,7 @@ function Sidebar() {
       users: faUser,
       pages: faFileText,
       settings: faGear,
+      socialMedia: faEarthAmerica,
       logout: faArrowRightFromBracket,
     }),
     []

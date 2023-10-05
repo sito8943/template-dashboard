@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 04, 2023 at 09:19 PM
+-- Generation Time: Oct 05, 2023 at 07:16 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -85,6 +85,22 @@ CREATE TABLE `errors` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `features`
+--
+
+CREATE TABLE `features` (
+  `id` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `urlName` text NOT NULL,
+  `description` text NOT NULL,
+  `date` bigint(16) NOT NULL,
+  `photo` text NOT NULL,
+  `user` varchar(36) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `logs`
 --
 
@@ -103,7 +119,9 @@ CREATE TABLE `logs` (
 INSERT INTO `logs` (`id`, `idUser`, `operation`, `date`, `observation`) VALUES
 ('1059e9f2-562c-4318-8667-baaee7709df7', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1696446374676, 'sign out'),
 ('45ec20af-8b07-460d-8879-cef34bc774f0', 'bb2be934-4203-4c94-bc9f-f89290858b01', 'sign-out', 1696446367507, 'sign out'),
-('5bde1c3e-1b86-4a36-b84f-6f8760cb72e9', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'delete users', 1696446253617, '9643f053-c17f-4b6f-960d-6eb3c2fe0d9a');
+('5bde1c3e-1b86-4a36-b84f-6f8760cb72e9', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'delete users', 1696446253617, '9643f053-c17f-4b6f-960d-6eb3c2fe0d9a'),
+('bc6b3ac1-3551-4946-b5ec-11aacf352ee5', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-in', 1696516940135, 'sign out'),
+('c1d6b378-24a6-49a0-9ee7-05e841599c54', '60cf833f-61ef-4619-bf17-1d55596bbf17', 'sign-out', 1696457360378, 'sign out');
 
 -- --------------------------------------------------------
 
@@ -140,6 +158,22 @@ CREATE TABLE `permissions` (
 INSERT INTO `permissions` (`id`, `operation`, `date`) VALUES
 ('2085af4c-4745-11ee-aa57-6c02e0b9ae9e', 'users', 1693407267899),
 ('8234cc86-62e8-11ee-b5f0-6c02e0b9ae9e', 'pages', 1696446121633);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+CREATE TABLE `products` (
+  `id` varchar(36) NOT NULL,
+  `feature` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `description` text NOT NULL,
+  `date` bigint(16) NOT NULL,
+  `user` varchar(36) NOT NULL,
+  `photo` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -194,7 +228,7 @@ CREATE TABLE `tokens` (
 --
 
 INSERT INTO `tokens` (`id`, `idUser`, `start`, `end`, `token`) VALUES
-('b2a83b0e-3b68-4c74-bc31-c21c63f50a63', '60cf833f-61ef-4619-bf17-1d55596bbf17', 1696532774677, 1696532774677, 'U2FsdGVkX1+jXBXOvod4sor6SmJzMTjHCepkhbpoE2xSTIj3onwvwBlNypbcbtXgMjFoEvVH/Wstrm3/MJa1pBTtEWbD2m5HRK3jfy4/eZJgQnTBcfKDma9sWk2yRNXg');
+('d197b63a-04d5-49ca-8bbd-8839f4c57cf3', '60cf833f-61ef-4619-bf17-1d55596bbf17', 1696603340138, 1696603340138, 'U2FsdGVkX1++LhXtgQB3hm+9X2RxKtDgKpDhRYMAeQz7F49Vq6UzCUFb+RobMV53929iOwPZQXPPa/fkuMowxI5iJtU4kHSAL7VtIuL4SXS1J7xNZ/SnNoQfJAPLtuyF');
 
 -- --------------------------------------------------------
 
@@ -222,8 +256,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `user`, `name`, `email`, `userType`, `pw`, `status`, `state`, `lastOnline`, `date`, `photo`, `slugName`) VALUES
-('60cf833f-61ef-4619-bf17-1d55596bbf17', 'developer', 'Developer Comunicador', 'developer@gmail.com', 2, '25d55ad283aa400af464c76d713c07ad', 1, 0, 1696447140477, 1693411735331, '/images/users/60cf833f-61ef-4619-bf17-1d55596bbf17-photo.png', 'developer-comunicador'),
-('bb2be934-4203-4c94-bc9f-f89290858b01', 'sito8943', 'Carlos Andrés Mora González', 'sito8943@gmail.com', 1, '25d55ad283aa400af464c76d713c07ad', 0, 0, 1696447140474, 1691803729141, '/images/users/sito8943-photo.jpeg', 'sito8943');
+('60cf833f-61ef-4619-bf17-1d55596bbf17', 'developer', 'Developer Comunicador', 'developer@gmail.com', 2, '25d55ad283aa400af464c76d713c07ad', 1, 0, 1696526160214, 1693411735331, '/images/users/60cf833f-61ef-4619-bf17-1d55596bbf17-photo.png', 'developer-comunicador'),
+('bb2be934-4203-4c94-bc9f-f89290858b01', 'sito8943', 'Carlos Andrés Mora González', 'sito8943@gmail.com', 1, '25d55ad283aa400af464c76d713c07ad', 0, 0, 1696450680568, 1691803729141, '/images/users/sito8943-photo.jpeg', 'sito8943');
 
 -- --------------------------------------------------------
 
@@ -270,6 +304,13 @@ ALTER TABLE `errors`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `features`
+--
+ALTER TABLE `features`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `featureUser` (`user`);
+
+--
 -- Indexes for table `logs`
 --
 ALTER TABLE `logs`
@@ -288,6 +329,14 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `permissions`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `productFeature` (`feature`),
+  ADD KEY `userProduct` (`user`);
 
 --
 -- Indexes for table `recovery`
@@ -335,6 +384,12 @@ ALTER TABLE `basictrigger`
   ADD CONSTRAINT `idEventBasicTriggered` FOREIGN KEY (`idEvent`) REFERENCES `analytics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `features`
+--
+ALTER TABLE `features`
+  ADD CONSTRAINT `featureUser` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `logs`
 --
 ALTER TABLE `logs`
@@ -345,6 +400,13 @@ ALTER TABLE `logs`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `idUser` FOREIGN KEY (`idUser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `productFeature` FOREIGN KEY (`feature`) REFERENCES `features` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `userProduct` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `recovery`

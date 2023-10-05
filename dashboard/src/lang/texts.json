@@ -70,6 +70,11 @@
           "label": "Páginas"
         },
         {
+          "id": "socialMedia",
+          "to": "/socialMedia",
+          "label": "Redes sociales"
+        },
+        {
           "id": "users",
           "to": "/users/",
           "label": "Usuarios"
@@ -102,6 +107,26 @@
         "hero": {
           "title": "Inicio",
           "description": "Potenciar productos seleccionados"
+        },
+        "about": {
+          "title": "Nosotros",
+          "description": "Pequeña reseña de la compañia"
+        },
+        "clientSays": {
+          "title": "Reseña del cliente",
+          "description": "Comentarios de los clientes"
+        },
+        "contactUs": {
+          "title": "Contáctenos",
+          "description": "Formulario de contacto"
+        },
+        "features": {
+          "title": "Ofertas",
+          "description": "Mostrar las ofertas seleccionados"
+        },
+        "products": {
+          "title": "Productos",
+          "description": "Mostrar los productos seleccionados"
         }
       },
       "pages": [
@@ -113,6 +138,7 @@
         }
       ]
     },
+
     "buttons": {
       "goHome": "Ir al Inicio",
       "uploadPhoto": "Subir Imagen",
@@ -124,16 +150,20 @@
       "insert": "Insertar",
       "reload": "Recargar"
     },
+    "socialMedia": {
+      "title": "Redes sociales",
+      "headers": [
+        { "id": "icon", "label": "Ícono" },
+        { "id": "socialUser", "label": "Usuario" },
+        { "id": "name", "label": "Name" },
+        { "id": "url", "label": "URL" }
+      ]
+    },
     "users": {
       "name": "Usuario",
       "noEditable": false,
       "additionalQueries": {},
       "visitable": false,
-      "labels": {
-        "email": "Email",
-        "photo": "Imagen",
-        "name": "Nombre"
-      },
       "inputs": {
         "photo": {
           "id": "photo",

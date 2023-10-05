@@ -6,6 +6,7 @@ const authRouter = require("./routes/auth");
 const usersRouter = require("./routes/users");
 const userTypesRouter = require("./routes/userTypes");
 const analytics = require("./routes/analytics");
+const socialMedia = require("./routes/socialMedia");
 
 const app = express();
 
@@ -51,6 +52,8 @@ app.use("/api-client/users", usersRouter);
 app.use("/api/userTypes", userTypesRouter);
 app.use("/api/user-types", userTypesRouter);
 app.use("/api/analytics", analytics);
+app.use("/api/socialMedia", socialMedia);
+app.use("/api-client/socialMedia", socialMedia);
 
 // errors logs
 app.post("/error/logs", async (req, res) => {
