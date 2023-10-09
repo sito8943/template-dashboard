@@ -24,6 +24,7 @@ import { useNotification } from "../../../contexts/NotificationProvider";
 
 // services
 import { fetchList } from "../../../services/get";
+import { savePage } from "../../../services/pages";
 
 // utils
 import { parseIcon } from "../../../layouts/Model/utils";
@@ -136,6 +137,20 @@ function ContactUs() {
     ));
   }, [socialMedia, toggleSocialMedia]);
 
+  const onSave = async () => {
+    setLoading(true);
+    try {
+      await savePage("contactUs", { socialMedia, photo });
+      showNotification("success", languageState.texts.messages.saved);
+    } catch (err) {
+      console.error(err);
+      if (String(err) === "AxiosError: Network Error")
+        showNotification("error", languageState.texts.errors.notConnected);
+      else showNotification("error", String(err));
+    }
+    setLoading(false);
+  };
+
   return (
     <article id="contactUs" className="page-article">
       <h3>
@@ -194,7 +209,7 @@ function ContactUs() {
         </div>
       )}
       <div>
-        <button type="submit" className="primary submit">
+        <button onClick={onSave} type="button" className="primary submit">
           {languageState.texts.buttons.save}
         </button>
       </div>
