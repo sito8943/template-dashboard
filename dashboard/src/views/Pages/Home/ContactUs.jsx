@@ -92,9 +92,13 @@ function ContactUs() {
   const fetchSocialMedia = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchList("socialMedia", 0, ["id", "url"]);
+      const response = await fetchList("socialMedia", 0, [
+        "id",
+        "url",
+        "active",
+      ]);
       const { list } = await response.json();
-      // setSocialMedia(list)
+      setSocialMedia(list);
     } catch (err) {
       console.error(err);
       if (String(err) === "AxiosError: Network Error")
@@ -140,7 +144,10 @@ function ContactUs() {
   const onSave = async () => {
     setLoading(true);
     try {
-      await savePage("home-contactUs", { socialMedia, photo });
+      await savePage("home-contactUs", {
+        socialMedia: socialMedia.map(({ id, active }) => ({ id, active })),
+        photo,
+      });
       showNotification("success", languageState.texts.messages.saved);
     } catch (err) {
       console.error(err);

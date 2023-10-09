@@ -81,6 +81,8 @@ function Form() {
         oldState[id] = value;
         return { ...oldState };
       }
+      case "clean":
+        return {};
       default:
         return oldState;
     }
@@ -205,7 +207,7 @@ function Form() {
         id: !id || id === "insert" ? undefined : id,
         ...toSaveData,
       });
-      const data = await result.data;
+      const data = await result.json();
       switch (data.message) {
         case "passwords are not equal":
           showNotification("error", errors.passwordsAreNotEqual);
@@ -220,7 +222,7 @@ function Form() {
           );
           break;
         default:
-          if (!id) setInputValue({ type: "set", data: {} });
+          if (!id || id === "insert") setInputValue({ type: "clean" });
           showNotification("success", messages.saved);
           break;
       }
