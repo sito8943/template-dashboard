@@ -7,6 +7,7 @@ const usersRouter = require("./routes/users");
 const userTypesRouter = require("./routes/userTypes");
 const analytics = require("./routes/analytics");
 const socialMedia = require("./routes/socialMedia");
+const pages = require("./routes/pages");
 
 const app = express();
 
@@ -47,28 +48,34 @@ const { insert } = require("sito-node-mysql");
 
 app.use("/api/auth", authRouter);
 app.use("/api-client/auth", authRouter);
+// users
 app.use("/api/users", usersRouter);
 app.use("/api-client/users", usersRouter);
+// user types
 app.use("/api/userTypes", userTypesRouter);
 app.use("/api/user-types", userTypesRouter);
+// analytics
 app.use("/api/analytics", analytics);
+// socialMedia
 app.use("/api/socialMedia", socialMedia);
-app.use("/api-client/socialMedia", socialMedia);
+// pages
+app.use("/api/pages", pages);
+app.use("/api-client/pages", pages);
 
-// errors logs
-app.post("/error/logs", async (req, res) => {
-  const { error, user } = req.body;
-  try {
-    await insert("errors", ["id", "error", "idUser", "date"], {
-      error: String(error),
-      idUser: user,
-      date: new Date().getTime(),
-    });
-    res.send("ok");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
-});
+app // errors logs
+  .post("/error/logs", async (req, res) => {
+    const { error, user } = req.body;
+    try {
+      await insert("errors", ["id", "error", "idUser", "date"], {
+        error: String(error),
+        idUser: user,
+        date: new Date().getTime(),
+      });
+      res.send("ok");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
 
 module.exports = app;

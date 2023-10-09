@@ -140,7 +140,7 @@ function ContactUs() {
   const onSave = async () => {
     setLoading(true);
     try {
-      await savePage("contactUs", { socialMedia, photo });
+      await savePage("home-contactUs", { socialMedia, photo });
       showNotification("success", languageState.texts.messages.saved);
     } catch (err) {
       console.error(err);
