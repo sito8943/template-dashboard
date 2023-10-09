@@ -1,5 +1,5 @@
 {
-  "version": "0.11.7",
+  "version": "0.12.5",
   "scripts": {
     "start": "concurrently \"cd ./api && npm run dev \" \"cd ./dashboard && npm run dev \""
   },
