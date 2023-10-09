@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useReducer,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Tippy from "@tippyjs/react";
 
 // @emotion/css
@@ -41,16 +47,40 @@ function ContactUs() {
 
   const [loading, setLoading] = useState(true);
 
-  const [photo, setPhoto] = useState();
+  const photoReducer = (old, action) => {
+    const { type } = action;
+    switch (type) {
+      case "set": {
+        const { value, id } = action;
+        old[id] = value;
+        return { ...old };
+      }
+      default:
+        return old;
+    }
+  };
+  const [photo, setPhoto] = useReducer(photoReducer, {});
 
   const onPhotoChange = (id, event) => {
-    console.log(id, event);
+    if (event.target.files[0].size > 15288000) {
+      showNotification("error", languageState.texts.errors.fileToBig);
+
+      event.target.value = "";
+    } else {
+      if (!event.target.files || !event.target.files[0]) return;
+
+      const FR = new FileReader();
+
+      FR.addEventListener("load", function (evt) {
+        setPhoto({ type: "set", id, value: { blob: evt.target?.result } });
+      });
+
+      FR.readAsDataURL(event.target.files[0]);
+    }
   };
 
   const [showSocialMedia, setShowSocialMedia] = useState(true);
-  const [socialMedia, setSocialMedia] = useState([
-    { id: 1, url: "https://www.facebook.com/", active: true },
-  ]);
+  const [socialMedia, setSocialMedia] = useState([]);
 
   useEffect(() => {
     setSocialMedia(
@@ -119,30 +149,16 @@ function ContactUs() {
       {loading ? (
         <Loading />
       ) : (
-        <div className="flex gap-5">
-          <PhotoUpload
-            id="photo"
-            value={photo}
-            label={contactUs.photo}
-            onChange={onPhotoChange}
-            imgClassName="rounded-2xl"
-            className={`h-[150px] w-[150px] gap-4 -mt-1 flex flex-col rounded-full object-cover shadow-[black] ${css(
-              {
-                "*": { borderRadius: "1rem !important" },
+        <div className="flex gap-5 flex-col">
+          <div className="flex flex-col gap-3">
+            <Switch
+              id="toggle-social-media"
+              value={showSocialMedia}
+              onChange={() =>
+                setShowSocialMedia((showSocialMedia) => !showSocialMedia)
               }
-            )}`}
-          />
-          <div>
-            <div>
-              <Switch
-                id="toggle-social-media"
-                value={showSocialMedia}
-                onChange={() =>
-                  setShowSocialMedia((showSocialMedia) => !showSocialMedia)
-                }
-                label={contactUs.showSocialMedia}
-              />
-            </div>
+              label={contactUs.showSocialMedia}
+            />
             <div
               className={`mt-1 grid transition-all duration-300 ${
                 showSocialMedia ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -163,8 +179,25 @@ function ContactUs() {
               </ul>
             </div>
           </div>
+          <PhotoUpload
+            id="photo"
+            value={photo.photo}
+            label={contactUs.photo}
+            onChange={onPhotoChange}
+            imgClassName="rounded-2xl !h-[250px]"
+            className={`w-full gap-4 -mt-1 flex flex-col rounded-full object-cover shadow-[black] ${css(
+              {
+                "*": { borderRadius: "1rem !important" },
+              }
+            )}`}
+          />
         </div>
       )}
+      <div>
+        <button type="submit" className="primary submit">
+          {languageState.texts.buttons.save}
+        </button>
+      </div>
     </article>
   );
 }
