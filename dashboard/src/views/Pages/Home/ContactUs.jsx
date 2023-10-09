@@ -160,7 +160,7 @@ function ContactUs() {
               label={contactUs.showSocialMedia}
             />
             <div
-              className={`mt-1 grid transition-all duration-300 ${
+              className={`grid transition-all duration-300 ${
                 showSocialMedia ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
               }`}
             >
